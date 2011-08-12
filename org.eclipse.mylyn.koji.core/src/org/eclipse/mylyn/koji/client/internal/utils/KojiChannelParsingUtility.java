@@ -25,7 +25,7 @@ public final class KojiChannelParsingUtility {
 	public static KojiChannel parseChannel(Map<String, ?> input) {
 		KojiChannel channel = new KojiChannel();
 		Object result = input.get("id"); //$NON-NLS-1$
-		if (result instanceof Integer)
+		if ((result != null) && (result instanceof Integer))
 			channel.setId((Integer) result);
 		result = input.get("name"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof String))
