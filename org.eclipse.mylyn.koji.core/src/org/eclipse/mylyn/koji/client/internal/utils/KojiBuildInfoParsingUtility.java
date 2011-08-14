@@ -68,7 +68,7 @@ public final class KojiBuildInfoParsingUtility {
 			build.setEpoch(((Integer)result).intValue());
 		result = input.get(KEY_TASK_ID);
 		if((result != null) && (result instanceof Integer)) {
-			int taskId = ((Integer)result).intValue();
+			Integer taskId = (Integer)result;
 			build.setTaskId(taskId);
 			Map<String, ?> taskMap = wsClient.getTaskInfoByIDAsMap(taskId);
 			build.setTask(KojiTaskParsingUtility.parseTask(taskMap, wsClient, true));

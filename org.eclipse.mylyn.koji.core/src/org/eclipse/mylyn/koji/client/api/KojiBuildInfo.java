@@ -39,7 +39,7 @@ import java.util.Map;
 public class KojiBuildInfo implements Comparable{
 	
 	private int state;
-	private int taskId;
+	private Integer taskId;
 	private String release;
 	private int epoch;
 	private String nvr;
@@ -55,6 +55,8 @@ public class KojiBuildInfo implements Comparable{
 	 */
 	public KojiBuildInfo() {
 		super();
+		this.taskId = null;
+		this.task = null;
 	}
 
 	/**
@@ -150,6 +152,14 @@ public class KojiBuildInfo implements Comparable{
 	 * @param taskId	The task ID.
 	 */
 	public void setTaskId(int taskId) {
+		this.taskId = new Integer(taskId);
+	}
+	
+	/**
+	 * Sets the task ID.
+	 * @param taskId	The task ID.
+	 */
+	public void setTaskId(Integer taskId) {
 		this.taskId = taskId;
 	}
 
