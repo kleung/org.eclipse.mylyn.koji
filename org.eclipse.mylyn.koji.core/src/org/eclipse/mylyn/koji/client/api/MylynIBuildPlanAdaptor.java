@@ -13,11 +13,12 @@ import org.eclipse.mylyn.builds.core.IHealthReport;
 import org.eclipse.mylyn.builds.core.IOperation;
 import org.eclipse.mylyn.builds.core.IParameterDefinition;
 
+@SuppressWarnings("restriction")
 public class MylynIBuildPlanAdaptor implements IBuildPlan {
 
 	private KojiPackage pack;
 	
-	public MylynIBuildPlanAdatpro() {
+	public MylynIBuildPlanAdaptor() {
 		super();
 		this.pack = null;
 	}
