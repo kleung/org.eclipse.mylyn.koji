@@ -18,10 +18,12 @@ import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiChannel;
 import org.eclipse.mylyn.koji.client.api.KojiHost;
+import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.KojiUser;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 
 /**
  * Stub client, which essentially does nothing. Used for KojiBuildCommand
@@ -74,7 +76,7 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 		rawBuildinfoMap.put("version", "0.1.12");
 		rawBuildinfoMap.put("release", "2.fc15");
 		rawBuildinfoMap.put("nvr", "eclipse-fedorapackager-0.1.12-2.fc15");
-		return new KojiBuildInfo(rawBuildinfoMap);
+		return KojiBuildInfoParsingUtility.parseBuild(rawBuildinfoMap, null);
 	}
 
 	/*
@@ -82,7 +84,7 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 *  @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getAllRootTasksAsObjectArray()
 	 */
 	@Override
-	public Object[] getAllRootTaskBuildsAsObjectArray() throws KojiClientException {
+	public Object[] getAllRootTasksAsObjectArray() throws KojiClientException {
 		return null;
 	}
 	
@@ -91,7 +93,7 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 *  @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getAllRootTasksAsKojiTaskList()
 	 */
 	@Override
-	public List<KojiTask> getAllRootTaskBuildsAsKojiTaskList()throws KojiClientException {
+	public List<KojiTask> getAllRootTasksAsKojiTaskList()throws KojiClientException {
 		return null;
 	}
 	
@@ -191,6 +193,51 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 */
 	@Override
 	public String downloadTaskOutputAsString(int taskID, String fileName, int offset, int size) throws KojiClientException {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesAsObjectArray()
+	 */
+	@Override
+	public Object[] listPackagesAsObjectArray() throws KojiClientException {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesAsKojiPackageList()
+	 */
+	@Override
+	public List<KojiPackage> listPackagesAsKojiPackageList() throws KojiClientException {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getPackageByIDAsMap(int)
+	 */
+	@Override
+	public Map<String, ?> getPackageByIDAsMap(int packageID) throws KojiClientException {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getPackageByIDAsKojiPackage(int, int)
+	 */
+	@Override
+	public KojiPackage getPackageByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listBuildByKojiPackageIDAsList(int, int)
+	 */
+	@Override
+	public List<KojiBuildInfo> listBuildByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
 		return null;
 	}
 	
