@@ -36,7 +36,7 @@ public final class KojiPackageParsingUtility {
 	 */
 	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
-		if(parseBuilds && (limit > 0))
+		if(parseBuilds && ((limit > 0) || (limit == -1)))
 			pack.setRecentBuilds(wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit));
 		return pack;
 	}

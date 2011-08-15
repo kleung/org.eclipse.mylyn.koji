@@ -70,8 +70,10 @@ public final class KojiBuildInfoParsingUtility {
 		if((result != null) && (result instanceof Integer)) {
 			Integer taskId = (Integer)result;
 			build.setTaskId(taskId);
-			Map<String, ?> taskMap = wsClient.getTaskInfoByIDAsMap(taskId);
-			build.setTask(KojiTaskParsingUtility.parseTask(taskMap, wsClient, true));
+			if(wsClient != null) {
+				Map<String, ?> taskMap = wsClient.getTaskInfoByIDAsMap(taskId);
+				build.setTask(KojiTaskParsingUtility.parseTask(taskMap, wsClient, true));
+			}
 		}
 		return build;
 	}

@@ -8,6 +8,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit4;bundle-version="4.5.0"
 Import-Package: org.eclipse.mylyn.koji.client.api,
- org.eclipse.mylyn.koji.client.api.errors
+ org.eclipse.mylyn.koji.client.api.errors,
+ org.eclipse.mylyn.koji.client.internal.utils
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

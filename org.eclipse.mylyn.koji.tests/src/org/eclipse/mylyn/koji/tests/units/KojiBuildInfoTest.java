@@ -17,6 +17,7 @@ import java.util.HashMap;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,7 +117,7 @@ public class KojiBuildInfoTest {
 	 */
 	@Test
 	public void canParseBuildInfo() throws Exception {
-		KojiBuildInfo info = new KojiBuildInfo(rawBuildinfoMap);
+		KojiBuildInfo info = KojiBuildInfoParsingUtility.parseBuild(rawBuildinfoMap, null);
 		assertNotNull(info);
 		assertEquals("2.fc15", info.getRelease());
 		assertEquals("eclipse-fedorapackager", info.getPackageName());

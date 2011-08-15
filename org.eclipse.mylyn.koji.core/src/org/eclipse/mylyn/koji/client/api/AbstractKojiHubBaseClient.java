@@ -362,6 +362,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			}
 			for(String id : keyList)
 				webMethodResult.remove(id);
+			if(((Object[])webMethodResult.get(targetParentTaskID)).length == 0)
+				webMethodResult = null;
 		}
 		return webMethodResult;
 	}

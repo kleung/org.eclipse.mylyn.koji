@@ -17,4 +17,5 @@ Import-Package: org.apache.ws.commons.util,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.mylyn.koji.client.api,
- org.eclipse.mylyn.koji.client.api.errors
+ org.eclipse.mylyn.koji.client.api.errors,
+ org.eclipse.mylyn.koji.client.internal.utils; x-friends:="org.eclipse.mylyn.koji.tests"

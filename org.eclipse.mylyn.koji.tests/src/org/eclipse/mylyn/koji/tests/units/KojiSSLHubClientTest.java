@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
+import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiChannel;
 import org.eclipse.mylyn.koji.client.api.KojiHost;
+import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.KojiUser;
@@ -46,26 +48,31 @@ public class KojiSSLHubClientTest {
 	@SuppressWarnings("unused")
 	private static final String EFP_SCM_URL = "git://pkgs.fedoraproject.org/eclipse-fedorapackager.git?#302d36c1427a0d8578d0a1d88b4c9337a4407dde";
 
+	private int testNum = 1;
+	
 	private IKojiHubClient kojiClient;
 	
 	@Before
 	public void setUp() throws Exception {
 		// a bare SSL Koji client
-		kojiClient = new KojiSSLHubClient("https://koji-toronto.usersys.redhat.com/kojihub");
+		if(testNum < 4)
+			kojiClient = new KojiSSLHubClient("https://koji.fedoraproject.org/kojihub");
+		else
+			kojiClient = new KojiSSLHubClient("https://koji-toronto.usersys.redhat.com/kojihub");
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		kojiClient.logout();
+		testNum++;
 	}
 	
 	/**
-	 * Log on to Koji using SSL authentication.
+	 * 1. Log on to Koji using SSL authentication.
 	 * This test requires proper certificates to be set up.
 	 * 
 	 * @throws Exception
 	 */
-	/*
 	@Test
 	public void canLoginUsingSSLCertificate() throws Exception {
 		// Logging in to koji should return session data
@@ -74,14 +81,13 @@ public class KojiSSLHubClientTest {
 		assertNotNull(sessionData.get("session-id"));
 		assertTrue(sessionData.get("session-id") instanceof Integer);
 		assertNotNull(sessionData.get("session-key"));
-	}*/
+	}
 	
 	/**
-	 * Get build info test.
+	 * 2. Get build info test.
 	 * 
 	 * @throws Exception
 	 */
-	/*
 	@Test
 	public void canGetBuildInfo() throws Exception {
 		// First log in
@@ -94,14 +100,13 @@ public class KojiSSLHubClientTest {
 		assertTrue(info.getPackageName().equals("eclipse-fedorapackager"));
 		assertTrue(info.getVersion().equals("0.1.12"));
 		assertTrue(info.isComplete());
-	}*/
+	}
 	
 	/**
-	 * Push scratch build test.
+	 * 3. Push scratch build test.
 	 * 
 	 * @throws Exception
 	 */
-	/*
 	@Test
 	public void canPushScratchBuild() throws Exception {
 		// Log in first
@@ -112,13 +117,11 @@ public class KojiSSLHubClientTest {
 		int taskId = kojiClient.build("dist-rawhide", EFP_SCM_URL, EFP_NVR, isScratchBuild);
 		System.out.println("Pushed task ID: " + taskId);
 		assertNotNull(taskId);
-	}*/
+	}
 
 	// Toronto Koji specific query test starts here.
-	
-	//Channel testing
 	/**
-	 * Query channel by ID as map, positive testing.
+	 * 4. Query channel by ID as map, positive testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -144,7 +147,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query channel ID as map, negative testing.
+	 * 5. Query channel ID as map, negative testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -159,7 +162,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query channel by ID as KojiChannel, positive testing.
+	 * 6. Query channel by ID as KojiChannel, positive testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -177,7 +180,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query channel by ID as KojiChannel, negative testing.
+	 * 7. Query channel by ID as KojiChannel, negative testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -191,9 +194,8 @@ public class KojiSSLHubClientTest {
 		assertNull(channel);
 	}
 	
-	//User testing
 	/**
-	 * Query user by ID as Map, positive testing
+	 * 8. Query user by ID as Map, positive testing
 	 * 
 	 * @throws Exception
 	 */
@@ -220,7 +222,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query user by ID as Map, negative testing
+	 * 9. Query user by ID as Map, negative testing
 	 * 
 	 * @throws Exception
 	 */
@@ -235,7 +237,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query user by ID as KojiUser, positive testing
+	 * 10. Query user by ID as KojiUser, positive testing
 	 * 
 	 * @throws Exception
 	 */
@@ -254,7 +256,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query user by ID as KojiUser, negative testing
+	 * 11. Query user by ID as KojiUser, negative testing
 	 * 
 	 * @throws Exception
 	 */
@@ -268,9 +270,8 @@ public class KojiSSLHubClientTest {
 		assertNull(user);
 	}
 	
-	//Host testing
 	/**
-	 * Query host by ID as Map, positive testing
+	 * 12. Query host by ID as Map, positive testing
 	 * 
 	 * @throws Exception
 	 */
@@ -297,7 +298,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query host by ID as Map, negative testing
+	 * 13. Query host by ID as Map, negative testing
 	 * 
 	 * @throws Exception
 	 */
@@ -312,7 +313,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query host by ID as KojiHost, positive testing
+	 * 14. Query host by ID as KojiHost, positive testing
 	 * 
 	 * @throws Exception
 	 */
@@ -332,7 +333,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query host by ID as KojiHost, negative testing
+	 * 15. Query host by ID as KojiHost, negative testing
 	 * 
 	 * @throws Exception
 	 */
@@ -346,9 +347,8 @@ public class KojiSSLHubClientTest {
 		assertNull(host);
 	}
 	
-	//Task testing
 	/**
-	 * Query all root task test.
+	 * 16. Query all root task test.
 	 * 
 	 * @throws Exception
 	 */
@@ -359,14 +359,14 @@ public class KojiSSLHubClientTest {
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
 		// query all root tasks
-		Object rootTaskArrayObject = kojiClient.getAllRootTaskBuildsAsObjectArray();
+		Object rootTaskArrayObject = kojiClient.getAllRootTasksAsObjectArray();
 		assertNotNull(rootTaskArrayObject);
 		assertTrue(rootTaskArrayObject instanceof Object[]);
 		Object[] rootTaskArray = (Object[])rootTaskArrayObject;
 		int arraySize = rootTaskArray.length;
 		assertTrue(arraySize > 0);
 		assertTrue(rootTaskArray[0] instanceof Map);
-		Object rootTaskList = kojiClient.getAllRootTaskBuildsAsKojiTaskList();
+		Object rootTaskList = kojiClient.getAllRootTasksAsKojiTaskList();
 		assertNotNull(rootTaskList);
 		assertTrue(rootTaskList instanceof List);
 		int listSize = ((List<KojiTask>)rootTaskList).size();
@@ -375,7 +375,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task descendents, positive testing.
+	 * 17. Query task descendents, positive testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -408,11 +408,10 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task descendents, negative testing
+	 * 18. Query task descendents, negative testing
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetTaskDescendentsByIDAsMapNegative() throws Exception {
 		// Log in first
@@ -420,13 +419,11 @@ public class KojiSSLHubClientTest {
 		assertNotNull(sessionData);
 		// query task -1
 		Object descendents = kojiClient.getTaskDescendentsByIDAsMap(-1);
-		assertNotNull(descendents);
-		assertTrue(descendents instanceof Map);
-		assertNull(((Map<String, ?>)descendents).get("id"));
+		assertNull(descendents);
 	}
 	
 	/**
-	 * Query task by ID as Map, positive testing
+	 * 19. Query task by ID as Map, positive testing
 	 * 
 	 * @throws Exception
 	 */
@@ -451,7 +448,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task by ID as Map, negative testing
+	 * 20. Query task by ID as Map, negative testing
 	 * 
 	 * @throws Exception
 	 */
@@ -472,7 +469,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task by ID as KojiTask, positive testing.
+	 * 21. Query task by ID as KojiTask, positive testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -513,7 +510,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task by ID as KojiTask, negative testing.
+	 * 22. Query task by ID as KojiTask, negative testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -534,7 +531,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task outputs, positive testing.
+	 * 23. Query task outputs, positive testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -557,7 +554,7 @@ public class KojiSSLHubClientTest {
 	}
 	
 	/**
-	 * Query task outputs, negative testing.
+	 * 24. Query task outputs, negative testing.
 	 * 
 	 * @throws Exception
 	 */
@@ -569,5 +566,191 @@ public class KojiSSLHubClientTest {
 		//query task -1
 		HashMap<String, HashMap<String, Object>> taskOutputs = kojiClient.listTaskOutputAsMap(-1);
 		assertEquals(0, taskOutputs.size());
+	}
+	
+	/**
+	 * 25. Download task output, positive testing
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testDownloadTaskOutputAsStringPositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		String output = kojiClient.downloadTaskOutputAsString(8150, "build.log", 0, 8401);
+		assertEquals(8401, output.length());
+		assertTrue(output.contains("Wrote: /builddir/build/SRPMS/ed-1.5-2.fc15.src.rpm"));
+	}
+	
+	/**
+	 * 26. Download task output, negative testing
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unused")
+	@Test
+	public void testDownloadTaskOutputAsStringNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		boolean exceptionThrown = false;
+		try {
+			Object output = kojiClient.downloadTaskOutputAsString(8149, "build.log", 0, 8401);
+		} catch (KojiClientException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
+	}
+	
+	/**
+	 * 27. List package as object array test.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testListPackagesAsObjectArray() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object packs = kojiClient.listPackagesAsObjectArray();
+		assertNotNull(packs);
+		assertTrue(packs instanceof Object[]);
+		Object[] packages = (Object[])packs;
+		assertTrue(packages.length > 0);
+	}
+	
+	/**
+	 * 28. List package as KojiPackage List test.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListPackagesAsKojiPackageList() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object packs = kojiClient.listPackagesAsKojiPackageList();
+		assertNotNull(packs);
+		assertTrue(packs instanceof List);
+		List<KojiPackage> packages = (List<KojiPackage>)packs;
+		assertTrue(packages.size() > 0);
+	}
+	
+	/**
+	 * 29. Get package by ID as map test, positive testing.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetPackageByIDAsMapPositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByIDAsMap(430);
+		assertNotNull(result);
+		assertTrue(result instanceof Map);
+		Map<String, ?> pack = (Map<String, ?>)result;
+		Object nameObj = pack.get("name");
+		assertNotNull(nameObj);
+		String name = (String)nameObj;
+		assertEquals(0, name.compareToIgnoreCase("ed"));
+	}
+	
+	/**
+	 * 30. Get package by ID as map test, negative testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPackageByIDAsMapNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByIDAsMap(-1);
+		assertNull(result);
+	}
+	
+	/**
+	 * 31. Get package by ID as KojiPackage Test, positive testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPackageByIDAsKojiPackagePositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByIDAsKojiPackage(430, -1);
+		assertNotNull(result);
+		assertTrue(result instanceof KojiPackage);
+		KojiPackage pack = (KojiPackage)result;
+		assertEquals(3, pack.getRecentBuilds().size());
+		assertEquals(0, pack.getPackageName().compareToIgnoreCase("ed"));
+		result = kojiClient.getPackageByIDAsKojiPackage(430, 1);
+		assertNotNull(result);
+		assertTrue(result instanceof KojiPackage);
+		pack = (KojiPackage)result;
+		assertEquals(1, pack.getRecentBuilds().size());
+		assertEquals(0, pack.getPackageName().compareToIgnoreCase("ed"));
+	}
+	
+	/**
+	 * 32. Get package by ID as KojiPackage test, negative testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPackageByIDAsKojiPackageNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByIDAsKojiPackage(-1, -1);
+		assertNull(result);
+	}
+	
+	/**
+	 * 33. List KojiBuild by package ID as List test, positive testing.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListBuildByKojiPackageIDAsListPositve() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.listBuildByKojiPackageIDAsList(430, -1);
+		assertNotNull(result);
+		assertTrue(result instanceof List);
+		List<KojiBuildInfo> buildList = (List<KojiBuildInfo>)result;
+		assertEquals(3, buildList.size());
+		assertEquals(0, buildList.get(0).getNvr().compareToIgnoreCase("ed-1.5-3.fc15"));
+		result = kojiClient.listBuildByKojiPackageIDAsList(430, 1);
+		assertNotNull(result);
+		assertTrue(result instanceof List);
+		buildList = (List<KojiBuildInfo>)result;
+		assertEquals(1, buildList.size());
+		assertEquals(0, buildList.get(0).getNvr().compareToIgnoreCase("ed-1.5-3.fc15"));
+	}
+	
+	/**
+	 * 34. List KojiBuild by package ID as List test, negative testing.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListBuildByKojiPackageIDAsListNegatve() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.listBuildByKojiPackageIDAsList(-1, -1);
+		assertNotNull(result);
+		assertTrue(result instanceof List);
+		List<KojiBuildInfo>buildList = (List<KojiBuildInfo>)result;
+		assertEquals(0, buildList.size());
 	}
 }
