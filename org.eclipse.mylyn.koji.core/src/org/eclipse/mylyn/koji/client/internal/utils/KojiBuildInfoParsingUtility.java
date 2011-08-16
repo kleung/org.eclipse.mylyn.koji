@@ -96,6 +96,21 @@ public final class KojiBuildInfoParsingUtility {
 	 */
 	public static IBuild cloneKojiBuildInfoContentToIBuild(
 			KojiBuildInfo kojiBuildInfo, IBuild build) {
+		//use build ID & NVR regardless availability of task.
+		build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
+		build.setDisplayName(new String(kojiBuildInfo.getNvr()));
+		if(kojiBuildInfo.getTask() == null) { //task is not available, use build instead.
+			build.setBuildNumber(1);		
+			//label?
+			/*
+			build.setDuration(value)
+			build.setState(value)
+			build.setStatus(value)
+			build.setSummary(value)
+			build.setTimestamp(value)
+			*/
+		} else
+			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
 		return build;
 	}
 }

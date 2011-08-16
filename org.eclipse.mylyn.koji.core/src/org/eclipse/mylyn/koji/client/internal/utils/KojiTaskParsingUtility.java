@@ -215,6 +215,15 @@ public final class KojiTaskParsingUtility {
 	 * @return The IBuild parameter with its fields filled with content stored by the KojiTask parameter.
 	 */
 	public static IBuild cloneKojiTaskContentToIBuild(KojiTask task, IBuild build) {
+		build.setBuildNumber(1);
+		//label?
+		/*
+		build.setDuration(value)
+		build.setState(value)
+		build.setStatus(value)
+		build.setSummary(value)
+		build.setTimestamp(value)
+		*/
 		return build;
 	}
 	
