@@ -81,12 +81,21 @@ public final class KojiBuildInfoParsingUtility {
 	}
 
 	/**
-	 * Copy the applicable content of the KojiBuildInfo object to the IBuild object.
-	 * @param kojiBuildInfo The input KojiBuildInfo object.
-	 * @param build The output IBuild object.
-	 * @return The IBuild parameter with the fields filled with content stored by the KojiPackage parameter.
+	 * Copy the applicable content of the KojiBuildInfo object to the IBuild
+	 * object.
+	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are
+	 * not null and of the expected type.
+	 * 
+	 * @param kojiBuildInfo
+	 *            The input KojiBuildInfo object.
+	 * @param build
+	 *            The output IBuild object.
+	 * @return The IBuild parameter with the fields filled with content stored
+	 *         by the KojiPackage parameter.
 	 */
-	public static IBuild cloneKojiBuildInfoContentToIBuild(KojiBuildInfo kojiBuildInfo, IBuild build) {
+	public static IBuild cloneKojiBuildInfoContentToIBuild(
+			KojiBuildInfo kojiBuildInfo, IBuild build) {
 		return build;
 	}
 }

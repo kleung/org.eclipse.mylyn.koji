@@ -208,6 +208,8 @@ public final class KojiTaskParsingUtility {
 	/**
 	 * Copy the applicable content of a given KojiTask object into an IBuild object for use with Mylyn Builds.
 	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are not null and of the expected type.
+	 * 
 	 * @param task The KojiTask object.
 	 * @param build The output IBuild object.
 	 * @return The IBuild parameter with its fields filled with content stored by the KojiTask parameter.
@@ -217,18 +219,24 @@ public final class KojiTaskParsingUtility {
 	}
 	
 	/**
-	 * Copy the applicable content of a given KojiTask List, one by one, into
-	 * a given list of IBuild objects.
+	 * Copy the applicable content of a given KojiTask List, one by one, into a
+	 * given list of IBuild objects.
+	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure that the
+	 * parameters are not null, of same size and filled with the same amount of
+	 * objects of the expected type.
 	 * 
 	 * @param taskList
 	 *            The input KojiTask list.
 	 * @param buildList
 	 *            The output IBuild List.
-	 * @return The IBuild List with the each of its entries' content filled
-	 *         with content stored by the each of the entries of the input
-	 *         KojiTask list.
+	 * @return The IBuild List with the each of its entries' content filled with
+	 *         content stored by the each of the entries of the input KojiTask
+	 *         list.
 	 */
-	public static List<IBuild> cloneKojiTaskListContentToIBuildList(List<KojiTask> taskList, List<IBuild> buildList) {
+	public static List<IBuild> cloneKojiTaskListContentToIBuildList(
+			List<KojiTask> taskList, List<IBuild> buildList)
+			throws IllegalArgumentException {
 		return buildList;
 	}
 }

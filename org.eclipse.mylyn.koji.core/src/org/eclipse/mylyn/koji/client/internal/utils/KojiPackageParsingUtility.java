@@ -87,6 +87,8 @@ public final class KojiPackageParsingUtility {
 	/**
 	 * Copy the applicable content of a given KojiPackage object into an IBuildPlan object for use with Mylyn Builds.
 	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are not null and of the expected type.
+	 * 
 	 * @param pack The KojiPackage object.
 	 * @param buildPlan The output IBuildPlan object.
 	 * @return The IBuildPlan parameter with its fields filled with content stored by the KojiPackage parameter.
@@ -99,6 +101,10 @@ public final class KojiPackageParsingUtility {
 	 * Copy the applicable content of a given KojiPackage List, one by one, into
 	 * a given list of IBuildPlan objects.
 	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure that the
+	 * parameters are not null, of same size and filled with the same amount of
+	 * objects of the expected type.
+	 * 
 	 * @param packageList
 	 *            The input KojiPackage list.
 	 * @param buildPlanList
@@ -107,8 +113,9 @@ public final class KojiPackageParsingUtility {
 	 *         with content stored by the each of the entries of the input
 	 *         KojiPackage list.
 	 */
-	public static List<IBuildPlan> cloneKojiPackageListContentToIBuildPlanList(List<KojiPackage> packageList, 
-			List<IBuildPlan> buildPlanList) {
+	public static List<IBuildPlan> cloneKojiPackageListContentToIBuildPlanList(
+			List<KojiPackage> packageList, List<IBuildPlan> buildPlanList)
+			throws IllegalArgumentException {
 		return buildPlanList;
 	}
 }
