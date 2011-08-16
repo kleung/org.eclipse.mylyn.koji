@@ -240,5 +240,25 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	public List<KojiBuildInfo> listBuildByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
 		return null;
 	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getSourceRPMFromBuildIdAsMap(int)
+	 */
+	@Override
+	public Map<String, Object> getSourceRPMFromBuildIdAsMap(int buildId)
+			throws KojiClientException {
+		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getDescriptionFromPackageIdAsString(int)
+	 */
+	@Override
+	public String getDescriptionFromPackageIdAsString(int packageId)
+			throws KojiClientException {
+		return null;
+	}
 	
 }

@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.mylyn.builds.core.IBuildPlan;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
+import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 
@@ -15,6 +17,7 @@ import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
  * @author Kiu Kwan Leung (Red Hat)
  * 
  */
+@SuppressWarnings("restriction")
 public final class KojiPackageParsingUtility {
 
 	/**
@@ -36,8 +39,16 @@ public final class KojiPackageParsingUtility {
 	 */
 	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
-		if(parseBuilds && ((limit > 0) || (limit == -1)))
-			pack.setRecentBuilds(wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit));
+		if(parseBuilds && ((limit > 0) || (limit == -1))) {
+			List<KojiBuildInfo> buildList = wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit);
+			pack.setRecentBuilds(buildList);
+			if(buildList.size() > 0) {
+				int mostRecentBuildID = buildList.get(0).getBuildId();
+				Map<String, Object> srcRpmMap = wsClient.getSourceRPMFromBuildIdAsMap(mostRecentBuildID);
+				int packId = ((Integer)srcRpmMap.get("id")).intValue();
+				pack.setDescription(wsClient.getDescriptionFromPackageIdAsString(packId));
+			}
+		}
 		return pack;
 	}
 	
@@ -71,5 +82,33 @@ public final class KojiPackageParsingUtility {
 			}
 		}
 		return packList;
+	}
+	
+	/**
+	 * Copy the applicable content of a given KojiPackage object into an IBuildPlan object for use with Mylyn Builds.
+	 * 
+	 * @param pack The KojiPackage object.
+	 * @param buildPlan The output IBuildPlan object.
+	 * @return The IBuildPlan parameter with its fields filled with content stored by the KojiPackage parameter.
+	 */
+	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, IBuildPlan buildPlan) {
+		return buildPlan;
+	}
+	
+	/**
+	 * Copy the applicable content of a given KojiPackage List, one by one, into
+	 * a given list of IBuildPlan objects.
+	 * 
+	 * @param packageList
+	 *            The input KojiPackage list.
+	 * @param buildPlanList
+	 *            The output IBuildPlan List.
+	 * @return The IBuildPlan List with the each of its entries' content filled
+	 *         with content stored by the each of the entries of the input
+	 *         KojiPackage list.
+	 */
+	public static List<IBuildPlan> cloneKojiPackageListContentToIBuildPlanList(List<KojiPackage> packageList, 
+			List<IBuildPlan> buildPlanList) {
+		return buildPlanList;
 	}
 }

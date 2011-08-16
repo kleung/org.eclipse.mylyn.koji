@@ -227,7 +227,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if (webMethodResult != null) {
+		if ((webMethodResult != null) && (webMethodResult.length > 0)){
 			// only getting task roots
 			for (Object o : webMethodResult) {
 				@SuppressWarnings("unchecked")
@@ -289,7 +289,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		return webMethodResult;
+		if((webMethodResult != null) && (webMethodResult.size() > 0))
+			return webMethodResult;
+		else
+			return null;
 	}
 
 	/**
@@ -347,7 +350,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if (webMethodResult != null) {
+		if ((webMethodResult != null) && (webMethodResult.size() > 0)) {
 			String targetParentTaskID = Integer.toString(taskID);
 			// Since Koji hub returns a hash map of taskID/task descendents data
 			// hash map pairs,
@@ -364,7 +367,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 				webMethodResult.remove(id);
 			if(((Object[])webMethodResult.get(targetParentTaskID)).length == 0)
 				webMethodResult = null;
-		}
+		} else
+			webMethodResult = null;
 		return webMethodResult;
 	}
 
@@ -391,7 +395,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if (webMethodResult != null)
+		if ((webMethodResult != null) && (webMethodResult.size() > 0))
 			return webMethodResult;
 		else
 			return null;
@@ -439,7 +443,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if (webMethodResult != null)
+		if ((webMethodResult != null) && (webMethodResult.size() > 0))
 			return webMethodResult;
 		else
 			return null;
@@ -485,7 +489,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if (webMethodResult != null)
+		if ((webMethodResult != null) && (webMethodResult.size() > 0))
 			return webMethodResult;
 		else
 			return null;
@@ -536,7 +540,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		if(webMethodResult != null)
+		if((webMethodResult != null) && (webMethodResult.size() > 0))
 			return webMethodResult;
 		else
 			return null;
@@ -592,7 +596,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException();
 		}
-		return webMethodResult;
+		if((webMethodResult != null) && (webMethodResult.length > 0))
+			return webMethodResult;
+		else
+			return null;
 	}
 	
 	/**
@@ -628,7 +635,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
-		return webMethodResult;
+		if((webMethodResult != null) && (webMethodResult.size() > 0))
+			return webMethodResult;
+		else
+			return null;
 	}
 	
 	/**
@@ -687,6 +697,66 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			}
 		}
 		return buildList;
+	}
+	
+	/**
+	 * Gets a map represent the source rpm by a build ID.  For use with description
+	 * retrieving by package ID, which is contained by the map returned here.
+	 * @param buildId The build ID.
+	 * @return A map representing the source rpm.
+	 * @throws KojiClientException
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getSourceRPMFromBuildIdAsMap(int buildId) throws KojiClientException {
+		ArrayList<Object>params = new ArrayList<Object>();
+		params.add(new Integer(buildId));
+		Object[] webMethodResult = null;
+		try {
+			webMethodResult = (Object[])xmlRpcClient.execute("listBuildRPMs", params);
+		} catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+		if((webMethodResult != null) && (webMethodResult.length > 0)) {
+			//Select only the source rpm
+			for(Object o : webMethodResult) {
+				Map<String, Object> tempMap = (Map<String, Object>)o;
+				if(tempMap.containsValue("src"))
+					return tempMap;
+			}//should not happen as the srpm is not found...
+			return null;
+		}else
+			return null;
+	}
+	
+	/**
+	 * Gets the description of the rpm by its package ID.
+	 * @param packageId The package ID.
+	 * @return The description string of the rpm.
+	 * @throws KojiClientException
+	 */
+	@SuppressWarnings("unchecked")
+	public String getDescriptionFromPackageIdAsString(int packageId) throws KojiClientException {
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(new Integer(packageId));
+		HashMap<String, Object> optsParam = new HashMap<String, Object>();
+		ArrayList<String> rpmHeaders = new ArrayList<String>();
+		optsParam.put("__starstar", new Boolean(true));
+		rpmHeaders.add("description");
+		optsParam.put("headers",rpmHeaders);
+		params.add(optsParam);
+		Map<String, String> webMethodResult = null;
+		try {
+			webMethodResult = (Map<String, String>)xmlRpcClient.execute("getRPMHeaders", params);
+		} catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+		if((webMethodResult != null) && (webMethodResult.size() > 0)) {
+			if(webMethodResult.containsKey("description"))
+				return webMethodResult.get("description");
+			else
+				return null;
+		}else
+			return null;
 	}
 	
 }

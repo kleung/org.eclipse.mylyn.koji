@@ -13,7 +13,6 @@ public class KojiPackage implements Comparable {
 	
 	private int packageID;						//package ID
 	private String packageName;					//package name
-	private String summary;						//summary
 	private String description;					//description
 	private List<KojiBuildInfo> recentBuilds;	//list of recent builds of the package
 	
@@ -70,22 +69,6 @@ public class KojiPackage implements Comparable {
 	 */
 	public void setRecentBuilds(List<KojiBuildInfo> recentBuilds) {
 		this.recentBuilds = recentBuilds;
-	}
-
-	/**
-	 * Gets the summary of the package.
-	 * @return	The summary of the package.
-	 */
-	public String getSummary() {
-		return summary;
-	}
-
-	/**
-	 * Sets the summary of the package.
-	 * @param summary The summary of the package.
-	 */
-	public void setSummary(String summary) {
-		this.summary = summary;
 	}
 
 	/**

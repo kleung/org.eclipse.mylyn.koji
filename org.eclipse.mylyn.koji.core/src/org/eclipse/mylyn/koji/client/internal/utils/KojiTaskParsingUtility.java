@@ -1,10 +1,11 @@
 package org.eclipse.mylyn.koji.client.internal.utils;
 
 import java.util.Collections;
-import java.util.Map;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
@@ -15,6 +16,7 @@ import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
  * @author Kiu Kwan Leung (Red Hat)
  * 
  */
+@SuppressWarnings("restriction")
 public final class KojiTaskParsingUtility {
 
 	/**
@@ -203,4 +205,30 @@ public final class KojiTaskParsingUtility {
 		return taskList;
 	}
 	
+	/**
+	 * Copy the applicable content of a given KojiTask object into an IBuild object for use with Mylyn Builds.
+	 * 
+	 * @param task The KojiTask object.
+	 * @param build The output IBuild object.
+	 * @return The IBuild parameter with its fields filled with content stored by the KojiTask parameter.
+	 */
+	public static IBuild cloneKojiTaskContentToIBuild(KojiTask task, IBuild build) {
+		return build;
+	}
+	
+	/**
+	 * Copy the applicable content of a given KojiTask List, one by one, into
+	 * a given list of IBuild objects.
+	 * 
+	 * @param taskList
+	 *            The input KojiTask list.
+	 * @param buildList
+	 *            The output IBuild List.
+	 * @return The IBuild List with the each of its entries' content filled
+	 *         with content stored by the each of the entries of the input
+	 *         KojiTask list.
+	 */
+	public static List<IBuild> cloneKojiTaskListContentToIBuildList(List<KojiTask> taskList, List<IBuild> buildList) {
+		return buildList;
+	}
 }

@@ -2,6 +2,7 @@ package org.eclipse.mylyn.koji.client.internal.utils;
 
 import java.util.Map;
 
+import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
@@ -12,10 +13,11 @@ import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
  * @author Serverin Gehwolf (Red Hat), Kiu Kwan Leung (Red Hat)
  * 
  */
+@SuppressWarnings("restriction")
 public final class KojiBuildInfoParsingUtility {
 	
 	/* relevant keys of the returned map */ 
-	private static final String KEY_ID = "id"; //$NON-NLS-1$
+	private static final String KEY_ID = "build_id"; //$NON-NLS-1$
 	private static final String KEY_PACKAGE_ID = "package_id"; //$NON-NLS-1$
 	private static final String KEY_PACKAGE_NAME = "package_name"; //$NON-NLS-1$
 	private static final String KEY_VERSION = "version"; //$NON-NLS-1$
@@ -78,4 +80,13 @@ public final class KojiBuildInfoParsingUtility {
 		return build;
 	}
 
+	/**
+	 * Copy the applicable content of the KojiBuildInfo object to the IBuild object.
+	 * @param kojiBuildInfo The input KojiBuildInfo object.
+	 * @param build The output IBuild object.
+	 * @return The IBuild parameter with the fields filled with content stored by the KojiPackage parameter.
+	 */
+	public static IBuild cloneKojiBuildInfoContentToIBuild(KojiBuildInfo kojiBuildInfo, IBuild build) {
+		return build;
+	}
 }

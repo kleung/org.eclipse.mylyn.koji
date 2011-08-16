@@ -88,6 +88,7 @@ public class KojiSSLHubClientTest {
 	 * 
 	 * @throws Exception
 	 */
+	
 	@Test
 	public void canGetBuildInfo() throws Exception {
 		// First log in
@@ -107,6 +108,7 @@ public class KojiSSLHubClientTest {
 	 * 
 	 * @throws Exception
 	 */
+	
 	@Test
 	public void canPushScratchBuild() throws Exception {
 		// Log in first
@@ -565,7 +567,7 @@ public class KojiSSLHubClientTest {
 		assertNotNull(sessionData);
 		//query task -1
 		HashMap<String, HashMap<String, Object>> taskOutputs = kojiClient.listTaskOutputAsMap(-1);
-		assertEquals(0, taskOutputs.size());
+		assertNull(taskOutputs);
 	}
 	
 	/**
@@ -752,5 +754,70 @@ public class KojiSSLHubClientTest {
 		assertTrue(result instanceof List);
 		List<KojiBuildInfo>buildList = (List<KojiBuildInfo>)result;
 		assertEquals(0, buildList.size());
+	}
+	
+	/**
+	 * 35. Get source RPM by Build ID test, positive testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetSourceRPMFromBuildIdAsMapPositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getSourceRPMFromBuildIdAsMap(3015);
+		assertNotNull(result);
+		assertTrue(result instanceof Map);
+		@SuppressWarnings("unchecked")
+		Map<String, ?> sourceMap = (Map<String, ?>)result;
+		int rpmID = ((Integer)sourceMap.get("id")).intValue();
+		assertEquals(9167, rpmID);
+	}
+
+	/**
+	 * 36. Get source RPM by Build ID test, negative testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetSourceRPMFromBuildIdAsMapNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getSourceRPMFromBuildIdAsMap(-1);
+		assertNull(result);
+	}
+	
+	/**
+	 * 37. Get description from package ID test, positive testing.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetDescriptionFromPackageIdAsStringPositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getDescriptionFromPackageIdAsString(9167);
+		assertNotNull(result);
+		assertTrue(result instanceof String);
+		String descriptionStr = (String)result;
+		assertTrue(descriptionStr.contains("Ed"));
+	}
+	
+	/**
+	 * 38. Get description from package ID test, negative testing.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetDescriptionFromPackageIdAsStringNegativeive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getDescriptionFromPackageIdAsString(-1);
+		assertNull(result);
 	}
 }

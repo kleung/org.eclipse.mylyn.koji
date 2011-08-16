@@ -271,4 +271,21 @@ public interface IKojiHubClient {
 	 * @throws KojiClientException
 	 */
 	public List<KojiBuildInfo> listBuildByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException;
+	
+	/**
+	 * Gets a map represent the source rpm by a build ID.  For use with description
+	 * retrieving by package ID, which is contained by the map returned here.
+	 * @param buildId The build ID.
+	 * @return A map representing the source rpm.
+	 * @throws KojiClientException
+	 */
+	public Map<String, Object> getSourceRPMFromBuildIdAsMap(int buildId) throws KojiClientException;
+	
+	/**
+	 * Gets the description of the rpm by its package ID.
+	 * @param packageId The package ID.
+	 * @return The description string of the rpm.
+	 * @throws KojiClientException
+	 */
+	public String getDescriptionFromPackageIdAsString(int packageId) throws KojiClientException;
 }
