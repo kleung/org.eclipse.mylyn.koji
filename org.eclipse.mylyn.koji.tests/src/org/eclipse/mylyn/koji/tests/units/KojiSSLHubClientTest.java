@@ -40,12 +40,10 @@ public class KojiSSLHubClientTest {
 	/**
 	 * Name-version-release of some successful build.
 	 */
-	@SuppressWarnings("unused")
 	private static final String EFP_NVR = "eclipse-fedorapackager-0.1.12-1.fc15";
 	/**
 	 * Some known to be working scm-URL
 	 */
-	@SuppressWarnings("unused")
 	private static final String EFP_SCM_URL = "git://pkgs.fedoraproject.org/eclipse-fedorapackager.git?#302d36c1427a0d8578d0a1d88b4c9337a4407dde";
 
 	private int testNum = 1;
@@ -794,7 +792,6 @@ public class KojiSSLHubClientTest {
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetDescriptionFromPackageIdAsStringPositive() throws Exception {
 		// Log in first
