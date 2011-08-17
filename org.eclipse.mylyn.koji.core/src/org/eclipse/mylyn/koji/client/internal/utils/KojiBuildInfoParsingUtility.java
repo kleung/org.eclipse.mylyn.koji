@@ -2,10 +2,13 @@ package org.eclipse.mylyn.koji.client.internal.utils;
 
 import java.util.Map;
 
+import org.eclipse.mylyn.builds.core.BuildState;
+import org.eclipse.mylyn.builds.core.BuildStatus;
 import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.messages.KojiText;
 
 /**
  * Koji task parsing utility.
@@ -112,16 +115,39 @@ public final class KojiBuildInfoParsingUtility {
 		//use build ID & NVR regardless availability of task.
 		build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
 		build.setDisplayName(new String(kojiBuildInfo.getNvr()));
+		build.setName(new String(kojiBuildInfo.getNvr()));
 		if(kojiBuildInfo.getTask() == null) { //task is not available, use build instead.
-			build.setBuildNumber(1);		
-			//label?
-			/*
-			build.setDuration(value)
-			build.setState(value)
-			build.setStatus(value)
-			build.setSummary(value)
-			build.setTimestamp(value)
-			*/
+			build.setBuildNumber(1);
+			build.setName(1+"");
+			//Build state and build status
+			switch(kojiBuildInfo.getState()) {
+			case 0: //running
+					build.setState(BuildState.RUNNING);
+					build.setSummary(KojiText.MylynBuildBuilding);
+					break;
+			case 1: //successful
+					build.setState(BuildState.STOPPED);
+					build.setStatus(BuildStatus.SUCCESS);
+					build.setSummary(KojiText.MylynBuildSucceed);
+					break;
+			case 2: //deleted
+					build.setState(BuildState.STOPPED);
+					build.setStatus(BuildStatus.DISABLED);
+					build.setSummary(KojiText.MylynBuildDeleted);
+					break;
+			case 3:	//failed
+					build.setState(BuildState.STOPPED);
+					build.setStatus(BuildStatus.FAILED);
+					build.setSummary(KojiText.MylynBuildFailed);
+					break;
+			case 4:	//cancelled
+					build.setState(BuildState.STOPPED);
+					build.setStatus(BuildStatus.ABORTED);
+					build.setSummary(KojiText.MylynBuildCancelled);
+					break;
+			}
+			//build.setDuration(value)
+			//build.setTimestamp(value)
 		} else
 			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
 		return build;

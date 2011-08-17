@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.mylyn.builds.core.BuildState;
+import org.eclipse.mylyn.builds.core.BuildStatus;
 import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
@@ -192,12 +194,38 @@ public final class KojiTaskParsingUtility {
 	 * @return The IBuild parameter with its fields filled with content stored by the KojiTask parameter.
 	 */
 	public static IBuild cloneKojiTaskContentToIBuild(KojiTask task, IBuild build) {
+		String displayName = build.getDisplayName();
+		if((displayName == null) || (displayName.trim().compareToIgnoreCase("") == 0))
+			build.setDisplayName(task.getRpm());
 		build.setBuildNumber(1);
-		//label?
+		build.setName(1+"");
+		switch(task.getTaskStateCode()) {
+		case 0:	//Free
+				build.setState(BuildState.BUILDABLE);
+				break;
+		case 1:	//Open
+				build.setState(BuildState.RUNNING);
+				break;
+		case 2:	//closed
+				build.setState(BuildState.STOPPED);
+				build.setStatus(BuildStatus.SUCCESS);
+				break;
+		case 3:	//cancelled
+				build.setState(BuildState.STOPPED);
+				build.setStatus(BuildStatus.ABORTED);
+				break;
+		case 4:	//assigned
+				build.setState(BuildState.QUEUED);
+				break;
+		case 5:	//failed
+				build.setState(BuildState.STOPPED);
+				build.setStatus(BuildStatus.FAILED);
+				break;
+		}
+		
+		
 		/*
 		build.setDuration(value)
-		build.setState(value)
-		build.setStatus(value)
 		build.setSummary(value)
 		build.setTimestamp(value)
 		*/

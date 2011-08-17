@@ -26,11 +26,15 @@ public class KojiText extends NLS {
 	//Generic Strings
 	/****/ public static String xmlRPCconfigNotInitialized;
 	//Build succeeded
-	/****/ public static String MylynBuildSuccess;
+	/****/ public static String MylynBuildSucceed;
 	//Build failed
-	/****/ public static String MylynBuildFail;
+	/****/ public static String MylynBuildFailed;
 	//Building
 	/****/ public static String MylynBuildBuilding;
+	//Build cancelled
+	/****/ public static String MylynBuildCancelled;
+	//Build deleted
+	/****/ public static String MylynBuildDeleted;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}
