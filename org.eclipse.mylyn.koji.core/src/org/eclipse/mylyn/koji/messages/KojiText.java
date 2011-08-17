@@ -25,7 +25,12 @@ public class KojiText extends NLS {
 	/****/ public static String KojiLoginException_loginFailedMsg;
 	//Generic Strings
 	/****/ public static String xmlRPCconfigNotInitialized;
-	
+	//Build succeeded
+	/****/ public static String MylynBuildSuccess;
+	//Build failed
+	/****/ public static String MylynBuildFail;
+	//Building
+	/****/ public static String MylynBuildBuilding;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

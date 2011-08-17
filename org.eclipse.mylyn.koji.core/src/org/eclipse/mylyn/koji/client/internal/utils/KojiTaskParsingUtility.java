@@ -101,12 +101,6 @@ public final class KojiTaskParsingUtility {
 		result = input.get("completion_ts"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Double))
 			task.setCompletionTime(((Double) result).doubleValue());
-		result = input.get("completion_time"); //$NON-NLS-1$
-		if ((result != null) && (result instanceof String)) {
-			// drop decimal places
-			result = dropDecimalFromTimestamp((String) result);
-			task.setCompletionTimeString(new String((String) result));
-		}
 		result = input.get("weight"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Double))
 			task.setWeight(((Double) result).doubleValue());
@@ -116,12 +110,6 @@ public final class KojiTaskParsingUtility {
 		result = input.get("start_ts"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Double))
 			task.setStartTime(((Double) result).doubleValue());
-		result = input.get("start_time"); //$NON-NLS-1$
-		if ((result != null) && (result instanceof String)) {
-			// drop decimal places
-			result = dropDecimalFromTimestamp((String) result);
-			task.setStartTimeString(new String((String) result));
-		}
 		result = input.get("parent"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Integer))
 			task.setParentTaskID(((Integer) result).intValue());
@@ -132,11 +120,6 @@ public final class KojiTaskParsingUtility {
 		if ((result != null) && (result instanceof Double))
 			task.setCreationTime(((Double) result).doubleValue());
 		result = input.get("create_time"); //$NON-NLS-1$
-		if ((result != null) && (result instanceof String)) {
-			// drop decimal places
-			result = dropDecimalFromTimestamp((String) result);
-			task.setCreationTimeString(new String((String) result));
-		}
 		result = input.get("channel_id"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Integer))
 			task.setChannelID(((Integer) result).intValue());
@@ -166,12 +149,6 @@ public final class KojiTaskParsingUtility {
 				task.setBuildTarget(new String((String) requestStr));
 		}
 		return task;
-	}
-	
-	private static String dropDecimalFromTimestamp(String input) {
-		// drop the decimal places of the timestamp
-		int dotIndex = input.indexOf("."); //$NON-NLS-1$
-		return input.substring(0, dotIndex);
 	}
 
 	/**

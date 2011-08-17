@@ -26,12 +26,8 @@ public class KojiTask implements Comparable { 	// implements comparable for
 	private int hostID; 						// host ID
 	private KojiHost host; 						// host
 	private int priority; 						// priority
-	private String completionTimeString; 		// string representation of completion
-												// time
 	private int ownerID; 						// owner ID
 	private KojiUser owner; 					// owner
-	private String creationTimeString; 			// string representation of creation time
-	private String startTimeString; 			// String representation of start time
 	private String method; 						// method
 	private String rpm;							// name of rpm file
 	private String buildTarget;					// build target
@@ -350,25 +346,6 @@ public class KojiTask implements Comparable { 	// implements comparable for
 	}
 
 	/**
-	 * Gets the task completion time in double.
-	 * 
-	 * @return The task completion time.
-	 */
-	public String getCompletionTimeString() {
-		return completionTimeString;
-	}
-
-	/**
-	 * Sets the task completion time in double.
-	 * 
-	 * @param completionTimeString
-	 *            The task completion time.
-	 */
-	public void setCompletionTimeString(String completionTimeString) {
-		this.completionTimeString = completionTimeString;
-	}
-
-	/**
 	 * Gets the task owner ID.
 	 * 
 	 * @return The task owner ID.
@@ -404,44 +381,6 @@ public class KojiTask implements Comparable { 	// implements comparable for
 	 */
 	public void setOwner(KojiUser owner) {
 		this.owner = owner;
-	}
-
-	/**
-	 * Gets the string representation of the task creation time.
-	 * 
-	 * @return The task creation time.
-	 */
-	public String getCreationTimeString() {
-		return creationTimeString;
-	}
-
-	/**
-	 * Sets the string representation of the task creation time.
-	 * 
-	 * @param creationTimeString
-	 *            The task creation time.
-	 */
-	public void setCreationTimeString(String creationTimeString) {
-		this.creationTimeString = creationTimeString;
-	}
-
-	/**
-	 * Gets the string representation of the task start time.
-	 * 
-	 * @return The task start time.
-	 */
-	public String getStartTimeString() {
-		return startTimeString;
-	}
-
-	/**
-	 * Sets the string representation of the task start time.
-	 * 
-	 * @param startTimeString
-	 *            The task start time.
-	 */
-	public void setStartTimeString(String startTimeString) {
-		this.startTimeString = startTimeString;
 	}
 
 	/**
@@ -534,7 +473,7 @@ public class KojiTask implements Comparable { 	// implements comparable for
 	public int hashCode() {
 		return (31 * this.id) + this.architecture.hashCode()
 				+ (2 * this.taskState.hashCode())
-				+ (3 * this.creationTimeString.hashCode()) + (4 * this.ownerID);
+				+ (3 * this.ownerID);
 	}
 
 	/**
