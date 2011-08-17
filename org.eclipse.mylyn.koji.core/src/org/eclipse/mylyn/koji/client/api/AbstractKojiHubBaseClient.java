@@ -175,6 +175,30 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.fedoraproject.eclipse.packager.koji.api.IKojiHubClient#uploadFile(java.lang.String, java.lang.String, int, java.lang.String, int, java.lang.String)
+	 */
+	@Override
+	public boolean uploadFile(String path, String name, int size, String md5sum, int offset, String data)
+		throws KojiClientException {
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(path);
+		params.add(name);
+		params.add(size);
+		params.add(md5sum);
+		params.add(offset);
+		params.add(data);
+		Object result;
+		try {
+			result = xmlRpcClient.execute("uploadFile", params); //$NON-NLS-1$
+		} catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+		boolean success = Boolean.parseBoolean(result.toString());
+		return success;
+	}
+	
 	/**
 	 * Configure XMLRPC connection
 	 */

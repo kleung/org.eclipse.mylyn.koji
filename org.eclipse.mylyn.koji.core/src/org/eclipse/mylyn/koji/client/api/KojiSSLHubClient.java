@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Red Hat Inc. and others.
+ * Copyright (c) 2010-2011 Red Hat Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,10 +25,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 
 import org.apache.xmlrpc.XmlRpcException;
-import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.mylyn.koji.SSL.MylynSSL;
 import org.eclipse.mylyn.koji.SSL.MylynSSLFactory;
 import org.eclipse.mylyn.koji.messages.KojiText;
+import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 
 /**
  * Koji hub client which uses certificate based
@@ -111,7 +111,7 @@ public class KojiSSLHubClient extends AbstractKojiHubBaseClient {
 	/**
 	 * Initialize SSL connection
 	 */
-	private void initSSLConnection() throws FileNotFoundException, GeneralSecurityException, IOException {
+	protected void initSSLConnection() throws FileNotFoundException, GeneralSecurityException, IOException {
 		// Create empty HostnameVerifier
 		HostnameVerifier hv = new HostnameVerifier() {
 			@Override
@@ -119,7 +119,7 @@ public class KojiSSLHubClient extends AbstractKojiHubBaseClient {
 				return true;
 			}
 		};
-		//FedoraSSL fedoraSSL = FedoraSSLFactory.getInstance();
+		//MylynSSL fedoraSSL = MylynSSLFactory.getInstance();
 		MylynSSL fedoraSSL = MylynSSLFactory.getInstance(new File("/home/testuser/koji/.koji/client.crt"), 
 				new File("/home/testuser/koji/.koji/client.crt"), new File("/home/testuser/koji/.koji/serverca.crt"));
 		SSLContext ctxt = null;

@@ -75,6 +75,26 @@ public interface IKojiHubClient {
 	public KojiBuildInfo getBuild(String nvr) throws KojiClientException;
 	
 	/**
+	 * @param path 
+	 * 				Path to upload to on the koji server.
+	 * @param name
+	 * 				The name of the file being uploaded. 
+	 * @param size
+	 * 				The size of the file being uploaded in bytes.
+	 * @param md5sum
+	 * 				The MD5 sum of the file being uploaded.
+	 * @param offset
+	 * 				The number of bytes to skip when building the file 
+	 * 				from multiple uploads. 
+	 * @param data
+	 * 				The Base64 representation of the file.
+	 * @return True if successful, false if not.
+	 * @throws KojiHubClientException
+	 */
+	public boolean uploadFile(String path, String name, int size, String md5sum, int offset, String data)
+		throws KojiClientException;
+	
+	/**
 	 * List all root tasks available on server as an Object array.
 	 * 
 	 * @return An Object array of all root tasks stored by the Koji server, null
