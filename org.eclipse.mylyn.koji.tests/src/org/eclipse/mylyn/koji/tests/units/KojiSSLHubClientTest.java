@@ -118,7 +118,7 @@ public class KojiSSLHubClientTest {
 		System.out.println("Pushed task ID: " + taskId);
 		assertNotNull(taskId);
 	}
-
+	
 	// Toronto Koji specific query test starts here.
 	/**
 	 * 4. Query channel by ID as map, positive testing.

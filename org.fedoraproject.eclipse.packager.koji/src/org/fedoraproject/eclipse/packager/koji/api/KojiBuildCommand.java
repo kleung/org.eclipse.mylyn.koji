@@ -1,21 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2011 Red Hat Inc. and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Red Hat Inc. - initial API and implementation
+ *******************************************************************************/
 package org.fedoraproject.eclipse.packager.koji.api;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
+import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.osgi.util.NLS;
 import org.fedoraproject.eclipse.packager.FedoraPackagerLogger;
 import org.fedoraproject.eclipse.packager.api.FedoraPackagerCommand;
 import org.fedoraproject.eclipse.packager.api.errors.CommandListenerException;
 import org.fedoraproject.eclipse.packager.api.errors.CommandMisconfiguredException;
+import org.fedoraproject.eclipse.packager.api.errors.TagSourcesException;
+import org.fedoraproject.eclipse.packager.api.errors.UnpushedChangesException;
 import org.fedoraproject.eclipse.packager.koji.KojiText;
 import org.fedoraproject.eclipse.packager.koji.api.errors.BuildAlreadyExistsException;
 import org.fedoraproject.eclipse.packager.koji.api.errors.KojiHubClientException;
 import org.fedoraproject.eclipse.packager.koji.api.errors.KojiHubClientLoginException;
-import org.fedoraproject.eclipse.packager.koji.api.errors.TagSourcesException;
-import org.fedoraproject.eclipse.packager.koji.api.errors.UnpushedChangesException;
-import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
-import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
-import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
+
 /**
  * Fedora Packager koji build command. Supports scratch builds
  * and regular builds.
@@ -37,7 +48,7 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 	/**
 	 * The URL into the VCS repo which should be used for the build. 
 	 */
-	private String scmUrl;
+	private String location;
 	/**
 	 * The distribution tag (e.g. dist-rawhide)
 	 */
@@ -60,7 +71,7 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 					this.projectRoot.getProductStrings().getBuildToolName()));
 		}
 		// we also require scmURL to be set
-		if (scmUrl == null) {
+		if (location == null) {
 			throw new CommandMisconfiguredException(KojiText.KojiBuildCommand_configErrorNoScmURL);
 		}
 		// distribution can't be null
@@ -100,11 +111,13 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 	 * Sets the URL into the source control management system, in order to
 	 * be able to determine which tag/revision to build.
 	 * 
-	 * @param scmUrl The URL into the VCS repository.
+	 * @param location 
+	 * 	The location of the source: either an SCM location with a specfile and 
+	 * 	a tarball or the location of an uploaded srpm on the Koji server.
 	 * @return This instance.
 	 */
-	public KojiBuildCommand scmUrl(String scmUrl) {
-		this.scmUrl = scmUrl;
+	public KojiBuildCommand sourceLocation(String location) {
+		this.location = location;
 		return this;
 	}
 	
@@ -185,7 +198,8 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 		try {
 			this.kojiClient.login();
 		} catch (KojiLoginException e) {
-			throw new KojiHubClientLoginException(e, e.isCertificatesMissing());
+			// TODO Auto-generated catch block
+			throw new  KojiHubClientLoginException(e);
 		}
 		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
@@ -195,16 +209,16 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 		monitor.subTask(KojiText.KojiBuildCommand_sendBuildCmd);
 		FedoraPackagerLogger logger = FedoraPackagerLogger.getInstance();
 		if (this.scratchBuild) {
-			logger.logInfo(KojiText.KojiBuildCommand_scratchBuildLogMsg);
+			logger.logDebug(KojiText.KojiBuildCommand_scratchBuildLogMsg);
 		} else {
-			logger.logInfo(KojiText.KojiBuildCommand_buildLogMsg);
+			logger.logDebug(KojiText.KojiBuildCommand_buildLogMsg);
 		}
 		// attempt to push build
 		int taskId = 0;
 		try {
-			taskId = this.kojiClient.build(buildTarget, scmUrl.toString(), nvr, scratchBuild);
+			taskId = this.kojiClient.build(buildTarget, location.toString(), nvr, scratchBuild);
 		} catch (KojiClientException e) {
-			throw new KojiHubClientException(e.getMessage(), e);
+			throw new KojiHubClientException(e);
 		}
 		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
@@ -215,7 +229,8 @@ public class KojiBuildCommand extends FedoraPackagerCommand<BuildResult> {
 		try {
 			this.kojiClient.logout();
 		} catch (KojiClientException e) {
-			throw new KojiHubClientException(e.getMessage(), e);
+			// TODO Auto-generated catch block
+			throw new KojiHubClientException(e);
 		}
 		monitor.worked(90);
 		callPostExecListeners();

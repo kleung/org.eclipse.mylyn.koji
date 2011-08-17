@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Red Hat Inc. and others.
+ * Copyright (c) 2010-2011 Red Hat Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,8 @@ public class KojiText extends NLS {
 	 * This is the path to the file containing externalized strings.
 	 */
 	private static final String BUNDLE_NAME = "org.fedoraproject.eclipse.packager.koji.kojitext"; //$NON-NLS-1$
-
-
-
 	
 	// KojiBuildHandler Strings
-	/****/ public static String KojiBuildHandler_tagBeforeSendingBuild;
 	/****/ public static String KojiBuildHandler_pushBuildToKoji;
 	/****/ public static String KojiBuildHandler_kojiBuild;
 	/****/ public static String KojiBuildHandler_unknownBuildError;
@@ -40,14 +36,10 @@ public class KojiText extends NLS {
 	/****/ public static String KojiBuildHandler_invalidKojiWebUrl;
 	/****/ public static String KojiBuildHandler_missingCertificatesMsg;
 	/****/ public static String KojiBuildHandler_certificateExpriredMsg;
+	/****/ public static String KojiBuildHandler_certificateRevokedMsg;
 	// KojiMessageDialog Strings
 	/****/ public static String KojiMessageDialog_buildNumberMsg;
 	/****/ public static String KojiMessageDialog_buildResponseMsg;
-	// UnpushedChangesListener
-	/****/ public static String UnpushedChangesListener_checkUnpushedChangesMsg;
-	/****/ public static String UnpushedChangesListener_unpushedChangesError;
-	// TagSourcesListener
-	/****/ public static String TagSourcesListener_tagSourcesMsg;
 	// KojiBuildCommand
 	/****/ public static String KojiBuildCommand_sendBuildCmd;
 	/****/ public static String KojiBuildCommand_kojiLogoutTask;
@@ -60,8 +52,26 @@ public class KojiText extends NLS {
 	/****/ public static String KojiBuildCommand_buildLogMsg;
 	// BuildAlreadyExistsException
 	/****/ public static String BuildAlreadyExistsException_msg;
+	// KojiSRPMScratchBuildHandler
+	/****/public static String KojiSRPMScratchBuildHandler_UploadFileDialogTitle;
 	// KojiHubClientLoginException
 	/****/ public static String KojiHubClientLoginException_loginFailedMsg;
+	// KojiSRPMBuildJob
+	/****/ public static String KojiSRPMBuildJob_ChooseSRPM;
+
+	/****/ public static String KojiSRPMBuildJob_ConfiguringClient;
+	/****/ public static String KojiSRPMBuildJob_NoSRPMsFound;
+
+	/****/ public static String KojiSRPMBuildJob_UploadingSRPM;
+	// KojiUploadSRPMCommand
+	/****/ public static String KojiUploadSRPMCommand_CouldNotRead;
+	/****/ public static String KojiUploadSRPMCommand_FileNotFound;
+	/****/ public static String KojiUploadSRPMCommand_InvalidSRPM;
+	/****/ public static String KojiUploadSRPMCommand_NoMD5;
+	/****/ public static String KojiUploadSRPMCommand_NoSRPM;
+	/****/ public static String KojiUploadSRPMCommand_NoUploadPath;
+	// KojiUplaodSRPMJob
+	/****/ public static String KojiUploadSRPMJob_KojiUpload;
 	// Generic Strings
 	/****/ public static String xmlRPCconfigNotInitialized;
 	

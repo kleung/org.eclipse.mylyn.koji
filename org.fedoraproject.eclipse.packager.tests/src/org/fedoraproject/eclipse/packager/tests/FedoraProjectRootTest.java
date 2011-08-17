@@ -60,7 +60,7 @@ public class FedoraProjectRootTest {
 		File copySource = new File(dirName);
 		
 		projectResource = TestsUtils.createProjectFromTemplate(copySource);
-		// We should really use FedoraPackagerUtils.getProjectRoot(), but this
+		// Users should really use FedoraPackagerUtils.getProjectRoot(), but this
 		// doesn't work for this case.
 		fpRoot = new FedoraProjectRoot();
 		fpRoot.initialize(projectResource, ProjectType.GIT);
@@ -234,6 +234,27 @@ public class FedoraProjectRootTest {
 				.getDownloadUrl().toString());
 		assertEquals(LookasideCache.DEFAULT_FEDORA_UPLOAD_URL, lookasideCache
 				.getUploadUrl().toString());
+	}
+	
+	@Test
+	public void canRetrieveNVRs() throws Exception {
+		fpRoot = null;
+		gitTestProject = new GitTestProject("eclipse-mylyn-tasks");
+		gitTestProject.checkoutBranch("f15");
+		fpRoot = FedoraPackagerUtils
+				.getProjectRoot(gitTestProject.getProject());
+		assertNotNull(fpRoot);
+		String[] nvrs = fpRoot.getPackageNVRs();
+		// expected list
+		String[] expectedNvrs = new String[] {
+				"eclipse-mylyn-tasks-3.5.1-3.fc15",
+				"eclipse-mylyn-tasks-bugzilla-3.5.1-3.fc15",
+				"eclipse-mylyn-tasks-trac-3.5.1-3.fc15",
+				"eclipse-mylyn-tasks-web-3.5.1-3.fc15" };
+		assertEquals(4, nvrs.length);
+		for (int i = 1; i < expectedNvrs.length; i++) {
+			assertEquals(expectedNvrs[i], nvrs[i]);
+		}
 	}
 
 }
