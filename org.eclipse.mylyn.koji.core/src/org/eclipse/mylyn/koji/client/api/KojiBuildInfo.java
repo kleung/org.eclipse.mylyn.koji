@@ -49,6 +49,8 @@ public class KojiBuildInfo implements Comparable{
 	private String ownerName;
 	private KojiTask task;
 	private int buildId;
+	private long createTime;
+	private long completeTime;
 	
 	/**
 	 * Default constructor.
@@ -241,6 +243,38 @@ public class KojiBuildInfo implements Comparable{
 	 */
 	public void setBuildId(int buildId) {
 		this.buildId = buildId;
+	}
+	
+	/**
+	 * Gets the creation time of the build.
+	 * @return The creation time.
+	 */
+	public long getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * Sets the creation time of the build.
+	 * @param createTime Creation time of the build.
+	 */
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
+	 * Gets the completion time of the build.
+	 * @return The completion time of the build.
+	 */
+	public long getCompleteTime() {
+		return completeTime;
+	}
+
+	/**
+	 * Sets the completion time of the build.
+	 * @param completeTime Completion time of the build.
+	 */
+	public void setCompleteTime(long completeTime) {
+		this.completeTime = completeTime;
 	}
 
 	/**

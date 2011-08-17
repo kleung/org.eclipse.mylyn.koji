@@ -27,6 +27,9 @@ public final class KojiBuildInfoParsingUtility {
 	private static final String KEY_STATE = "state"; //$NON-NLS-1$
 	private static final String KEY_TASK_ID = "task_id"; //$NON-NLS-1$
 	private static final String KEY_OWNER_NAME = "owner_name"; //$NON-NLS-1$
+	private static final String KEY_CREATE_TIME = "creation_ts";
+	private static final String KEY_COMPLETE_TIME = "completion_ts";
+	
 	
 	/**
 	 * Utility method to parse a given map representing a Koji build to a
@@ -68,6 +71,16 @@ public final class KojiBuildInfoParsingUtility {
 		result = input.get(KEY_EPOCH);
 		if((result != null) && (result instanceof Integer))
 			build.setEpoch(((Integer)result).intValue());
+		result = input.get(KEY_CREATE_TIME);
+		if((result != null) && (result instanceof Double)) {
+			double startD = ((Double)result).doubleValue();
+			build.setCreateTime((long)(startD*1000));
+		}
+		result = input.get(KEY_COMPLETE_TIME);
+		if((result != null) && (result instanceof Double)) {
+			double endD = ((Double)result).doubleValue();
+			build.setCompleteTime((long)(endD*1000));
+		}
 		result = input.get(KEY_TASK_ID);
 		if((result != null) && (result instanceof Integer)) {
 			Integer taskId = (Integer)result;
