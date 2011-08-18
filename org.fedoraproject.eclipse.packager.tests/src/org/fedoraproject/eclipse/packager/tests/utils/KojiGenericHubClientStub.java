@@ -265,5 +265,14 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 			throws KojiClientException {
 		return null;
 	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getSessionInfoAsMap()
+	 */
+	@Override
+	public Map<String, ?> getSessionInfoAsMap() throws KojiClientException {
+		return null;
+	}
 	
 }
