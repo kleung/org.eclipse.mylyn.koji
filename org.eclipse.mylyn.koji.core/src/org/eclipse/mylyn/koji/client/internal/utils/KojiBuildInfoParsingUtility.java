@@ -77,12 +77,12 @@ public final class KojiBuildInfoParsingUtility {
 		result = input.get(KEY_CREATE_TIME);
 		if((result != null) && (result instanceof Double)) {
 			double startD = ((Double)result).doubleValue();
-			build.setCreateTime((long)(startD*1000));
+			build.setCreateTime(doublePOSIXToLongPOSIX(startD));
 		}
 		result = input.get(KEY_COMPLETE_TIME);
 		if((result != null) && (result instanceof Double)) {
 			double endD = ((Double)result).doubleValue();
-			build.setCompleteTime((long)(endD*1000));
+			build.setCompleteTime(doublePOSIXToLongPOSIX(endD));
 		}
 		result = input.get(KEY_TASK_ID);
 		if((result != null) && (result instanceof Integer)) {
@@ -96,6 +96,9 @@ public final class KojiBuildInfoParsingUtility {
 		return build;
 	}
 
+	private static long doublePOSIXToLongPOSIX(double input) {
+		return ((long)(input*1000))/1000;
+	}
 	/**
 	 * Copy the applicable content of the KojiBuildInfo object to the IBuild
 	 * object.
@@ -119,6 +122,15 @@ public final class KojiBuildInfoParsingUtility {
 		if(kojiBuildInfo.getTask() == null) { //task is not available, use build instead.
 			build.setBuildNumber(1);
 			build.setName(1+"");
+			long startTimeStamp = kojiBuildInfo.getCreateTime();
+			if(startTimeStamp > 0) { //build started.
+				build.setTimestamp(startTimeStamp);
+				long endTimeStamp = kojiBuildInfo.getCompleteTime();
+				if(endTimeStamp > 0) { //build finished
+					long duration = (endTimeStamp * 1000) - (startTimeStamp * 1000);
+					build.setDuration(duration);
+				}
+			}
 			//Build state and build status
 			switch(kojiBuildInfo.getState()) {
 			case 0: //running
@@ -146,8 +158,6 @@ public final class KojiBuildInfoParsingUtility {
 					build.setSummary(KojiText.MylynBuildCancelled);
 					break;
 			}
-			//build.setDuration(value)
-			//build.setTimestamp(value)
 		} else
 			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
 		return build;

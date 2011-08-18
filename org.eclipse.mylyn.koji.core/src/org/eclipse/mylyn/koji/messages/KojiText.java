@@ -35,6 +35,10 @@ public class KojiText extends NLS {
 	/****/ public static String MylynBuildCancelled;
 	//Build deleted
 	/****/ public static String MylynBuildDeleted;
+	//Build is free
+	/****/ public static String MylynBuildFree;
+	//Build is assigned
+	/****/ public static String MylynBuildAssigned;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

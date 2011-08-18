@@ -11,16 +11,16 @@ import java.util.List;
 public class KojiTask implements Comparable { 	// implements comparable for
 												// sorting task IDs.
 	private int id; 							// task ID
-	private double completionTime; 				// completion time in double
+	private double completionTime; 				// completion time in double, POSIX timestamp
 	private double weight; 						// task weight
 	private String architecture; 				// architecture
-	private double startTime; 					// start time in double
+	private double startTime; 					// start time in double, POSIX timestamp
 	private int taskStateCode; 					// task state code
 	private String taskState; 					// string representation of task state
 	private int parentTaskID; 					// parent task ID
 	private KojiTask parentTask; 				// parent task
 	private String label; 						// label
-	private double creationTime; 				// creation time in double
+	private double creationTime; 				// creation time in double, POSIX timestamp
 	private int channelID; 						// channel ID
 	private KojiChannel channel; 				// channel
 	private int hostID; 						// host ID

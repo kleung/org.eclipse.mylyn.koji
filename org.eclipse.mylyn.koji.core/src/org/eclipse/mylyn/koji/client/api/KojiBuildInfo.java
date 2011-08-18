@@ -49,8 +49,8 @@ public class KojiBuildInfo implements Comparable{
 	private String ownerName;
 	private KojiTask task;
 	private int buildId;
-	private long createTime;
-	private long completeTime;
+	private long createTime;	//POSIX timestamp
+	private long completeTime;	//POSIX timestamp
 	
 	/**
 	 * Default constructor.

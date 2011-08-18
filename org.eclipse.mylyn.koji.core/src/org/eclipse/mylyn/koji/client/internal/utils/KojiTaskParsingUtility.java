@@ -11,6 +11,7 @@ import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.messages.KojiText;
 
 /**
  * Koji task parsing utility.
@@ -184,6 +185,10 @@ public final class KojiTaskParsingUtility {
 		return taskList;
 	}
 	
+	private static long doublePOSIXToLongPOSIX(double input) {
+		return ((long)(input*1000))/1000;
+	}
+	
 	/**
 	 * Copy the applicable content of a given KojiTask object into an IBuild object for use with Mylyn Builds.
 	 * 
@@ -199,36 +204,45 @@ public final class KojiTaskParsingUtility {
 			build.setDisplayName(task.getRpm());
 		build.setBuildNumber(1);
 		build.setName(1+"");
+		double dStartTime = task.getStartTime();
+		if(dStartTime > 0.0) { //task started
+			build.setTimestamp(doublePOSIXToLongPOSIX(dStartTime));
+			double dEndTime = task.getCompletionTime();
+			if(dEndTime > 0.0) { //task finished
+				long startTime = doublePOSIXToLongPOSIX(dStartTime) * 1000;
+				long endTime = doublePOSIXToLongPOSIX(dEndTime) * 1000;
+				build.setDuration(endTime - startTime);
+			}
+		}
 		switch(task.getTaskStateCode()) {
 		case 0:	//Free
 				build.setState(BuildState.BUILDABLE);
+				build.setSummary(KojiText.MylynBuildFree);
 				break;
 		case 1:	//Open
 				build.setState(BuildState.RUNNING);
+				build.setSummary(KojiText.MylynBuildBuilding);
 				break;
 		case 2:	//closed
 				build.setState(BuildState.STOPPED);
 				build.setStatus(BuildStatus.SUCCESS);
+				build.setSummary(KojiText.MylynBuildSucceed);
 				break;
 		case 3:	//cancelled
 				build.setState(BuildState.STOPPED);
 				build.setStatus(BuildStatus.ABORTED);
+				build.setSummary(KojiText.MylynBuildCancelled);
 				break;
 		case 4:	//assigned
 				build.setState(BuildState.QUEUED);
+				build.setSummary(KojiText.MylynBuildAssigned);
 				break;
 		case 5:	//failed
 				build.setState(BuildState.STOPPED);
 				build.setStatus(BuildStatus.FAILED);
+				build.setSummary(KojiText.MylynBuildFailed);
 				break;
 		}
-		
-		
-		/*
-		build.setDuration(value)
-		build.setSummary(value)
-		build.setTimestamp(value)
-		*/
 		return build;
 	}
 	
@@ -239,6 +253,9 @@ public final class KojiTaskParsingUtility {
 	 * IMPORTANT: It is the caller's responsibility to ensure that the
 	 * parameters are not null, of same size and filled with the same amount of
 	 * objects of the expected type.
+	 * 
+	 * In the meantime, Mylyn Builds is not going to support child builds, so this
+	 * method is only for future proofing.
 	 * 
 	 * @param taskList
 	 *            The input KojiTask list.
@@ -251,6 +268,23 @@ public final class KojiTaskParsingUtility {
 	public static List<IBuild> cloneKojiTaskListContentToIBuildList(
 			List<KojiTask> taskList, List<IBuild> buildList)
 			throws IllegalArgumentException {
+		if((taskList == null) || (buildList == null))
+			throw new IllegalArgumentException(
+					"Cannot convert null to a list of Mylyn builds.");
+		if (taskList.size() != buildList.size())
+			throw new IllegalArgumentException(
+					"List size mismatch, cannot convert Koji tasks into Mylyn builds.");
+		for(int icounter = 0; icounter < taskList.size(); icounter ++) {
+			KojiTask task = taskList.get(icounter);
+			if(task == null)
+				throw new IllegalArgumentException(
+						"Cannot convert null to a Mylyn build.");
+			IBuild build = buildList.get(icounter);
+			if(build == null)
+				throw new IllegalArgumentException(
+						"Cannot convert a Koji task to null.");
+			cloneKojiTaskContentToIBuild(task, build);
+		}
 		return buildList;
 	}
 }
