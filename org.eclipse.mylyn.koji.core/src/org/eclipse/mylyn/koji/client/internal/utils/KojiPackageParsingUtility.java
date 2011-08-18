@@ -93,7 +93,11 @@ public final class KojiPackageParsingUtility {
 	 * @param buildPlan The output IBuildPlan object.
 	 * @return The IBuildPlan parameter with its fields filled with content stored by the KojiPackage parameter.
 	 */
-	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, IBuildPlan buildPlan) {
+	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, IBuildPlan buildPlan) throws IllegalArgumentException {
+		if((pack == null) || (buildPlan == null))
+			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan" +
+					" or a Koji package into a null Mylyn build plan.");
+		
 		return buildPlan;
 	}
 	

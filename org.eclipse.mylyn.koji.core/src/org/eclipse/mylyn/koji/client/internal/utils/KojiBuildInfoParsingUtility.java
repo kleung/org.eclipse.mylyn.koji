@@ -1,5 +1,6 @@
 package org.eclipse.mylyn.koji.client.internal.utils;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.mylyn.builds.core.BuildState;
@@ -114,7 +115,10 @@ public final class KojiBuildInfoParsingUtility {
 	 *         by the KojiPackage parameter.
 	 */
 	public static IBuild cloneKojiBuildInfoContentToIBuild(
-			KojiBuildInfo kojiBuildInfo, IBuild build) {
+			KojiBuildInfo kojiBuildInfo, IBuild build) throws IllegalArgumentException {
+		if((kojiBuildInfo == null) || (build == null))
+			throw new IllegalArgumentException("Cannot convert null Koji build to a Mylyn build" +
+					" or a Koji build into a null Mylyn build.");
 		//use build ID & NVR regardless availability of task.
 		build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
 		build.setDisplayName(new String(kojiBuildInfo.getNvr()));
@@ -161,5 +165,47 @@ public final class KojiBuildInfoParsingUtility {
 		} else
 			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
 		return build;
+	}
+	
+	/**
+	 * Copy the applicable content of a given KojiBuildInfo List, one by one, into a
+	 * given list of IBuild objects.
+	 * 
+	 * IMPORTANT: It is the caller's responsibility to ensure that the
+	 * parameters are not null, of same size and filled with the same amount of
+	 * objects of the expected type.
+	 * 
+	 * In the meantime, Mylyn Builds is not going to support child builds, so this
+	 * method is only for future proofing.
+	 * 
+	 * @param kojiBuildList
+	 *            The input KojiBuildInfo list.
+	 * @param buildList
+	 *            The output IBuild List.
+	 * @return The IBuild List with the each of its entries' content filled with
+	 *         content stored by the each of the entries of the input KojiBuildInfo
+	 *         list.
+	 */
+	public static List<IBuild> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<IBuild> buildList) 
+	throws IllegalArgumentException {
+		if((kojiBuildList == null) || (buildList == null))
+			throw new IllegalArgumentException(
+					"Cannot convert a null Koji build list to a list of Mylyn builds" +
+					" or a Koji build list to a null Mylyn build list.");
+		if (kojiBuildList.size() != buildList.size())
+			throw new IllegalArgumentException(
+					"List size mismatch, cannot convert Koji build list into Mylyn build list.");
+		for(int icounter = 0; icounter < kojiBuildList.size(); icounter++) {
+			KojiBuildInfo kojiBuild = kojiBuildList.get(icounter);
+			if(kojiBuild == null)
+				throw new IllegalArgumentException(
+						"Cannot convert null to a Mylyn build.");
+			IBuild build = buildList.get(icounter);
+			if(build == null)
+				throw new IllegalArgumentException(
+						"Cannot convert a Koji build to null.");
+			cloneKojiBuildInfoContentToIBuild(kojiBuild, build);
+		}
+		return buildList;
 	}
 }
