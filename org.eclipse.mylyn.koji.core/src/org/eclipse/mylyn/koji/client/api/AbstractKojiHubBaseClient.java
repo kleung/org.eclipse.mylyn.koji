@@ -311,7 +311,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			webMethodResult = (Map<String, ?>) xmlRpcClient.execute(
 					"getTaskInfo", params); //$NON-NLS-1$
 		} catch (XmlRpcException e) {
-			throw new KojiClientException(e);
+			if(e.getMessage().contains("query returned no rows"))
+				webMethodResult = null;
+			else
+				throw new KojiClientException(e);
 		}
 		if((webMethodResult != null) && (webMethodResult.size() > 0))
 			return webMethodResult;
@@ -590,7 +593,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			webMethodResult = (String)xmlRpcClient.execute(
 					"downloadTaskOutput", params);//$NON-NLS-1$
 		} catch (XmlRpcException e) {
-			throw new KojiClientException(e);
+			if(e.getMessage().contains("no file"))
+				webMethodResult = null;
+			else
+				throw new KojiClientException(e);
 		}
 		if(webMethodResult != null)
 			return new String(Base64.decodeBase64(webMethodResult.getBytes()));

@@ -458,14 +458,8 @@ public class KojiSSLHubClientTest {
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
 		// query task -1
-		boolean exceptionThrown = false;
-		try {
-			@SuppressWarnings("unused")
-			Object taskObject = kojiClient.getTaskInfoByIDAsMap(-1);
-		} catch (KojiClientException e) {
-			exceptionThrown = true;
-		}
-		assertTrue(exceptionThrown);
+		Object taskObject = kojiClient.getTaskInfoByIDAsMap(-1);
+		assertNull(taskObject);
 	}
 	
 	/**
@@ -520,14 +514,8 @@ public class KojiSSLHubClientTest {
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
 		// query task -1
-		boolean exceptionThrown = false;
-		try {
-			@SuppressWarnings("unused")
-			Object taskObject = kojiClient.getTaskInfoByIDAsKojiTask(-1);
-		} catch (KojiClientException e) {
-			exceptionThrown = true;
-		}
-		assertTrue(exceptionThrown);
+		Object taskObject = kojiClient.getTaskInfoByIDAsKojiTask(-1);
+		assertNull(taskObject);
 	}
 	
 	/**
@@ -595,12 +583,8 @@ public class KojiSSLHubClientTest {
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
 		boolean exceptionThrown = false;
-		try {
-			Object output = kojiClient.downloadTaskOutputAsString(8149, "build.log", 0, 8401);
-		} catch (KojiClientException e) {
-			exceptionThrown = true;
-		}
-		assertTrue(exceptionThrown);
+		Object output = kojiClient.downloadTaskOutputAsString(8149, "build.log", 0, 8401);
+		assertNull(output);
 	}
 	
 	/**
