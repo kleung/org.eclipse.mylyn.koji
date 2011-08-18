@@ -5,17 +5,19 @@ Bundle-SymbolicName: org.eclipse.mylyn.koji.core
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.mylyn.koji.core.KojiCorePlugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
-Import-Package: org.apache.ws.commons.util,
+ org.eclipse.core.runtime,
+ org.eclipse.mylyn.builds.core
+Import-Package: org.apache.commons.codec.binary;version="1.4.0",
+ org.apache.commons.ssl,
+ org.apache.ws.commons.util,
  org.apache.xmlrpc,
  org.apache.xmlrpc.client,
  org.apache.xmlrpc.common,
  org.apache.xmlrpc.parser,
  org.apache.xmlrpc.serializer,
- org.apache.commons.ssl,
- org.apache.commons.codec.binary;version="1.4.0",
  org.eclipse.mylyn.builds.core,
- org.eclipse.mylyn.builds.core.spi
+ org.eclipse.mylyn.builds.core.spi,
+ org.eclipse.mylyn.commons.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.mylyn.koji.client.api,

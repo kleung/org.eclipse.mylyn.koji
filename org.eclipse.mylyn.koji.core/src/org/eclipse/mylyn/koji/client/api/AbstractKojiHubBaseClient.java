@@ -29,6 +29,7 @@ import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiChannelParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiHostParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiPackageParsingUtility;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiSessionInfoParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTypeFactory;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiUserParsingUtility;
@@ -40,6 +41,8 @@ import org.apache.commons.codec.binary.Base64;
  */
 public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 
+	protected Integer userID = null;
+	
 	/**
 	 * Default constructor to set up a basic client.
 	 * 
@@ -120,6 +123,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	public int build(String target, String scmURL, String nvr, boolean scratch)
 			throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(scmURL);
 		params.add(target);
@@ -159,6 +164,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public KojiBuildInfo getBuild(String nvr) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(nvr);
 		Map<String, Object> rawBuildInfo;
@@ -182,6 +189,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	public boolean uploadFile(String path, String name, int size, String md5sum, int offset, String data)
 		throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(path);
 		params.add(name);
@@ -235,6 +244,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	public Object[] getAllRootTasksAsObjectArray()
 			throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap<String, Object> optsParam = new HashMap<String, Object>();
 		HashMap<String, Object> opts = new HashMap<String, Object>();
@@ -300,6 +311,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@SuppressWarnings("unchecked")
 	public Map<String, ?> getTaskInfoByIDAsMap(int taskID)
 			throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(taskID));
 		HashMap<String, Object> optParam = new HashMap<String, Object>();
@@ -364,6 +377,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	public Map<String, ?> getTaskDescendentsByIDAsMap(int taskID)
 			throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(taskID));
 		HashMap<String, Object> optsParam = new HashMap<String, Object>();
@@ -413,6 +428,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@Override
 	public Map<String, ?> getChannelInfoByIDAsMap(int channelID)
 			throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(channelID));
 		Map<String, ?> webMethodResult = null;
@@ -461,6 +478,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, ?> getUserInfoByIDAsMap(int userID) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(userID));
 		Map<String, ?> webMethodResult = null;
@@ -507,6 +526,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, ?> getHostInfoByIDAsMap(int hostID) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(hostID));
 		Map<String, ?> webMethodResult = null;
@@ -554,6 +575,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String, HashMap<String, Object>> listTaskOutputAsMap(int taskID) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(taskID));
 		HashMap<String, Object> optsParam = new HashMap<String,Object>();
@@ -583,6 +606,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * @param size The total amount of bytes to download.
 	 */
 	public String downloadTaskOutputAsString(int taskID, String fileName, int offset, int size) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(taskID));
 		params.add(new String(fileName));
@@ -610,6 +635,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * @throws KojiClientException
 	 */
 	public Object[] listPackagesAsObjectArray() throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		Object[] webMethodResult = null;
 		ArrayList<Object> filterParams = new ArrayList<Object>();
@@ -656,6 +683,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, ?> getPackageByIDAsMap(int packageID) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(packageID));
 		Map<String, ?> webMethodResult = null;
@@ -699,6 +728,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<KojiBuildInfo> listBuildByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		if((limit == 0) || (limit < -1))
 			throw new IllegalArgumentException();
 		LinkedList<KojiBuildInfo> buildList = new LinkedList<KojiBuildInfo>();
@@ -738,6 +769,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getSourceRPMFromBuildIdAsMap(int buildId) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object>params = new ArrayList<Object>();
 		params.add(new Integer(buildId));
 		Object[] webMethodResult = null;
@@ -766,6 +799,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 */
 	@SuppressWarnings("unchecked")
 	public String getDescriptionFromPackageIdAsString(int packageId) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
 		ArrayList<Object> params = new ArrayList<Object>();
 		params.add(new Integer(packageId));
 		HashMap<String, Object> optsParam = new HashMap<String, Object>();
@@ -787,6 +822,23 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 				return null;
 		}else
 			return null;
+	}
+	
+	/**
+	 * Gets the current session's information as a Map.
+	 * @return The map containing the current session's information.
+	 * @throws KojiClientException
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, ?> getSessionInfoAsMap() throws KojiClientException {
+		ArrayList<Object> params = new ArrayList<Object>();
+		Map<String, ?> webMethodResult = null;
+		try {
+			webMethodResult = (Map<String, ?>)xmlRpcClient.execute("getSessionInfo", params);
+		} catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+		return webMethodResult;
 	}
 	
 }

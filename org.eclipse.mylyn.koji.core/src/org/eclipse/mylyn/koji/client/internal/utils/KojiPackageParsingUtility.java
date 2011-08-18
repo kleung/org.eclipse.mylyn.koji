@@ -97,29 +97,18 @@ public final class KojiPackageParsingUtility {
 		if((pack == null) || (buildPlan == null))
 			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan" +
 					" or a Koji package into a null Mylyn build plan.");
-		
+		buildPlan.setName(pack.getPackageName());
+		buildPlan.setDescription(pack.getDescription());
+		//get the most recent task's id as the build plan ID for resubmitting task, if it is not null.
+		if(pack.getRecentBuilds().size() > 0) {
+			KojiBuildInfo build = pack.getRecentBuilds().get(0);
+			if(build.getTask() != null)
+				buildPlan.setId(Integer.toString(build.getTask().getId()));
+			else //can't assign an ID that can be used for rebuilding
+				buildPlan.setId(null);
+		} else {//can't assign an ID that can be used for rebuilding
+			buildPlan.setId(null);
+		}
 		return buildPlan;
-	}
-	
-	/**
-	 * Copy the applicable content of a given KojiPackage List, one by one, into
-	 * a given list of IBuildPlan objects.
-	 * 
-	 * IMPORTANT: It is the caller's responsibility to ensure that the
-	 * parameters are not null, of same size and filled with the same amount of
-	 * objects of the expected type.
-	 * 
-	 * @param packageList
-	 *            The input KojiPackage list.
-	 * @param buildPlanList
-	 *            The output IBuildPlan List.
-	 * @return The IBuildPlan List with the each of its entries' content filled
-	 *         with content stored by the each of the entries of the input
-	 *         KojiPackage list.
-	 */
-	public static List<IBuildPlan> cloneKojiPackageListContentToIBuildPlanList(
-			List<KojiPackage> packageList, List<IBuildPlan> buildPlanList)
-			throws IllegalArgumentException {
-		return buildPlanList;
 	}
 }

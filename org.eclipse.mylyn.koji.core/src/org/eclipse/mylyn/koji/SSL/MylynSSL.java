@@ -4,17 +4,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import org.apache.commons.ssl.Certificates;
 import org.apache.commons.ssl.KeyMaterial;
 import org.apache.commons.ssl.TrustChain;
 import org.apache.commons.ssl.TrustMaterial;
 import org.eclipse.osgi.util.NLS;
 
 import org.eclipse.mylyn.koji.messages.KojiText;
+
 
 /**
  * Helper class for Fedora/Koji related SSL things.
@@ -135,4 +141,37 @@ public class MylynSSL {
 				new char[0]);
 		return kmat;
 	}
+	
+	/**
+	 * Determine FAS username from fedora cert file.
+	 * 
+	 * @return Username if retrieval is successful.
+	 *         {@link FedoraSSL#UNKNOWN_USER} otherwise.
+	 */
+	public String getUsernameFromCert() {
+		if (fedoraCert.exists()) {
+			KeyMaterial kmat;
+			try {
+				kmat = new KeyMaterial(fedoraCert, fedoraCert, new char[0]);
+				List<?> chains = kmat.getAssociatedCertificateChains();
+				Iterator<?> it = chains.iterator();
+				ArrayList<String> cns = new ArrayList<String>();
+				while (it.hasNext()) {
+					X509Certificate[] certs = (X509Certificate[]) it.next();
+					if (certs != null) {
+						for (int i = 0; i < certs.length; i++) {
+							cns.add(Certificates.getCN(certs[i]));
+						}
+					}
+				}
+				return cns.get(0);
+			} catch (GeneralSecurityException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return UNKNOWN_USER;
+	}
+	
 }

@@ -308,4 +308,11 @@ public interface IKojiHubClient {
 	 * @throws KojiClientException
 	 */
 	public String getDescriptionFromPackageIdAsString(int packageId) throws KojiClientException;
+	
+	/**
+	 * Gets the current session's information as a Map.
+	 * @return The map containing the current session's information.
+	 * @throws KojiClientException
+	 */
+	public Map<String, ?> getSessionInfoAsMap() throws KojiClientException;
 }

@@ -25,7 +25,7 @@ import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.KojiUser;
-import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiSessionInfoParsingUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class KojiSSLHubClientTest {
 	 */
 	private static final String EFP_SCM_URL = "git://pkgs.fedoraproject.org/eclipse-fedorapackager.git?#302d36c1427a0d8578d0a1d88b4c9337a4407dde";
 
-	private int testNum = 1;
+	//private int testNum = 1;
 	
 	private IKojiHubClient kojiClient;
 	
@@ -582,7 +582,6 @@ public class KojiSSLHubClientTest {
 		// Log in first
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
-		boolean exceptionThrown = false;
 		Object output = kojiClient.downloadTaskOutputAsString(8149, "build.log", 0, 8401);
 		assertNull(output);
 	}
@@ -800,5 +799,24 @@ public class KojiSSLHubClientTest {
 		assertNotNull(sessionData);
 		Object result = kojiClient.getDescriptionFromPackageIdAsString(-1);
 		assertNull(result);
+	}
+	
+	/**
+	 * 39. Get the session info test.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetSessionInfoAsMap() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getSessionInfoAsMap();
+		assertNotNull(result);
+		assertTrue(result instanceof Map);
+		Map<String, ?> sessionInfo = (Map<String, ?>)result;
+		int userID = KojiSessionInfoParsingUtility.getUserID(sessionInfo).intValue();
+		assertEquals(9, userID);
 	}
 }
