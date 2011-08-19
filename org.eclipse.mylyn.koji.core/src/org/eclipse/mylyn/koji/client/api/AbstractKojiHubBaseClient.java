@@ -87,6 +87,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 */
 	protected void discardSession() {
 		xmlRpcConfig.setServerURL(this.kojiHubUrl);
+		this.userID = null;
 	}
 
 	/*
