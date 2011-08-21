@@ -108,7 +108,7 @@ public final class KojiPackageParsingUtility {
 		buildPlan.setPack(pack);
 		//if Mylyn Builds team decides to support sub-builds, modify the rest of the body to include
 		//the entire list of past builds.
-		if(pack.getRecentBuilds().size() > 0) {
+		if((pack.getRecentBuilds().size() > 0) && (pack.getRecentBuilds().get(0) != null)) {
 			KojiBuildInfo buildInfo = pack.getRecentBuilds().get(0);
 			Build build = behavior.createBuild();
 			if(build == null)
