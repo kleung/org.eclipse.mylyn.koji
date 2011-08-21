@@ -1,12 +1,16 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
+
 
 /**
  * Class representing host as returned by getHost XMLRPC call.
  * 
  * Author: Kiu Kwan Leung (Red Hat)
  */
-public class KojiHost{
+public class KojiHost implements Cloneable, Serializable {
+	
+	private static final long serialVersionUID = 3730370244365264309L;
 	private int id;					//host ID
 	private String name;			//host name
 	private boolean enabled;		//host enabled flag
@@ -200,6 +204,39 @@ public class KojiHost{
 	 */
 	public void setReady(boolean ready) {
 		this.ready = ready;
+	}
+	
+	
+	@Override
+	public KojiHost clone() {
+		KojiHost host = new KojiHost();
+		host.setId(this.id);
+		host.setCapacity(this.capacity);
+		host.setTaskLoad(this.taskLoad);
+		host.setEnabled(this.enabled);
+		host.setReady(this.ready);
+		host.setUserID(this.userID);
+		if(this.user != null)
+			host.setUser(this.user.clone());
+		else
+			host.setUser(null);
+		if(this.name != null)
+			host.setName(new String(this.name));
+		else
+			host.setName(null);
+		if(this.description != null)
+			host.setDescription(new String(this.description));
+		else
+			host.setDescription(null);
+		if(this.architecture != null)
+			host.setArchitecture(new String(this.architecture));
+		else
+			host.setArchitecture(null);
+		if(this.comment != null)
+			host.setComment(new String(this.comment));
+		else
+			host.setComment(null);
+		return host;
 	}
 	
 }

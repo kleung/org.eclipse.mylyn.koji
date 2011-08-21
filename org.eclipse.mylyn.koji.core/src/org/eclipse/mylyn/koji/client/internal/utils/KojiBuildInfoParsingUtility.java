@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.mylyn.builds.core.BuildState;
 import org.eclipse.mylyn.builds.core.BuildStatus;
 import org.eclipse.mylyn.builds.core.IBuild;
+import org.eclipse.mylyn.builds.internal.core.Build;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
@@ -114,8 +115,8 @@ public final class KojiBuildInfoParsingUtility {
 	 * @return The IBuild parameter with the fields filled with content stored
 	 *         by the KojiPackage parameter.
 	 */
-	public static IBuild cloneKojiBuildInfoContentToIBuild(
-			KojiBuildInfo kojiBuildInfo, IBuild build) throws IllegalArgumentException {
+	public static Build cloneKojiBuildInfoContentToIBuild(
+			KojiBuildInfo kojiBuildInfo, Build build) throws IllegalArgumentException {
 		if((kojiBuildInfo == null) || (build == null))
 			throw new IllegalArgumentException("Cannot convert null Koji build to a Mylyn build" +
 					" or a Koji build into a null Mylyn build.");
@@ -186,7 +187,7 @@ public final class KojiBuildInfoParsingUtility {
 	 *         content stored by the each of the entries of the input KojiBuildInfo
 	 *         list.
 	 */
-	public static List<IBuild> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<IBuild> buildList) 
+	public static List<Build> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<Build> buildList) 
 	throws IllegalArgumentException {
 		if((kojiBuildList == null) || (buildList == null))
 			throw new IllegalArgumentException(
@@ -200,7 +201,7 @@ public final class KojiBuildInfoParsingUtility {
 			if(kojiBuild == null)
 				throw new IllegalArgumentException(
 						"Cannot convert null to a Mylyn build.");
-			IBuild build = buildList.get(icounter);
+			Build build = buildList.get(icounter);
 			if(build == null)
 				throw new IllegalArgumentException(
 						"Cannot convert a Koji build to null.");

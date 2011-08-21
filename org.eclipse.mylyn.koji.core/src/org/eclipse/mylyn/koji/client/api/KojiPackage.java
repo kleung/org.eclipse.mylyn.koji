@@ -1,5 +1,7 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -9,8 +11,9 @@ import java.util.List;
  */
 
 @SuppressWarnings("rawtypes")
-public class KojiPackage implements Comparable {
+public class KojiPackage implements Comparable, Serializable, Cloneable {
 	
+	private static final long serialVersionUID = -468251306704904725L;
 	private int packageID;						//package ID
 	private String packageName;					//package name
 	private String description;					//description
@@ -109,4 +112,31 @@ public class KojiPackage implements Comparable {
 		KojiPackage in = (KojiPackage)input;
 		return ((this.packageID > in.getPackageID())? 1:-1);
 	}
+	
+	/**
+	 * Clones the KojiPackage object.
+	 * 
+	 * @return A clone of the KojiPackage object.
+	 */
+	@Override
+	public KojiPackage clone() {
+		KojiPackage pack = new KojiPackage();
+		pack.setPackageID(this.packageID);
+		if(this.packageName != null)
+			pack.setPackageName(new String(this.packageName));
+		else
+			pack.setPackageName(null);
+		if(this.description != null)
+			pack.setDescription(new String(this.description));
+		else
+			pack.setDescription(null);
+		if(this.recentBuilds != null) {
+			LinkedList<KojiBuildInfo> buildList = new LinkedList<KojiBuildInfo>();
+			for(KojiBuildInfo b : this.recentBuilds)
+				buildList.add(b.clone());
+			pack.setRecentBuilds(buildList);
+		}
+		return null;
+	}
+
 }

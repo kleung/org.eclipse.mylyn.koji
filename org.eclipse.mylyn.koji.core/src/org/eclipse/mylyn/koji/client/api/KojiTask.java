@@ -1,5 +1,7 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -8,8 +10,9 @@ import java.util.List;
  * Author: Kiu Kwan Leung (Red Hat)
  */
 @SuppressWarnings("rawtypes")
-public class KojiTask implements Comparable { 	// implements comparable for
-												// sorting task IDs.
+public class KojiTask implements Comparable, Cloneable, Serializable { 	// implements comparable for
+																		// sorting task IDs.
+	private static final long serialVersionUID = -3541912875472785302L;
 	private int id; 							// task ID
 	private double completionTime; 				// completion time in double, POSIX timestamp
 	private double weight; 						// task weight
@@ -508,4 +511,74 @@ public class KojiTask implements Comparable { 	// implements comparable for
 			return ((this.id > compare.getId()) ? 1 : -1);
 		}
 	}
+	
+	@Override
+	public KojiTask clone() {
+		KojiTask task = new KojiTask();
+		task.setId(this.id);
+		task.setCompletionTime(this.completionTime);
+		task.setWeight(this.weight);
+		if(this.architecture != null)
+			task.setArchitecture(new String(this.architecture));
+		else
+			task.setArchitecture(null);
+		task.setStartTime(this.startTime);
+		task.setTaskStateCode(this.taskStateCode);
+		if(this.taskState != null)
+			task.setTaskState(new String(this.taskState));
+		else
+			task.setTaskState(null);
+		task.setParentTaskID(this.parentTaskID);
+		if(this.parentTask != null)
+			task.setParentTask(this.parentTask.clone());
+		if(this.label != null)
+			task.setLabel(new String(this.label));
+		else
+			task.setLabel(null);
+		task.setCreationTime(this.creationTime);
+		task.setChannelID(this.channelID);
+		if(this.channel != null)
+			task.setChannel(this.channel.clone());
+		else
+			task.setChannel(null);
+		task.setHostID(this.hostID);
+		if(this.host != null)
+			task.setHost(this.host.clone());
+		else
+			task.setHost(null);
+		task.setPriority(this.priority);
+		task.setOwnerID(this.ownerID);
+		if(this.owner != null)
+			task.setOwner(this.owner.clone());
+		else
+			task.setOwner(null);
+		if(this.method != null)
+			task.setMethod(new String(this.method));
+		else
+			task.setMethod(null);
+		if(this.rpm != null)
+			task.setRpm(new String(this.rpm));
+		else
+			task.setRpm(null);
+		if(this.buildTarget != null)
+			task.setBuildTarget(new String(this.buildTarget));
+		else
+			task.setBuildTarget(null);
+		if(this.descendentIDs != null) {
+			LinkedList<Integer> idList = new LinkedList<Integer>();
+			for(Integer i : this.descendentIDs)
+				idList.add(new Integer(i.intValue()));
+			task.setDescendentIDs(idList);
+		} else
+			task.setDescendentIDs(null);
+		if(this.descendents != null) {
+			LinkedList<KojiTask> taskList = new LinkedList<KojiTask>();
+			for(KojiTask t : this.descendents)
+				taskList.add(t.clone());
+			task.setDescendents(taskList);
+		} else
+			task.setDescendents(null);
+		return null;
+	}
+	
 }

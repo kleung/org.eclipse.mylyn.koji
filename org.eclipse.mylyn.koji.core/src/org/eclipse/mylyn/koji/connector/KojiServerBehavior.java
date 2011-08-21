@@ -1,6 +1,7 @@
 package org.eclipse.mylyn.koji.connector;
 
 import java.io.Reader;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -12,10 +13,19 @@ import org.eclipse.mylyn.builds.core.spi.BuildServerBehaviour;
 import org.eclipse.mylyn.builds.core.spi.BuildServerConfiguration;
 import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest;
 import org.eclipse.mylyn.builds.core.spi.RunBuildRequest;
+import org.eclipse.mylyn.builds.internal.core.Build;
 import org.eclipse.mylyn.commons.core.IOperationMonitor;
 
 public class KojiServerBehavior extends BuildServerBehaviour {
 
+	public Build createBuild() {
+		IBuild build = super.createBuild();
+		if(build instanceof Build)
+			return (Build) build;
+		else
+			return null;
+	}
+	
 	@Override
 	public List<IBuild> getBuilds(GetBuildsRequest request,
 			IOperationMonitor monitor) throws CoreException {

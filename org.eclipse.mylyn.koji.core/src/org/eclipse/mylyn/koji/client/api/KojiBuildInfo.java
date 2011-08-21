@@ -1,5 +1,6 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -36,8 +37,9 @@ import java.util.Map;
     raise an error.  Otherwise return None.
  */
 @SuppressWarnings({ "unused", "rawtypes" })
-public class KojiBuildInfo implements Comparable{
+public class KojiBuildInfo implements Comparable, Cloneable, Serializable {
 	
+	private static final long serialVersionUID = 6790855090981769141L;
 	private int state;
 	private Integer taskId;
 	private String release;
@@ -318,6 +320,51 @@ public class KojiBuildInfo implements Comparable{
 			KojiBuildInfo compare = (KojiBuildInfo) build;
 			return ((this.taskId > compare.getTaskId()) ? 1 : -1);
 		}
+	}
+	
+	/**
+	 * Clones the KojiBuildInfo object.
+	 * 
+	 * @return a clone of the KojiBuildInfo object.
+	 */
+	@Override
+	public KojiBuildInfo clone() {
+		KojiBuildInfo build = new KojiBuildInfo();
+		build.setState(this.state);
+		if(this.taskId != null)
+			build.setTaskId(new Integer(this.taskId.intValue()));
+		else
+			build.setTaskId(null);
+		if(this.release != null)
+			build.setRelease(new String(this.release));
+		else
+			build.setRelease(null);
+		build.setEpoch(this.epoch);
+		if(this.nvr != null)
+			build.setNvr(new String(this.nvr));
+		else
+			build.setNvr(null);
+		if(this.version != null)
+			build.setVersion(new String(this.version));
+		else
+			build.setVersion(null);
+		if(this.packageName != null)
+			build.setPackageName(new String(this.packageName));
+		else
+			build.setPackageName(null);
+		build.setPackageId(this.packageId);
+		if(this.ownerName != null)
+			build.setOwnerName(new String(this.ownerName));
+		else
+			build.setOwnerName(null);
+		if(this.task != null)
+			build.setTask(this.task.clone());
+		else
+			build.setTask(null);
+		build.setBuildId(this.buildId);
+		build.setCreateTime(this.createTime);
+		build.setCompleteTime(this.completeTime);
+		return null;
 	}
 
 }

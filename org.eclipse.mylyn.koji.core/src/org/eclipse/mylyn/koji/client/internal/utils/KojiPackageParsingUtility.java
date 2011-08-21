@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.mylyn.builds.core.IBuildPlan;
+import org.eclipse.mylyn.builds.internal.core.Build;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
+import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.connector.KojiServerBehavior;
 
 /**
  * Koji package parsing utility.
@@ -85,30 +88,37 @@ public final class KojiPackageParsingUtility {
 	}
 	
 	/**
-	 * Copy the applicable content of a given KojiPackage object into an IBuildPlan object for use with Mylyn Builds.
+	 * Copy the applicable content of a given KojiPackage object into a MylynBuildPlan object for use with Mylyn Builds.
+	 * If the Koji package doesn't contain any KojiBuildInfo or the server behavior failed to create a Build object,
+	 * null is returned.
 	 * 
-	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are not null and of the expected type.
+	 * IMPORTANT: It is the caller's responsibility to ensure the parameter is not null and of the expected type.
 	 * 
 	 * @param pack The KojiPackage object.
-	 * @param buildPlan The output IBuildPlan object.
-	 * @return The IBuildPlan parameter with its fields filled with content stored by the KojiPackage parameter.
+	 * @return A MylynKojiBuildPlan object with its fields filled with content stored by the KojiPackage parameter.
 	 */
-	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, IBuildPlan buildPlan) throws IllegalArgumentException {
-		if((pack == null) || (buildPlan == null))
-			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan" +
-					" or a Koji package into a null Mylyn build plan.");
+	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
+		if(pack == null)
+			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan.");
+		MylynKojiBuildPlan buildPlan = new MylynKojiBuildPlan();
+		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());
 		buildPlan.setDescription(pack.getDescription());
-		//get the most recent task's id as the build plan ID for resubmitting task, if it is not null.
+		//The entire koji package is being stored here for use with resubmitting the task (rebuild).
+		buildPlan.setPack(pack);
+		//if Mylyn Builds team decides to support sub-builds, modify the rest of the body to include
+		//the entire list of past builds.
 		if(pack.getRecentBuilds().size() > 0) {
-			KojiBuildInfo build = pack.getRecentBuilds().get(0);
-			if(build.getTask() != null)
-				buildPlan.setId(Integer.toString(build.getTask().getId()));
-			else //can't assign an ID that can be used for rebuilding
-				buildPlan.setId(null);
-		} else {//can't assign an ID that can be used for rebuilding
-			buildPlan.setId(null);
-		}
+			KojiBuildInfo buildInfo = pack.getRecentBuilds().get(0);
+			Build build = behavior.createBuild();
+			if(build == null)
+				buildPlan = null;
+			else {
+				build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild(buildInfo, build);
+				buildPlan.setLastBuild(build);
+			}
+		} else 
+			buildPlan = null;
 		return buildPlan;
 	}
 }

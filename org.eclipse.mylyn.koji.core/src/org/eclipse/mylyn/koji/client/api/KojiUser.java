@@ -1,11 +1,15 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
+
 /**
  * Class representing user as returned by getUser XMLRPC call.
  * 
  * Author: Kiu Kwan Leung (Red Hat)
  */
-public class KojiUser {
+public class KojiUser implements Cloneable, Serializable {
+
+	private static final long serialVersionUID = -8484040325688944007L;
 	private int id;				//user ID
 	private int statusCode;		//user status code
 	private String status;		//String representation of status code
@@ -114,6 +118,31 @@ public class KojiUser {
 	 */
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	/**
+	 * Clones the KojiUser object.
+	 * 
+	 * @return A clone of the KojiUser object.
+	 */
+	@Override
+	public KojiUser clone() {
+		KojiUser user = new KojiUser();
+		user.setId(this.id);
+		user.setStatusCode(this.statusCode);
+		user.setUserTypeCode(this.userTypeCode);
+		if(this.name != null)
+			user.setName(new String(this.name));
+		else
+			user.setName(null);
+		if(this.status != null)
+			user.setStatus(new String(this.status));
+		else
+			user.setStatus(null);
+		if(this.userType != null)
+			user.setUserType(new String(this.userType));
+		else
+			user.setUserType(null);
+		return user;
 	}
 	
 }

@@ -1,12 +1,16 @@
 package org.eclipse.mylyn.koji.client.api;
 
+import java.io.Serializable;
+
 /**
  * Class representing channel as returned by getChannel XMLRPC call.
  * 
  * Author: Kiu Kwan Leung (Red Hat)
  */
 @SuppressWarnings("rawtypes")
-public class KojiChannel implements Comparable {
+public class KojiChannel implements Comparable, Cloneable, Serializable {
+
+	private static final long serialVersionUID = 5352832980494748397L;
 	private int id; 		// channel ID
 	private String name;	// channel name
 
@@ -95,5 +99,21 @@ public class KojiChannel implements Comparable {
 			KojiChannel compare = (KojiChannel) channel;
 			return ((this.id > compare.getId()) ? 1 : -1);
 		}
+	}
+	
+	/**
+	 * Clones the KojiChannel object itself.
+	 * 
+	 * @return A clone of the KojiChannel object.
+	 */
+	@Override
+	public KojiChannel clone() {
+		KojiChannel channel = new KojiChannel();
+		channel.setId(this.id);
+		if(this.name != null)
+			channel.setName(new String(this.name));
+		else
+			channel.setName(null);
+		return channel;
 	}
 }
