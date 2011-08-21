@@ -46,7 +46,7 @@ public class KojiSSLHubClientTest {
 	 */
 	private static final String EFP_SCM_URL = "git://pkgs.fedoraproject.org/eclipse-fedorapackager.git?#302d36c1427a0d8578d0a1d88b4c9337a4407dde";
 
-	//private int testNum = 1;
+	private int testNum = 1;
 	
 	private IKojiHubClient kojiClient;
 	
@@ -576,7 +576,6 @@ public class KojiSSLHubClientTest {
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unused")
 	@Test
 	public void testDownloadTaskOutputAsStringNegative() throws Exception {
 		// Log in first
