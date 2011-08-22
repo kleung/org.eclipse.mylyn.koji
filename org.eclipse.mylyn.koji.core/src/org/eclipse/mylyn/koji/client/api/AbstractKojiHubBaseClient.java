@@ -638,7 +638,6 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	public Object[] listPackagesAsObjectArray() throws KojiClientException {
 		if(this.userID == null)
 			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
-		ArrayList<Object> params = new ArrayList<Object>();
 		Object[] webMethodResult = null;
 		ArrayList<Object> filterParams = new ArrayList<Object>();
 		filterParams.add("listPackages");
@@ -649,7 +648,6 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		optsParam.put("filterOpts", filterOpts);
 		filterParams.add(optsParam);
 		try {
-			webMethodResult = (Object[])xmlRpcClient.execute("listPackages", params);
 			webMethodResult = (Object[])xmlRpcClient.execute("filterResults", filterParams);	
 		} catch (XmlRpcException e) {
 			throw new KojiClientException();
@@ -715,7 +713,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			throw new IllegalArgumentException();
 		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
 		if(packageMap != null)
-			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit);
+			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit, false);
 		else
 			return null;
 	}
@@ -850,22 +848,17 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	public Object[] listPackagesOfUserAsObjectArray() throws KojiClientException {
 		if(this.userID == null)
 			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
-		ArrayList<Object> params = new ArrayList<Object>();
-		HashMap<String, Object> optsParam = new HashMap<String, Object>();
-		optsParam.put("__starstar", new Boolean(true));
-		optsParam.put("userID", this.userID);
-		params.add(optsParam);
 		Object[] webMethodResult = null;
 		ArrayList<Object> filterParams = new ArrayList<Object>();
 		filterParams.add("listPackages");
 		HashMap<String, Object> filterOptsParam = new HashMap<String, Object>();
 		filterOptsParam.put("__starstar", new Boolean(true));
+		filterOptsParam.put("userID", this.userID);
 		HashMap<String, Object> filterOpts = new HashMap<String, Object>();
 		filterOpts.put("order", "package_name");
 		filterOptsParam.put("filterOpts", filterOpts);
 		filterParams.add(filterOptsParam);
 		try {
-			webMethodResult = (Object[])xmlRpcClient.execute("listPackages", params);
 			webMethodResult = (Object[])xmlRpcClient.execute("filterResults", filterParams);	
 		} catch (XmlRpcException e) {
 			throw new KojiClientException();
@@ -898,6 +891,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * @return A list of KojiBuildInfo objects that belongs to the package.
 	 * @throws KojiClientException
 	 */
+	@SuppressWarnings("unchecked")
 	public List<KojiBuildInfo> listBuildOfUserByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
 		if(this.userID == null)
 			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());

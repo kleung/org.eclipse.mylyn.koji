@@ -865,12 +865,12 @@ public class KojiSSLHubClientTest {
 		// Log in first
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
-		Object result = kojiClient.listBuildByKojiPackageIDAsList(-1, -1);
+		Object result = kojiClient.listBuildOfUserByKojiPackageIDAsList(-1, -1);
 		assertNotNull(result);
 		assertTrue(result instanceof List);
 		List<KojiBuildInfo> buildList = (List<KojiBuildInfo>)result;
 		assertEquals(0, buildList.size());
-		result = kojiClient.listBuildByKojiPackageIDAsList(430, -1);
+		result = kojiClient.listBuildOfUserByKojiPackageIDAsList(430, -1);
 		assertNotNull(result);
 		assertTrue(result instanceof List);
 		buildList = (List<KojiBuildInfo>)result;

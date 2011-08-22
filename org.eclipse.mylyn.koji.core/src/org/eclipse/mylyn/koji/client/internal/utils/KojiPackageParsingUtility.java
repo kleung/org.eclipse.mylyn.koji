@@ -40,10 +40,14 @@ public final class KojiPackageParsingUtility {
 	 * @return A KojiObject.
 	 * @throws KojiClientException
 	 */
-	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit) throws KojiClientException, IllegalArgumentException {
+	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit, boolean userSpecific) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
 		if(parseBuilds && ((limit > 0) || (limit == -1))) {
-			List<KojiBuildInfo> buildList = wsClient.listBuildOfUserByKojiPackageIDAsList(pack.getPackageID(), limit);
+			List<KojiBuildInfo> buildList = null; 
+			if(userSpecific)
+				buildList = wsClient.listBuildOfUserByKojiPackageIDAsList(pack.getPackageID(), limit);
+			else
+				buildList = wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit);
 			pack.setRecentBuilds(buildList);
 			if(buildList.size() > 0) {
 				int mostRecentBuildID = buildList.get(0).getBuildId();
