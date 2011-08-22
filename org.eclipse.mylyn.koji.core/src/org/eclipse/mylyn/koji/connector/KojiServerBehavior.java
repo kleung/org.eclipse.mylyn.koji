@@ -18,7 +18,7 @@ import org.eclipse.mylyn.commons.core.IOperationMonitor;
 
 public class KojiServerBehavior extends BuildServerBehaviour {
 
-	@SuppressWarnings("restriction")
+	@SuppressWarnings("restriction")//added annotation
 	public Build createBuild() {
 		IBuild build = super.createBuild();
 		if(build instanceof Build)
