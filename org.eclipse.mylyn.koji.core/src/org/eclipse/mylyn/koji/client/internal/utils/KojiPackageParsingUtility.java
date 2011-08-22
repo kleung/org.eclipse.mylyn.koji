@@ -43,7 +43,7 @@ public final class KojiPackageParsingUtility {
 	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
 		if(parseBuilds && ((limit > 0) || (limit == -1))) {
-			List<KojiBuildInfo> buildList = wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit);
+			List<KojiBuildInfo> buildList = wsClient.listBuildOfUserByKojiPackageIDAsList(pack.getPackageID(), limit);
 			pack.setRecentBuilds(buildList);
 			if(buildList.size() > 0) {
 				int mostRecentBuildID = buildList.get(0).getBuildId();

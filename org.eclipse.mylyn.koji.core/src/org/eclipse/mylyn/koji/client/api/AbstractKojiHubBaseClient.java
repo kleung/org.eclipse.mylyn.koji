@@ -842,4 +842,94 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		return webMethodResult;
 	}
 	
+	/**
+	 * Lists all packages available, owned by the user, on the Koji server.
+	 * @return An array of Maps containing data of packages (ID and names).
+	 * @throws KojiClientException
+	 */
+	public Object[] listPackagesOfUserAsObjectArray() throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
+		ArrayList<Object> params = new ArrayList<Object>();
+		HashMap<String, Object> optsParam = new HashMap<String, Object>();
+		optsParam.put("__starstar", new Boolean(true));
+		optsParam.put("userID", this.userID);
+		params.add(optsParam);
+		Object[] webMethodResult = null;
+		ArrayList<Object> filterParams = new ArrayList<Object>();
+		filterParams.add("listPackages");
+		HashMap<String, Object> filterOptsParam = new HashMap<String, Object>();
+		filterOptsParam.put("__starstar", new Boolean(true));
+		HashMap<String, Object> filterOpts = new HashMap<String, Object>();
+		filterOpts.put("order", "package_name");
+		filterOptsParam.put("filterOpts", filterOpts);
+		filterParams.add(filterOptsParam);
+		try {
+			webMethodResult = (Object[])xmlRpcClient.execute("listPackages", params);
+			webMethodResult = (Object[])xmlRpcClient.execute("filterResults", filterParams);	
+		} catch (XmlRpcException e) {
+			throw new KojiClientException();
+		}
+		if((webMethodResult != null) && (webMethodResult.length > 0))
+			return webMethodResult;
+		else
+			return null;
+	}
+	
+	/**
+	 * Lists all packages available, owned by the user, on the Koji server, does not query
+	 * the packages' recent builds.
+	 * @return	A list of KojiPackage objects representing all the packages
+	 * available on the Koji server.
+	 * @throws KojiClientException
+	 */
+	public List<KojiPackage> listPackagesOfUserAsKojiPackageList() throws KojiClientException {
+		Object[] packageArray = this.listPackagesOfUserAsObjectArray();
+		if(packageArray != null)
+			return KojiPackageParsingUtility.parsePackageArrayAsKojiPackageList(packageArray);
+		else
+			return null;
+	}
+	
+	/**
+	 * Lists recent builds of a given package ID, owned by the user, amount can be limited by limit.
+	 * @param packageID The ID of the package to be queried.
+	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
+	 * @return A list of KojiBuildInfo objects that belongs to the package.
+	 * @throws KojiClientException
+	 */
+	public List<KojiBuildInfo> listBuildOfUserByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
+		if((limit == 0) || (limit < -1))
+			throw new IllegalArgumentException();
+		LinkedList<KojiBuildInfo> buildList = new LinkedList<KojiBuildInfo>();
+		ArrayList<Object>params = new ArrayList<Object>();
+		HashMap<String, Object> optsParam = new HashMap<String, Object>();
+		optsParam.put("__starstar", new Boolean(true));
+		optsParam.put("packageID", new Integer(packageID));
+		optsParam.put("userID", this.userID);
+		HashMap<String, Object> queryOpts = new HashMap<String, Object>();
+		queryOpts.put("order", "-creation_time");
+		if(limit != -1)
+			queryOpts.put("limit", new Integer(limit));
+		optsParam.put("queryOpts", queryOpts);
+		params.add(optsParam);
+		Object[] webMethodResult = null;
+		try {
+			webMethodResult = (Object[])xmlRpcClient.execute("listBuilds", params);
+		}catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+		if((webMethodResult != null) && (webMethodResult.length > 0)) {
+			for(Object o : webMethodResult) {
+				if((o != null) && (o instanceof Map)) {
+					Map<String, Object> buildMap = (Map<String, Object>)o;
+					buildList.add(KojiBuildInfoParsingUtility.parseBuild(buildMap, this));
+				}
+			}
+		}
+		return buildList;
+	}
+	
 }

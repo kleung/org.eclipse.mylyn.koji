@@ -818,4 +818,62 @@ public class KojiSSLHubClientTest {
 		int userID = KojiSessionInfoParsingUtility.getUserID(sessionInfo).intValue();
 		assertEquals(9, userID);
 	}
+	
+	/**
+	 * 40. List packages of the user as object array, negative test.
+	 * (this test is based on the assumption that the "testuser" account
+	 * of the Toronto Koji server has no package, task or build pushed)
+	 * 
+	 *  @throws Exception
+	 * 
+	 */
+	@Test
+	public void testListPackageOfUserAsObjectArrayNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.listPackagesOfUserAsObjectArray();
+		assertNull(result);
+	}
+	
+	/**
+	 * 41. List packages of the user as KojiPackage List, negative test.
+	 * (this test is based on the assumption that the "testuser" account
+	 * of the Toronto Koji server has no package, task or build pushed)
+	 * 
+	 *  @throws Exception
+	 */
+	@Test
+	public void testListPackagesOfUserAsKojiPackageListNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.listPackagesOfUserAsKojiPackageList();
+		assertNull(result);
+	}
+	
+	/**
+	 * 42. List build of user by KojiPackage ID as list, negative test.
+	 * (this test is based on the assumption that the "testuser" account
+	 * of the Toronto Koji server has no package, task or build pushed)
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListBuildOfUserByKojiPackageIDAsListNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.listBuildByKojiPackageIDAsList(-1, -1);
+		assertNotNull(result);
+		assertTrue(result instanceof List);
+		List<KojiBuildInfo> buildList = (List<KojiBuildInfo>)result;
+		assertEquals(0, buildList.size());
+		result = kojiClient.listBuildByKojiPackageIDAsList(430, -1);
+		assertNotNull(result);
+		assertTrue(result instanceof List);
+		buildList = (List<KojiBuildInfo>)result;
+		assertEquals(0, buildList.size());
+	}
 }

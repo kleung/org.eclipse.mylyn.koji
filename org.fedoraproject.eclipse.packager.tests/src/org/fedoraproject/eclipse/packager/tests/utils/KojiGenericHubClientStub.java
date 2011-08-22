@@ -274,5 +274,36 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	public Map<String, ?> getSessionInfoAsMap() throws KojiClientException {
 		return null;
 	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesOfUserAsObjectArray()
+	 */
+	@Override
+	public Object[] listPackagesOfUserAsObjectArray()
+			throws KojiClientException {
+		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesOfUserAsKojiPackageList()
+	 */
+	@Override
+	public List<KojiPackage> listPackagesOfUserAsKojiPackageList()
+			throws KojiClientException {
+		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listBuildOfUserByKojiPackageIDAsList(int, int)
+	 */
+	@Override
+	public List<KojiBuildInfo> listBuildOfUserByKojiPackageIDAsList(
+			int packageID, int limit) throws KojiClientException,
+			IllegalArgumentException {
+		return null;
+	}
 	
 }

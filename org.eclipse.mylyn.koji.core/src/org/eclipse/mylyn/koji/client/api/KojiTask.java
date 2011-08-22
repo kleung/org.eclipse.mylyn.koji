@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Class representing task as returned by getUser XMLRPC call.
- * 
+ * (For performance reason, the fields for KojiChannel, KojiUser and KojiHost were commented out.
  * Author: Kiu Kwan Leung (Red Hat)
  */
 @SuppressWarnings("rawtypes")
@@ -25,12 +25,12 @@ public class KojiTask implements Comparable, Cloneable, Serializable { 	// imple
 	private String label; 						// label
 	private double creationTime; 				// creation time in double, POSIX timestamp
 	private int channelID; 						// channel ID
-	private KojiChannel channel; 				// channel
+	//private KojiChannel channel; 				// channel
 	private int hostID; 						// host ID
-	private KojiHost host; 						// host
+	//private KojiHost host; 						// host
 	private int priority; 						// priority
 	private int ownerID; 						// owner ID
-	private KojiUser owner; 					// owner
+	//private KojiUser owner; 					// owner
 	private String method; 						// method
 	private String rpm;							// name of rpm file
 	private String buildTarget;					// build target
@@ -272,24 +272,24 @@ public class KojiTask implements Comparable, Cloneable, Serializable { 	// imple
 		this.channelID = channelID;
 	}
 
-	/**
-	 * Gets the channel.
-	 * 
-	 * @return The channel.
-	 */
-	public KojiChannel getChannel() {
-		return channel;
-	}
+//	/**
+//	 * Gets the channel.
+//	 * 
+//	 * @return The channel.
+//	 */
+//	public KojiChannel getChannel() {
+//		return channel;
+//	}
 
-	/**
-	 * Sets the channel.
-	 * 
-	 * @param channel
-	 *            The channel.
-	 */
-	public void setChannel(KojiChannel channel) {
-		this.channel = channel;
-	}
+//	/**
+//	 * Sets the channel.
+//	 * 
+//	 * @param channel
+//	 *            The channel.
+//	 */
+//	public void setChannel(KojiChannel channel) {
+//		this.channel = channel;
+//	}
 
 	/**
 	 * Gets the host ID.
@@ -310,24 +310,24 @@ public class KojiTask implements Comparable, Cloneable, Serializable { 	// imple
 		this.hostID = hostID;
 	}
 
-	/**
-	 * Gets the host.
-	 * 
-	 * @return The host.
-	 */
-	public KojiHost getHost() {
-		return host;
-	}
+//	/**
+//	 * Gets the host.
+//	 * 
+//	 * @return The host.
+//	 */
+//	public KojiHost getHost() {
+//		return host;
+//	}
 
-	/**
-	 * Sets the host.
-	 * 
-	 * @param host
-	 *            The host.
-	 */
-	public void setHost(KojiHost host) {
-		this.host = host;
-	}
+//	/**
+//	 * Sets the host.
+//	 * 
+//	 * @param host
+//	 *            The host.
+//	 */
+//	public void setHost(KojiHost host) {
+//		this.host = host;
+//	}
 
 	/**
 	 * Gets the task priority.
@@ -367,24 +367,24 @@ public class KojiTask implements Comparable, Cloneable, Serializable { 	// imple
 		this.ownerID = ownerID;
 	}
 
-	/**
-	 * Gets the task owner.
-	 * 
-	 * @return The task owner.
-	 */
-	public KojiUser getOwner() {
-		return owner;
-	}
+//	/**
+//	 * Gets the task owner.
+//	 * 
+//	 * @return The task owner.
+//	 */
+//	public KojiUser getOwner() {
+//		return owner;
+//	}
 
-	/**
-	 * Sets the task owner.
-	 * 
-	 * @param owner
-	 *            The task owner.
-	 */
-	public void setOwner(KojiUser owner) {
-		this.owner = owner;
-	}
+//	/**
+//	 * Sets the task owner.
+//	 * 
+//	 * @param owner
+//	 *            The task owner.
+//	 */
+//	public void setOwner(KojiUser owner) {
+//		this.owner = owner;
+//	}
 
 	/**
 	 * Gets the task method.
@@ -537,21 +537,21 @@ public class KojiTask implements Comparable, Cloneable, Serializable { 	// imple
 			task.setLabel(null);
 		task.setCreationTime(this.creationTime);
 		task.setChannelID(this.channelID);
-		if(this.channel != null)
-			task.setChannel(this.channel.clone());
-		else
-			task.setChannel(null);
+//		if(this.channel != null)
+//			task.setChannel(this.channel.clone());
+//		else
+//			task.setChannel(null);
 		task.setHostID(this.hostID);
-		if(this.host != null)
-			task.setHost(this.host.clone());
-		else
-			task.setHost(null);
+//		if(this.host != null)
+//			task.setHost(this.host.clone());
+//		else
+//			task.setHost(null);
 		task.setPriority(this.priority);
 		task.setOwnerID(this.ownerID);
-		if(this.owner != null)
-			task.setOwner(this.owner.clone());
-		else
-			task.setOwner(null);
+//		if(this.owner != null)
+//			task.setOwner(this.owner.clone());
+//		else
+//			task.setOwner(null);
 		if(this.method != null)
 			task.setMethod(new String(this.method));
 		else

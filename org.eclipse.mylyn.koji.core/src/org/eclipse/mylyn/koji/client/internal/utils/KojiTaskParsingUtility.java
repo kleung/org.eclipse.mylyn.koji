@@ -38,7 +38,7 @@ public final class KojiTaskParsingUtility {
 	 * @return A KojiObject.
 	 * @throws KojiClientException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	public static KojiTask parseTask(Map<String, ?> input,
 			IKojiHubClient wsClient, boolean queryDescendents)
 			throws KojiClientException {
@@ -58,15 +58,15 @@ public final class KojiTaskParsingUtility {
 		result = input.get("channel_id"); //$NON-NLS-1$
 		if ((result != null) && (result instanceof Integer)) {
 			int channelID = ((Integer) result).intValue();
-			task.setChannel(wsClient.getChannelInfoByIDAsKojiChannel(channelID));
+//			task.setChannel(wsClient.getChannelInfoByIDAsKojiChannel(channelID));
 		}
 		if ((result != null) && (result instanceof Integer)) {
 			int hostID = ((Integer) result).intValue();
-			task.setHost(wsClient.getHostInfoByIDAsKojiHost(hostID));
+//			task.setHost(wsClient.getHostInfoByIDAsKojiHost(hostID));
 		}
 		if ((result != null) && (result instanceof Integer)) {
 			int ownerID = ((Integer) result).intValue();
-			task.setOwner(wsClient.getUserInfoByIDAsKojiUser(ownerID));
+//			task.setOwner(wsClient.getUserInfoByIDAsKojiUser(ownerID));
 		}
 		if (queryDescendents) {
 			int taskID = task.getId();
