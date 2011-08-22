@@ -115,6 +115,7 @@ public final class KojiPackageParsingUtility {
 				buildPlan = null;
 			else {
 				build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild(buildInfo, build);
+				build.setPlan(buildPlan);
 				buildPlan.setLastBuild(build);
 			}
 		} else 
