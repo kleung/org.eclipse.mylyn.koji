@@ -91,6 +91,7 @@ public final class KojiTaskParsingUtility {
 			task.setDescendentIDs(descendentIDList);
 			task.setDescendents(descendentList);
 		}
+		
 		return task;
 	}
 
@@ -144,8 +145,11 @@ public final class KojiTaskParsingUtility {
 			Object requestStr = requestStrings[0];
 			if ((requestStr != null) && (requestStr instanceof String)) {
 				String fullRpmStr = (String) requestStr;
-				task.setRpm(fullRpmStr.substring(
-						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length())); //$NON-NLS-1$
+				String rpm = fullRpmStr.substring(
+						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length()); //$NON-NLS-1$
+				rpm.replaceAll("[^a-zA-Z0-9-]", "|");
+				rpm = rpm.substring(0, rpm.indexOf('|'));
+				task.setRpm(rpm);
 			}
 			requestStr = requestStrings[1];
 			if ((requestStr != null) && (requestStr instanceof String))

@@ -7,6 +7,11 @@ import java.util.List;
 /**
  * Class representing package as returned by getPackage XMLRPC call.
  * 
+ * Note: When used by fedora packager for build editor display after build pushing,
+ *       The recentBuilds reference should point to null and task should not be null.
+ *       And we should set the parseBuilds parameter of KojiPackageParsingUtility's
+ *       parseBuld() to false.
+ * 
  * Author: Kiu Kwan Leung (Red Hat)
  */
 
@@ -153,6 +158,8 @@ public class KojiPackage implements Comparable, Serializable, Cloneable {
 				buildList.add(b.clone());
 			pack.setRecentBuilds(buildList);
 		}
+		if(this.task != null)
+			pack.setTask(this.task.clone());
 		return null;
 	}
 
