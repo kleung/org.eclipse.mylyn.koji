@@ -36,7 +36,10 @@ public final class KojiPackageParsingUtility {
 	 * @param wsClient
 	 *            The Koji webservice client.
 	 * @param limit
-	 * 			  The amount of recent builds to parse, 
+	 * 			  The amount of recent builds to parse
+	 * @param userSpecific
+	 * 			  Boolean value determining whether the utility should query only builds
+	 *            belong to the user. 
 	 * @return A KojiObject.
 	 * @throws KojiClientException
 	 */
@@ -112,18 +115,22 @@ public final class KojiPackageParsingUtility {
 		buildPlan.setPack(pack);
 		//if Mylyn Builds team decides to support sub-builds, modify the rest of the body to include
 		//the entire list of past builds.
-		if((pack.getRecentBuilds().size() > 0) && (pack.getRecentBuilds().get(0) != null)) {
-			KojiBuildInfo buildInfo = pack.getRecentBuilds().get(0);
-			Build build = behavior.createBuild();
-			if(build == null)
+		if (pack.getRecentBuilds() != null) {
+			if ((pack.getRecentBuilds().size() > 0)
+					&& (pack.getRecentBuilds().get(0) != null)) {
+				KojiBuildInfo buildInfo = pack.getRecentBuilds().get(0);
+				Build build = behavior.createBuild();
+				if (build == null)
+					buildPlan = null;
+				else {
+					build = KojiBuildInfoParsingUtility
+							.cloneKojiBuildInfoContentToIBuild(buildInfo, build);
+					build.setPlan(buildPlan);
+					buildPlan.setLastBuild(build);
+				}
+			} else
 				buildPlan = null;
-			else {
-				build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild(buildInfo, build);
-				build.setPlan(buildPlan);
-				buildPlan.setLastBuild(build);
-			}
-		} else 
-			buildPlan = null;
+		}
 		return buildPlan;
 	}
 }

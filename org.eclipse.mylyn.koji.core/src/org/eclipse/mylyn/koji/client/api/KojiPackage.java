@@ -17,7 +17,8 @@ public class KojiPackage implements Comparable, Serializable, Cloneable {
 	private int packageID;						//package ID
 	private String packageName;					//package name
 	private String description;					//description
-	private List<KojiBuildInfo> recentBuilds;	//list of recent builds of the package
+	private List<KojiBuildInfo> recentBuilds = null;	//list of recent builds of the package
+	private KojiTask task = null;				//scratch build task.
 	
 	/**
 	 * Default Constructor
@@ -89,10 +90,26 @@ public class KojiPackage implements Comparable, Serializable, Cloneable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	/**
+	 * Gets the scratch build task.
+	 * @return The scratch build task.
+	 */
+	public KojiTask getTask() {
+		return task;
+	}
+
+	/**
+	 * Sets the scratch build task.
+	 * @param task The scratch build task.
+	 */
+	public void setTask(KojiTask task) {
+		this.task = task;
+	}
 
 	@Override
 	public int hashCode() {
-		return (31 * this.packageID) + this.packageName.hashCode() + (2 * this.recentBuilds.hashCode());
+		return (31 * this.packageID) + this.packageName.hashCode();
 	}
 	
 	@Override
