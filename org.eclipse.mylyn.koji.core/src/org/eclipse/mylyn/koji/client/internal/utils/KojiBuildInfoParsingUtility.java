@@ -115,8 +115,8 @@ public final class KojiBuildInfoParsingUtility {
 	 * @return The IBuild parameter with the fields filled with content stored
 	 *         by the KojiPackage parameter.
 	 */
-	public static Build cloneKojiBuildInfoContentToIBuild(
-			KojiBuildInfo kojiBuildInfo, Build build) throws IllegalArgumentException {
+	public static IBuild cloneKojiBuildInfoContentToIBuild(
+			KojiBuildInfo kojiBuildInfo, IBuild build) throws IllegalArgumentException {
 		if((kojiBuildInfo == null) || (build == null))
 			throw new IllegalArgumentException("Cannot convert null Koji build to a Mylyn build" +
 					" or a Koji build into a null Mylyn build.");

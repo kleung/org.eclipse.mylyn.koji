@@ -20,8 +20,10 @@ import org.eclipse.mylyn.commons.core.IOperationMonitor;
 import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
+import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
 
 @SuppressWarnings("restriction")
@@ -69,22 +71,34 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			if ((buildInfoList != null) && (buildInfoList.size() > 0)) {
 				if(kind == Kind.SELECTED) {
 					//select the selected one out of the buildInfoList
-					
-				}
-				//prepare the IBuild list
-				for (int icounter = 0; icounter < buildInfoList.size(); icounter++) {
-					IBuild b = super.createBuild();
-					b.setPlan(plan);
-					buildList.add(b);
-				}
-				buildList = KojiBuildInfoParsingUtility
+					Object target = null;
+					for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
+						
+					}
+					if(target == null)//cannot be found
+						return buildList;
+					IBuild build = super.createBuild();
+					if(target instanceof KojiBuildInfo)
+						build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild((KojiBuildInfo)target, build);		
+					else
+						build = KojiTaskParsingUtility.cloneKojiTaskContentToIBuild((KojiTask)target, build);
+					buildList.add(build);
+				} else {//all or last
+					//prepare the IBuild list
+					for (int icounter = 0; icounter < buildInfoList.size(); icounter++) {
+						IBuild b = super.createBuild();
+						b.setPlan(plan);
+						buildList.add(b);
+					}
+					buildList = KojiBuildInfoParsingUtility
 						.cloneKojiBuildInfoListToIBuildList(buildInfoList,
 								buildList);
+				}
 			}
 		} catch (KojiClientException e) {
 			throw KojiCorePlugin.toCoreException(e);
 		}
-		return (List<IBuild>)buildList;
+		return buildList;
 	}
 
 	@Override
