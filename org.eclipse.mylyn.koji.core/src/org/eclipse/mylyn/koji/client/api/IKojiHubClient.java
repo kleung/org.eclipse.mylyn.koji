@@ -341,4 +341,13 @@ public interface IKojiHubClient {
 	 */
 	public List<KojiBuildInfo> listBuildOfUserByKojiPackageIDAsList(int packageID, int limit) throws KojiClientException, IllegalArgumentException;
 	
+	//get build by task ID for normal builds
+	
+	
+	/**
+	 * Gets the package by package name as map.
+	 * @param name The package name.
+	 * @Return A map containing the package ID and name.
+	 */
+	public Map<String, ?> getPackageByNameAsMap(String name) throws KojiClientException;
 }

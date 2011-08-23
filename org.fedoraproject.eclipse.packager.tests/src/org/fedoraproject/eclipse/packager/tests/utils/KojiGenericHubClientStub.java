@@ -305,5 +305,17 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 			IllegalArgumentException {
 		return null;
 	}
+
+	
+	
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getPackageByNameAsMap(String)
+	 */
+	@Override
+	public Map<String, ?> getPackageByNameAsMap(String name)
+			throws KojiClientException {	
+		return null;
+	}
 	
 }

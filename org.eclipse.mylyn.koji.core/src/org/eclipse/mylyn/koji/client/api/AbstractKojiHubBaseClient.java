@@ -926,4 +926,32 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		return buildList;
 	}
 	
+	
+	
+	/**
+	 * Gets the package by package name as map.
+	 * @param name The package name.
+	 * @Return A map containing the package ID and name.
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, ?> getPackageByNameAsMap(String name) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(name);
+		Map<String, ?> webMethodResult = null;
+		try {
+			webMethodResult = (Map<String, ?>)xmlRpcClient.execute("getPackage", params);
+		} catch (XmlRpcException e) {
+			if(e.getMessage().contains("No such entry in table package"))
+				webMethodResult = null;
+			else
+				throw new KojiClientException(e);
+		}
+		if((webMethodResult != null) && (webMethodResult.size() > 0))
+			return webMethodResult;
+		else
+			return null;
+	}
+	
 }

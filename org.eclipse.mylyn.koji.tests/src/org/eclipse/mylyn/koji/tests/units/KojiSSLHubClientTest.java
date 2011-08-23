@@ -876,4 +876,43 @@ public class KojiSSLHubClientTest {
 		buildList = (List<KojiBuildInfo>)result;
 		assertEquals(0, buildList.size());
 	}
+	
+	
+	
+	/**
+	 * Get package by name as map, positive test.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetPackageByNameAsMapPositive() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByNameAsMap("ed");
+		assertNotNull(result);
+		assertTrue(result instanceof Map);
+		Map<String, ?> packMap = (Map<String, ?>)result;
+		assertTrue(packMap.size() > 0);
+		Object nameObj = packMap.get("name");
+		assertNotNull(nameObj);
+		String name = (String)nameObj;
+		assertEquals(0, name.compareToIgnoreCase("ed"));
+	}
+	
+	/**
+	 * Get package by name as map, negative test.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetPackageByNameAsMapNegative() throws Exception {
+		// Log in first
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		Object result = kojiClient.getPackageByNameAsMap("e");
+		assertNull(result);
+	}
 }

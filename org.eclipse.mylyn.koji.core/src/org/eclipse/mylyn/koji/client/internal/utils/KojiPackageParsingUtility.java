@@ -100,6 +100,7 @@ public final class KojiPackageParsingUtility {
 	 * null is returned.
 	 * 
 	 * IMPORTANT: It is the caller's responsibility to ensure the parameter is not null and of the expected type.
+	 *            If build list = null, caller should fill in the task field as IBuild instead.
 	 * 
 	 * @param pack The KojiPackage object.
 	 * @return A MylynKojiBuildPlan object with its fields filled with content stored by the KojiPackage parameter.
