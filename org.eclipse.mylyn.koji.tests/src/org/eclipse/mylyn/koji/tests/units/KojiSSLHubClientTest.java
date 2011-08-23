@@ -906,7 +906,6 @@ public class KojiSSLHubClientTest {
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetPackageByNameAsMapNegative() throws Exception {
 		// Log in first

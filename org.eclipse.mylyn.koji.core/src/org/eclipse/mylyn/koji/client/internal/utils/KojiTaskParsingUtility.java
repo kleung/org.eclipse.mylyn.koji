@@ -148,21 +148,7 @@ public final class KojiTaskParsingUtility {
 				String rpm = fullRpmStr.substring(
 						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length()); //$NON-NLS-1$
 				if (!rpm.contains(".rpm")) {
-					rpm = rpm.replaceAll("[^a-zA-Z0-9-_+]", "|");
-					if (rpm.indexOf('|') > 0)
-						rpm = rpm.substring(0, rpm.indexOf('|'));
-					if (rpm.contains("-")) {
-						String chunk = rpm.substring(
-								rpm.lastIndexOf("-") + 1, rpm.length());
-						boolean exceptionThrown = false;
-						try {
-							Integer.parseInt(chunk);
-						} catch (NumberFormatException e) {
-							exceptionThrown = true;
-						}
-						if (!exceptionThrown)
-							rpm = rpm.substring(0, rpm.lastIndexOf("-"));
-					}
+					rpm = rpmToPackageName(rpm);
 				}
 				task.setRpm(rpm);
 			}
@@ -173,6 +159,25 @@ public final class KojiTaskParsingUtility {
 		return task;
 	}
 
+	public static String rpmToPackageName(String rpm) {
+		String result = rpm.replaceAll("[^a-zA-Z0-9-_+]", "|");
+		if (result.indexOf('|') > 0)
+			result = result.substring(0, result.indexOf('|'));
+		if (result.contains("-")) {
+			String chunk = result.substring(
+					result.lastIndexOf("-") + 1, result.length());
+			boolean exceptionThrown = false;
+			try {
+				Integer.parseInt(chunk);
+			} catch (NumberFormatException e) {
+				exceptionThrown = true;
+			}
+			if (!exceptionThrown)
+				result = result.substring(0, result.lastIndexOf("-"));
+		}
+		return result;
+	}
+	
 	/**
 	 * Parses an array of hash maps, which contain information about Koji tasks,
 	 * into a list of KojiTask objects.
