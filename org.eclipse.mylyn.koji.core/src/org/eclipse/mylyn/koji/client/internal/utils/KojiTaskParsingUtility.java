@@ -147,19 +147,22 @@ public final class KojiTaskParsingUtility {
 				String fullRpmStr = (String) requestStr;
 				String rpm = fullRpmStr.substring(
 						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length()); //$NON-NLS-1$
-				rpm = rpm.replaceAll("[^a-zA-Z0-9-]", "|");
-				if(rpm.indexOf('|') > 0)
-					rpm = rpm.substring(0, rpm.indexOf('|'));
-				if(rpm.contains("-")) {
-					String lastChunk = rpm.substring(rpm.lastIndexOf("-") + 1, rpm.length());
-					boolean exceptionThrown = false;
-					try {
-						Integer.parseInt(lastChunk);
-					} catch(NumberFormatException e) {
-						exceptionThrown = true;
+				if (!rpm.contains(".rpm")) {
+					rpm = rpm.replaceAll("[^a-zA-Z0-9-]", "|");
+					if (rpm.indexOf('|') > 0)
+						rpm = rpm.substring(0, rpm.indexOf('|'));
+					if (rpm.contains("-")) {
+						String chunk = rpm.substring(
+								rpm.lastIndexOf("-") + 1, rpm.length());
+						boolean exceptionThrown = false;
+						try {
+							Integer.parseInt(chunk);
+						} catch (NumberFormatException e) {
+							exceptionThrown = true;
+						}
+						if (!exceptionThrown)
+							rpm = rpm.substring(0, rpm.lastIndexOf("-"));
 					}
-					if(!exceptionThrown)
-						rpm = rpm.substring(0, rpm.lastIndexOf("-"));
 				}
 				task.setRpm(rpm);
 			}
