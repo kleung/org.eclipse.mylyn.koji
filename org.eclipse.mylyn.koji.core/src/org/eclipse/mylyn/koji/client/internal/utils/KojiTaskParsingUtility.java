@@ -148,7 +148,7 @@ public final class KojiTaskParsingUtility {
 				String rpm = fullRpmStr.substring(
 						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length()); //$NON-NLS-1$
 				if (!rpm.contains(".rpm")) {
-					rpm = rpm.replaceAll("[^a-zA-Z0-9-]", "|");
+					rpm = rpm.replaceAll("[^a-zA-Z0-9-_+]", "|");
 					if (rpm.indexOf('|') > 0)
 						rpm = rpm.substring(0, rpm.indexOf('|'));
 					if (rpm.contains("-")) {

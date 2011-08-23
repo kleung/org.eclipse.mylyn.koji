@@ -187,7 +187,7 @@ public final class KojiBuildInfoParsingUtility {
 	 *         content stored by the each of the entries of the input KojiBuildInfo
 	 *         list.
 	 */
-	public static List<Build> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<Build> buildList) 
+	public static List<IBuild> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<IBuild> buildList) 
 	throws IllegalArgumentException {
 		if((kojiBuildList == null) || (buildList == null))
 			throw new IllegalArgumentException(
@@ -201,7 +201,7 @@ public final class KojiBuildInfoParsingUtility {
 			if(kojiBuild == null)
 				throw new IllegalArgumentException(
 						"Cannot convert null to a Mylyn build.");
-			Build build = buildList.get(icounter);
+			Build build = (Build) buildList.get(icounter);
 			if(build == null)
 				throw new IllegalArgumentException(
 						"Cannot convert a Koji build to null.");
