@@ -39,6 +39,8 @@ public class KojiText extends NLS {
 	/****/ public static String MylynBuildFree;
 	//Build is assigned
 	/****/ public static String MylynBuildAssigned;
+	//Server validation error
+	/****/ public static String KojiValidationError;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

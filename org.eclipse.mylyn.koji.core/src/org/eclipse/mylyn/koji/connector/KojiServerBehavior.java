@@ -29,6 +29,7 @@ import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
+import org.eclipse.mylyn.koji.messages.KojiText;
 
 @SuppressWarnings("restriction")
 public class KojiServerBehavior extends BuildServerBehaviour {
@@ -96,7 +97,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
 					KojiBuildInfo build = buildInfoList.get(icounter);
 					KojiTask task = build.getTask();
-					if(task.getId() == buildID)
+					if((task != null) && (task.getId() == buildID))
 						target = task;
 					else if(build.getBuildId() == buildID)
 						target = build;
@@ -145,6 +146,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	@Override
 	public List<IBuildPlan> getPlans(BuildPlanRequest request,
 			IOperationMonitor monitor) throws CoreException {
+		//query koji for a list of user owned packages
+		//extract list of IDs from request, match against them
+		//and return as a list of build plan.
 		List<IBuildPlan> planList = new ArrayList<IBuildPlan>();
 		List<String> idStringList = request.getPlanIds();
 		List<Integer> idList = new ArrayList<Integer>();
@@ -197,7 +201,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		if(sessionInfo != null)
 			return Status.OK_STATUS;
 		else
-			throw KojiCorePlugin.toCoreException(new Exception("Sever did not respond properly"));
+			throw KojiCorePlugin.toCoreException(new Exception(KojiText.KojiValidationError));
 	}
 
 }
