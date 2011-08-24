@@ -4,9 +4,11 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.builds.core.IBuildPlan;
 import org.eclipse.mylyn.builds.core.spi.BuildPlanRequest;
@@ -23,6 +25,7 @@ import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
+import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
@@ -70,10 +73,14 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			}
 			int limit = (kind == Kind.LAST) ? 1 : -1;
 			try {
+				this.client.login();
 				buildInfoList = this.client.listBuildOfUserByKojiPackageIDAsList(
 						packID, limit);
+				this.client.logout();
 			} catch (KojiClientException e) {
 				throw KojiCorePlugin.toCoreException(e);
+			} catch (KojiLoginException kle) {
+				throw KojiCorePlugin.toCoreException(kle);
 			}
 		}//filter the results
 		if ((buildInfoList != null) && (buildInfoList.size() > 0)) {
@@ -129,6 +136,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	public Reader getConsole(IBuild build, IOperationMonitor monitor)
 			throws CoreException {
 		// TODO Auto-generated method stub
+		//take the plan out of the build, go to the most recent build or task
+		//if the task or most recent build's task exists, query the outputs
+		//otherwise, fail it with exception.
 		return null;
 	}
 
@@ -166,13 +176,28 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	public void runBuild(RunBuildRequest request, IOperationMonitor monitor)
 			throws CoreException {
 		// TODO Auto-generated method stub
-
+		//resubmit a task if the plan contained by the request has a task associated with
+		//like task or most recent build's task
+		//throw exception otherwise.
 	}
 
 	@Override
 	public IStatus validate(IOperationMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		//log in, try getting session info, logout, anything exception happens, fail it
+		Map<String, ?> sessionInfo = null;
+		try {
+			this.client.login();
+			sessionInfo = this.client.getSessionInfoAsMap();
+			this.client.logout();
+		} catch (KojiClientException kce) {
+			KojiCorePlugin.toCoreException(kce);
+		} catch (KojiLoginException kle) {
+			KojiCorePlugin.toCoreException(kle);
+		}
+		if(sessionInfo != null)
+			return Status.OK_STATUS;
+		else
+			throw KojiCorePlugin.toCoreException(new Exception("Sever did not respond properly"));
 	}
 
 }
