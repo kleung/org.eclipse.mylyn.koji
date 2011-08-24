@@ -21,6 +21,7 @@ import org.eclipse.mylyn.builds.internal.core.Build;
 import org.eclipse.mylyn.commons.core.IOperationMonitor;
 import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
+import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
@@ -147,8 +148,17 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	public List<IBuildPlan> getPlans(BuildPlanRequest request,
 			IOperationMonitor monitor) throws CoreException {
 		//query koji for a list of user owned packages
-		//extract list of IDs from request, match against them
-		//and return as a list of build plan.
+		Object[] packArray = null;
+		try {
+			this.client.login();
+			packArray = this.client.listPackagesAsObjectArray();
+			this.client.logout();
+		} catch (KojiLoginException kle) {
+			throw KojiCorePlugin.toCoreException(kle);
+		} catch (KojiClientException kce) {
+			throw KojiCorePlugin.toCoreException(kce);
+		}
+		//extract list of IDs from request
 		List<IBuildPlan> planList = new ArrayList<IBuildPlan>();
 		List<String> idStringList = request.getPlanIds();
 		List<Integer> idList = new ArrayList<Integer>();
@@ -163,8 +173,13 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			}
 			idList.add(new Integer(id));
 		}
+		//match against them and put into a new object array for parsing
+		
 		//need a preference page or something to limit the build query count...
 		
+		
+		
+		//and return as a list of build plan.
 		
 		return planList;
 	}
