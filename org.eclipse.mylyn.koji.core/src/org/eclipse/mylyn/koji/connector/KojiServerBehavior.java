@@ -21,6 +21,7 @@ import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
+import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
@@ -54,49 +55,62 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			IOperationMonitor monitor) throws CoreException {
 		//extract plan(koji package) and its id.
 		IBuildPlan plan = request.getPlan();
-		int packID = 0;
-		try {
-			packID = Integer.parseInt(plan.getId());
-		} catch (NumberFormatException e) {
-			//should not happen...
-			throw KojiCorePlugin.toCoreException(e);
-		}
-		List<KojiBuildInfo> buildInfoList = null;
-		List<IBuild> buildList= new ArrayList<IBuild>();
 		Kind kind = request.getKind();
-		int limit = (kind == Kind.LAST) ? 1 : -1;
-		try {
-			buildInfoList = this.client.listBuildOfUserByKojiPackageIDAsList(
-					packID, limit);
-			if ((buildInfoList != null) && (buildInfoList.size() > 0)) {
-				if(kind == Kind.SELECTED) {
-					//select the selected one out of the buildInfoList
-					Object target = null;
-					for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
-						
-					}
-					if(target == null)//cannot be found
-						return buildList;
-					IBuild build = super.createBuild();
-					if(target instanceof KojiBuildInfo)
-						build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild((KojiBuildInfo)target, build);		
-					else
-						build = KojiTaskParsingUtility.cloneKojiTaskContentToIBuild((KojiTask)target, build);
-					buildList.add(build);
-				} else {//all or last
-					//prepare the IBuild list
-					for (int icounter = 0; icounter < buildInfoList.size(); icounter++) {
-						IBuild b = super.createBuild();
-						b.setPlan(plan);
-						buildList.add(b);
-					}
-					buildList = KojiBuildInfoParsingUtility
-						.cloneKojiBuildInfoListToIBuildList(buildInfoList,
-								buildList);
-				}
+		List<IBuild> buildList= new ArrayList<IBuild>();
+		List<KojiBuildInfo> buildInfoList = null;
+		if((plan != null) && (plan instanceof MylynKojiBuildPlan)) {//this will change after Build class is revised.
+			buildInfoList = ((MylynKojiBuildPlan)plan).getPack().getRecentBuilds();
+		}
+		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
+			int packID = 0;
+			try {
+				packID = Integer.parseInt(plan.getId());
+			} catch (NumberFormatException e) {
+				//should not happen...
+				throw KojiCorePlugin.toCoreException(e);
 			}
-		} catch (KojiClientException e) {
-			throw KojiCorePlugin.toCoreException(e);
+			int limit = (kind == Kind.LAST) ? 1 : -1;
+			try {
+				buildInfoList = this.client.listBuildOfUserByKojiPackageIDAsList(
+						packID, limit);
+				
+			} catch (KojiClientException e) {
+				throw KojiCorePlugin.toCoreException(e);
+			}
+		}//filter the results
+		if ((buildInfoList != null) && (buildInfoList.size() > 0)) {
+			if(kind == Kind.SELECTED) {
+				//select the selected one out of the buildInfoList
+				int buildID = Integer.parseInt(request.getIds().iterator().next());
+				Object target = null;
+				for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
+					KojiBuildInfo build = buildInfoList.get(icounter);
+					KojiTask task = build.getTask();
+					if(task.getId() == buildID)
+						target = task;
+					else if(build.getBuildId() == buildID)
+						target = build;
+					else {}
+				}
+				if(target == null)//cannot be found
+					return buildList;
+				IBuild build = super.createBuild();
+				if(target instanceof KojiBuildInfo)
+					build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild((KojiBuildInfo)target, build);		
+				else
+					build = KojiTaskParsingUtility.cloneKojiTaskContentToIBuild((KojiTask)target, build);
+				buildList.add(build);
+			} else {//all or last
+				//prepare the IBuild list
+				for (int icounter = 0; icounter < buildInfoList.size(); icounter++) {
+					IBuild b = super.createBuild();
+					b.setPlan(plan);
+					buildList.add(b);
+				}
+				buildList = KojiBuildInfoParsingUtility
+					.cloneKojiBuildInfoListToIBuildList(buildInfoList,
+							buildList);
+			}
 		}
 		return buildList;
 	}
