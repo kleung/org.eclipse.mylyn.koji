@@ -215,6 +215,8 @@ public final class KojiTaskParsingUtility {
 	
 	/**
 	 * Copy the applicable content of a given KojiTask object into an IBuild object for use with Mylyn Builds.
+	 *
+	 * TODO Parse artifacts such as rpms.
 	 * 
 	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are not null and of the expected type.
 	 * 
@@ -226,7 +228,9 @@ public final class KojiTaskParsingUtility {
 		if((task == null) || (build == null))
 			throw new IllegalArgumentException("Cannot convert a null Koji task to a Mylyn build" +
 					" or a Koji task to a null Mylyn build.");
+		build.setId(Integer.toString(task.getId()));
 		String displayName = build.getDisplayName();
+		//it wasn't set by KojiBuildInfoParsingUtility
 		if((displayName == null) || (displayName.trim().compareToIgnoreCase("") == 0))
 			build.setDisplayName(task.getRpm());
 		build.setBuildNumber(1);

@@ -105,6 +105,8 @@ public final class KojiBuildInfoParsingUtility {
 	 * Copy the applicable content of the KojiBuildInfo object to the IBuild
 	 * object.
 	 * 
+	 * TODO parse artifacts such as rpms.
+	 * 
 	 * IMPORTANT: It is the caller's responsibility to ensure the parameters are
 	 * not null and of the expected type.
 	 * 
@@ -120,8 +122,7 @@ public final class KojiBuildInfoParsingUtility {
 		if((kojiBuildInfo == null) || (build == null))
 			throw new IllegalArgumentException("Cannot convert null Koji build to a Mylyn build" +
 					" or a Koji build into a null Mylyn build.");
-		//use build ID & NVR regardless availability of task.
-		build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
+		//use NVR regardless availability of task.
 		build.setDisplayName(new String(kojiBuildInfo.getNvr()));
 		build.setName(new String(kojiBuildInfo.getNvr()));
 		if(kojiBuildInfo.getTask() == null) { //task is not available, use build instead.
@@ -163,8 +164,10 @@ public final class KojiBuildInfoParsingUtility {
 					build.setSummary(KojiText.MylynBuildCancelled);
 					break;
 			}
-		} else
+		} else {
+			build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
 			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
+		}
 		return build;
 	}
 	

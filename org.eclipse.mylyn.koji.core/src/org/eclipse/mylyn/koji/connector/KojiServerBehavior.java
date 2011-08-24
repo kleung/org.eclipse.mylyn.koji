@@ -58,9 +58,8 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Kind kind = request.getKind();
 		List<IBuild> buildList= new ArrayList<IBuild>();
 		List<KojiBuildInfo> buildInfoList = null;
-		if((plan != null) && (plan instanceof MylynKojiBuildPlan)) {//this will change after Build class is revised.
+		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//this will change after Build class is revised.
 			buildInfoList = ((MylynKojiBuildPlan)plan).getPack().getRecentBuilds();
-		}
 		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
 			int packID = 0;
 			try {
@@ -73,7 +72,6 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			try {
 				buildInfoList = this.client.listBuildOfUserByKojiPackageIDAsList(
 						packID, limit);
-				
 			} catch (KojiClientException e) {
 				throw KojiCorePlugin.toCoreException(e);
 			}
@@ -81,7 +79,12 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		if ((buildInfoList != null) && (buildInfoList.size() > 0)) {
 			if(kind == Kind.SELECTED) {
 				//select the selected one out of the buildInfoList
-				int buildID = Integer.parseInt(request.getIds().iterator().next());
+				int buildID = 0;
+				try {
+					Integer.parseInt(request.getIds().iterator().next());
+				} catch (NumberFormatException e) {
+					throw KojiCorePlugin.toCoreException(e);
+				}
 				Object target = null;
 				for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
 					KojiBuildInfo build = buildInfoList.get(icounter);
@@ -99,6 +102,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 					build = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild((KojiBuildInfo)target, build);		
 				else
 					build = KojiTaskParsingUtility.cloneKojiTaskContentToIBuild((KojiTask)target, build);
+				build.setPlan(plan);
 				buildList.add(build);
 			} else {//all or last
 				//prepare the IBuild list
@@ -131,8 +135,24 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	@Override
 	public List<IBuildPlan> getPlans(BuildPlanRequest request,
 			IOperationMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		List<IBuildPlan> planList = new ArrayList<IBuildPlan>();
+		List<String> idStringList = request.getPlanIds();
+		List<Integer> idList = new ArrayList<Integer>();
+		//convert list of string ids to list of integer ids.
+		for(String s : idStringList) {
+			int id = 0;
+			try {
+				id = Integer.parseInt(s);
+			} catch (NumberFormatException e) {
+				//should not happen...
+				throw KojiCorePlugin.toCoreException(e);
+			}
+			idList.add(new Integer(id));
+		}
+		//need a preference page or something to limit the build query count...
+		
+		
+		return planList;
 	}
 
 	@Override
