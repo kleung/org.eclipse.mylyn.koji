@@ -181,8 +181,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			throws CoreException {
 		// TODO Auto-generated method stub
 		//resubmit a task if the plan contained by the request has a task associated with
-		//like task or most recent build's task
-		//throw exception otherwise.
+		// or most recent build's task and the task was failed or cancelled
+		//throw exception otherwise - scratch/import builds and successful builds cannot be
+		//resubmitted, please push a new build
 	}
 
 	@Override
