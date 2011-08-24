@@ -28,7 +28,7 @@ public class MylynKojiBuildPlan extends BuildPlan {
 		plan.setName(new String(super.name));
 		Build b = (Build) BuildFactory.eINSTANCE.createBuild();
 		if((pack.getRecentBuilds().size() > 0) && (pack.getRecentBuilds().get(0) != null))
-			b = KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild(this.pack.getRecentBuilds().get(0), b);
+			KojiBuildInfoParsingUtility.cloneKojiBuildInfoContentToIBuild(this.pack.getRecentBuilds().get(0), b);
 		plan.setLastBuild(b);
 		plan.setPack(this.pack.clone());
 		return plan;
