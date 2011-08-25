@@ -15,6 +15,7 @@ import org.eclipse.mylyn.builds.core.spi.BuildPlanRequest;
 import org.eclipse.mylyn.builds.core.spi.BuildServerBehaviour;
 import org.eclipse.mylyn.builds.core.spi.BuildServerConfiguration;
 import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest;
+import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest.Scope;
 import org.eclipse.mylyn.builds.core.spi.RunBuildRequest;
 import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest.Kind;
 import org.eclipse.mylyn.builds.internal.core.Build;
@@ -28,6 +29,7 @@ import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiPackageParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
 import org.eclipse.mylyn.koji.messages.KojiText;
@@ -73,7 +75,16 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				//should not happen...
 				throw KojiCorePlugin.toCoreException(e);
 			}
-			int limit = (kind == Kind.LAST) ? 1 : -1;
+			int limit = 0;
+			if(kind == Kind.LAST)
+				limit = 1;
+			else if(kind == Kind.ALL) {
+				if(request.getScope() == Scope.HISTORY) {
+					//TODO limit should be taken from a configuration page...
+					//TODO limit = SOMETHING;
+				} else
+					limit = -1;
+			}
 			try {
 				this.client.login();
 				buildInfoList = this.client.listBuildOfUserByKojiPackageIDAsList(
@@ -152,7 +163,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Object[] packArray = null;
 		try {
 			this.client.login();
-			packArray = this.client.listPackagesAsObjectArray();
+			packArray = this.client.listPackagesOfUserAsObjectArray();
 			this.client.logout();
 		} catch (KojiLoginException kle) {
 			throw KojiCorePlugin.toCoreException(kle);
@@ -163,8 +174,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		if((packArray != null) && (packArray.length > 0)) {
 			// extract list of IDs from request
 			List<String> idStringList = request.getPlanIds();
-			List<Object> packMapList = new ArrayList<Object>();
-			Object[] packMapArray = null;
+			List<Map<String, Object>> packMapList = new ArrayList<Map<String, Object>>();
 			// convert list of string ids to list of integer ids.
 			// match against them and put into a new object array for parsing
 			for (String s : idStringList) {
@@ -178,20 +188,30 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				Object targetMap = null;
 				for(int icounter = 0; ((icounter < packArray.length) && (targetMap == null)); icounter++) {
 					Map<String, Object> packMap = null;
-					if(packArray[icounter] instanceof Map)
+					if(packArray[icounter] instanceof Map) {
 						 packMap = (Map<String, Object>)packArray[icounter];
-					if(((Integer)packMap.get("id")).intValue() == id)
-						targetMap = packArray[icounter];
+						 if(((Integer)packMap.get("id")).intValue() == id)
+							 targetMap = packArray[icounter];
+					}
 				}
-				packMapList.add(targetMap);
+				if(targetMap != null)
+					packMapList.add((Map<String, Object>)targetMap);
 			}
-			//copy content of packMapList to packMapArray
-			packMapArray = new Object[packMapList.size()];
-			for(int icounter = 0; icounter < packMapList.size(); icounter++)
-				packMapArray[icounter] = packMapList.get(icounter);
-			// need a preference page or something to limit the build query
+			// TODO need a preference page or something to limit the build query
 			// count...
-
+			//TODO int limit = something;
+			try {
+				this.client.login();
+				for(Map<String, Object> m : packMapList) {
+					KojiPackage pack = KojiPackageParsingUtility.parsePackage(m, true, this.client, /*TODO limit*/-1, true);
+					planList.add(KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this));
+				}
+				this.client.logout();
+			} catch (KojiClientException kce) {
+				KojiCorePlugin.toCoreException(kce);
+			} catch (KojiLoginException kle) {
+				KojiCorePlugin.toCoreException(kle);
+			}
 			// and return as a list of build plan.
 		}
 		return planList;
