@@ -144,6 +144,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<IBuildPlan> getPlans(BuildPlanRequest request,
 			IOperationMonitor monitor) throws CoreException {
@@ -158,29 +159,41 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		} catch (KojiClientException kce) {
 			throw KojiCorePlugin.toCoreException(kce);
 		}
-		//extract list of IDs from request
 		List<IBuildPlan> planList = new ArrayList<IBuildPlan>();
-		List<String> idStringList = request.getPlanIds();
-		List<Integer> idList = new ArrayList<Integer>();
-		//convert list of string ids to list of integer ids.
-		for(String s : idStringList) {
-			int id = 0;
-			try {
-				id = Integer.parseInt(s);
-			} catch (NumberFormatException e) {
-				//should not happen...
-				throw KojiCorePlugin.toCoreException(e);
+		if((packArray != null) && (packArray.length > 0)) {
+			// extract list of IDs from request
+			List<String> idStringList = request.getPlanIds();
+			List<Object> packMapList = new ArrayList<Object>();
+			Object[] packMapArray = null;
+			// convert list of string ids to list of integer ids.
+			// match against them and put into a new object array for parsing
+			for (String s : idStringList) {
+				int id = 0;
+				try {
+					id = Integer.parseInt(s);
+				} catch (NumberFormatException e) {
+					// should not happen...
+					throw KojiCorePlugin.toCoreException(e);
+				}
+				Object targetMap = null;
+				for(int icounter = 0; ((icounter < packArray.length) && (targetMap == null)); icounter++) {
+					Map<String, Object> packMap = null;
+					if(packArray[icounter] instanceof Map)
+						 packMap = (Map<String, Object>)packArray[icounter];
+					if(((Integer)packMap.get("id")).intValue() == id)
+						targetMap = packArray[icounter];
+				}
+				packMapList.add(targetMap);
 			}
-			idList.add(new Integer(id));
+			//copy content of packMapList to packMapArray
+			packMapArray = new Object[packMapList.size()];
+			for(int icounter = 0; icounter < packMapList.size(); icounter++)
+				packMapArray[icounter] = packMapList.get(icounter);
+			// need a preference page or something to limit the build query
+			// count...
+
+			// and return as a list of build plan.
 		}
-		//match against them and put into a new object array for parsing
-		
-		//need a preference page or something to limit the build query count...
-		
-		
-		
-		//and return as a list of build plan.
-		
 		return planList;
 	}
 
