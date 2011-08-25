@@ -1,10 +1,13 @@
 package org.eclipse.mylyn.koji.connector;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -65,7 +68,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Kind kind = request.getKind();
 		List<IBuild> buildList= new ArrayList<IBuild>();
 		List<KojiBuildInfo> buildInfoList = null;
-		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//this will change after Build class is revised.
+		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//TODO this will change after Build class is revised.
 			buildInfoList = ((MylynKojiBuildPlan)plan).getPack().getRecentBuilds();
 		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
 			int packID = 0;
@@ -152,9 +155,149 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		//take the plan out of the build, go to the most recent build or task
 		//if the task or most recent build's task exists, query the outputs
 		//otherwise, fail it with exception.
-		return null;
+		IBuildPlan plan = build.getPlan();
+		int id = 0;
+		try {
+			id = (Integer.parseInt(build.getId()));
+		} catch (NumberFormatException e) {
+			throw KojiCorePlugin.toCoreException(e);
+		}
+		Reader resultReader = null;
+		String result = "";
+		KojiTask targetTask = null;
+		//find the build/task
+		if(plan instanceof MylynKojiBuildPlan) {//TODO MylynKojiBuildPlan should be taken out when Mylyn Builds people finishes revising the BuildPlan class.
+			KojiPackage pack = ((MylynKojiBuildPlan)plan).getPack();
+			if(pack.getTask() != null) {
+				//coming from fedora packager as a build editor viewing of a recently pushed task
+				KojiTask task = pack.getTask();
+				if(task.getId() != id) {
+					//package doesn't contain the required information
+					throw KojiCorePlugin.toCoreException(new Exception(KojiText.NoBuildOwnedByUserError));
+				} else 
+					targetTask = task;
+			}else if(pack.getRecentBuilds() != null) {
+				//coming from Mylyn Builds in the usual way
+				//search for each build's task, if task w/ a matching id is found, query, otherwise, fail it
+				Object target = null;
+				List<KojiBuildInfo> buildList= pack.getRecentBuilds();
+				for(int icounter = 0; ((icounter < buildList.size()) && (target == null)); icounter++) {
+					KojiBuildInfo info = buildList.get(icounter);
+					if(info.getTaskId() == id)
+						target = info.getTask();
+					else if(info.getBuildId() == id)
+						target = info;
+					else {}
+				}
+				if(target != null) {
+					if(target instanceof KojiBuildInfo)
+						throw KojiCorePlugin.toCoreException(new Exception(KojiText.ImportedTaskConsoleShowingError));
+					else
+						targetTask = (KojiTask)target;
+				}
+			} else {
+				//package doesn't contain the required information - the user doesn't own any of the package's build
+				throw KojiCorePlugin.toCoreException(new Exception(KojiText.NoBuildOwnedByUserError));
+			}
+		}
+		if(targetTask != null) {
+			//update the task by querying, then
+			//query koji for its descendents' outputs, concatenate them and store in result.
+			//otherwise, fail it
+			KojiTask updatedTask = null;
+			try {
+				this.client.login();
+				updatedTask = this.client.getTaskInfoByIDAsKojiTask(id);
+				this.client.logout();
+			} catch (KojiClientException kce) {
+				throw KojiCorePlugin.toCoreException(kce);
+			} catch (KojiLoginException kle) {
+				throw KojiCorePlugin.toCoreException(kle);
+			}
+			if(updatedTask != null) {
+				List<KojiTask> descendentList = updatedTask.getDescendents();
+				if((descendentList != null) && (descendentList.size() > 0)) {
+					result += (KojiText.outputHeader + "\n\n");
+					for(int icounter = 0; icounter < descendentList.size(); icounter++) {
+						KojiTask task = descendentList.get(icounter);
+						int taskState = task.getTaskStateCode();
+						if((taskState == 2) || (taskState == 5)) {//task finished successfully or failed
+							Map<String, HashMap<String, Object>> outputMap = null;
+							try {
+								this.client.login();
+								outputMap = this.client.listTaskOutputAsMap(task.getId());
+								this.client.logout();
+							}  catch (KojiClientException kce) {
+								throw KojiCorePlugin.toCoreException(kce);
+							} catch (KojiLoginException kle) {
+								throw KojiCorePlugin.toCoreException(kle);
+							}
+							if((outputMap != null) && (outputMap.size() > 0)) {
+								Set<String> keySet = outputMap.keySet();
+								if(keySet.size() > 0) {
+									String content = null;
+									result += (task.getRpm() + ":\n\n");
+									if(keySet.contains("build.log")) {
+										result += "build.log:\n\n";
+										content = this.downloadOutputContent(task.getId(), "build.log", outputMap);
+										if(content != null)
+											result += content;
+										result += "\n\n";
+									}
+									if(keySet.contains("mock_output.log")) {
+										result += "mock_output.log:\n\n";
+										content = this.downloadOutputContent(task.getId(), "mock_output.log", outputMap);
+										if(content != null)
+											result += content;
+										result += "\n\n";
+									}
+									if(keySet.contains("root.log")) {
+										result += "root.log:\n\n";
+										content = this.downloadOutputContent(task.getId(), "root.log", outputMap);
+										if(content != null)
+											result += content;
+										result += "\n\n";
+									}
+									if(keySet.contains("state.log")) {
+										result += "state.log:\n\n";
+										content = this.downloadOutputContent(task.getId(), "state.log", outputMap);
+										if(content != null)
+											result += content;
+										result += "\n\n";
+									}
+									result += "\n\n";
+								}
+							}
+						}
+					}
+					result += (KojiText.outputFooter + "\n");
+				}
+			}
+		}
+		resultReader = new StringReader(result);
+		return resultReader;
 	}
 
+	private String downloadOutputContent(int taskId, String fileName, Map<String, HashMap<String, Object>> data) throws CoreException {
+		int textSize = 0;
+		String content = null;
+		try {
+			textSize = Integer.parseInt((String)data.get(fileName).get("st_size"));
+		} catch (NumberFormatException nfe) {
+			throw KojiCorePlugin.toCoreException(nfe);
+		}
+		try {
+			this.client.login();
+			content = this.client.downloadTaskOutputAsString(taskId, fileName, 0, textSize);
+			this.client.logout();
+		}  catch (KojiClientException kce) {
+			throw KojiCorePlugin.toCoreException(kce);
+		} catch (KojiLoginException kle) {
+			throw KojiCorePlugin.toCoreException(kle);
+		}
+		return content;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<IBuildPlan> getPlans(BuildPlanRequest request,
@@ -208,9 +351,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				}
 				this.client.logout();
 			} catch (KojiClientException kce) {
-				KojiCorePlugin.toCoreException(kce);
+				throw KojiCorePlugin.toCoreException(kce);
 			} catch (KojiLoginException kle) {
-				KojiCorePlugin.toCoreException(kle);
+				throw KojiCorePlugin.toCoreException(kle);
 			}
 			// and return as a list of build plan.
 		}
@@ -243,9 +386,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			sessionInfo = this.client.getSessionInfoAsMap();
 			this.client.logout();
 		} catch (KojiClientException kce) {
-			KojiCorePlugin.toCoreException(kce);
+			throw KojiCorePlugin.toCoreException(kce);
 		} catch (KojiLoginException kle) {
-			KojiCorePlugin.toCoreException(kle);
+			throw KojiCorePlugin.toCoreException(kle);
 		}
 		if(sessionInfo != null)
 			return Status.OK_STATUS;

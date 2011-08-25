@@ -147,9 +147,6 @@ public final class KojiTaskParsingUtility {
 				String fullRpmStr = (String) requestStr;
 				String rpm = fullRpmStr.substring(
 						fullRpmStr.lastIndexOf("/") + 1, fullRpmStr.length()); //$NON-NLS-1$
-				if (!rpm.contains(".rpm")) {
-					rpm = rpmToPackageName(rpm);
-				}
 				task.setRpm(rpm);
 			}
 			requestStr = requestStrings[1];

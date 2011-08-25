@@ -41,6 +41,14 @@ public class KojiText extends NLS {
 	/****/ public static String MylynBuildAssigned;
 	//Server validation error
 	/****/ public static String KojiValidationError;
+	//No build is owned by user
+	/****/ public static String NoBuildOwnedByUserError;
+	//Cannot show imported task
+	/****/ public static String ImportedTaskConsoleShowingError;
+	//Task output header
+	/****/ public static String outputHeader;
+	//Task output footer
+	/****/ public static String outputFooter;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}
