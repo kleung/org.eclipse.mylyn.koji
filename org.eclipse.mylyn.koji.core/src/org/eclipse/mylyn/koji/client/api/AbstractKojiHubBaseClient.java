@@ -665,10 +665,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * available on the Koji server.
 	 * @throws KojiClientException
 	 */
-	public List<KojiPackage> listPackagesAsKojiPackageList() throws KojiClientException {
+	public List<KojiPackage> listPackagesAsKojiPackageList(int limit) throws KojiClientException, IllegalArgumentException {
 		Object[] packageArray = this.listPackagesAsObjectArray();
 		if(packageArray != null)
-			return KojiPackageParsingUtility.parsePackageArrayAsKojiPackageList(packageArray);
+			return KojiPackageParsingUtility.parsePackageArrayAsKojiPackageList(packageArray, this, limit, false);
 		else
 			return null;
 	}
@@ -876,10 +876,10 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * available on the Koji server.
 	 * @throws KojiClientException
 	 */
-	public List<KojiPackage> listPackagesOfUserAsKojiPackageList() throws KojiClientException {
+	public List<KojiPackage> listPackagesOfUserAsKojiPackageList(int limit) throws KojiClientException, IllegalArgumentException {
 		Object[] packageArray = this.listPackagesOfUserAsObjectArray();
 		if(packageArray != null)
-			return KojiPackageParsingUtility.parsePackageArrayAsKojiPackageList(packageArray);
+			return KojiPackageParsingUtility.parsePackageArrayAsKojiPackageList(packageArray, this, limit, true);
 		else
 			return null;
 	}

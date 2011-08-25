@@ -76,18 +76,29 @@ public final class KojiPackageParsingUtility {
 	/**
 	 * Parses an array of hash maps containning Koji packages into  a list of KojiPackage objects.
 	 * 
+	 * @param input
+	 *            An array of maps containing package information.
+	 * @param wsClient
+	 *            The Koji webservice client.
+	 * @param limit
+	 * 			  The amount of recent builds to parse
+	 * @param userSpecific
+	 * 			  Boolean value determining whether the utility should query only builds
+	 *            belong to the user. 
 	 * IMPORTANT: It is the caller's responsibility to make sure that input is not null.
 	 * 
 	 * @param input The array of hash maps containning information about Koji packages.
 	 * @return A list of KojiPackage objects.
 	 */
-	public static List<KojiPackage> parsePackageArrayAsKojiPackageList(Object[] input) {
+	public static List<KojiPackage> parsePackageArrayAsKojiPackageList(Object[] input,
+			IKojiHubClient wsClient, int limit, boolean userSpecific) 
+			throws KojiClientException, IllegalArgumentException {
 		LinkedList<KojiPackage> packList = new LinkedList<KojiPackage>();
 		for(Object o : input) {
 			if((o != null) && (o instanceof Map)) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> packageMap = (Map<String, Object>)o;
-				KojiPackage pack = internalParsePackage(packageMap);
+				KojiPackage pack = parsePackage(packageMap, true, wsClient, limit, userSpecific);
 				packList.add(pack);
 			}
 		}

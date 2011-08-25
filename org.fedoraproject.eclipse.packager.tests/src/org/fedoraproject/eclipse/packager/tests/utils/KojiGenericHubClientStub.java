@@ -215,7 +215,7 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesAsKojiPackageList()
 	 */
 	@Override
-	public List<KojiPackage> listPackagesAsKojiPackageList() throws KojiClientException {
+	public List<KojiPackage> listPackagesAsKojiPackageList(int limit) throws KojiClientException, IllegalArgumentException {
 		return null;
 	}
 	
@@ -290,8 +290,8 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#listPackagesOfUserAsKojiPackageList()
 	 */
 	@Override
-	public List<KojiPackage> listPackagesOfUserAsKojiPackageList()
-			throws KojiClientException {
+	public List<KojiPackage> listPackagesOfUserAsKojiPackageList(int limit)
+			throws KojiClientException, IllegalArgumentException {
 		return null;
 	}
 

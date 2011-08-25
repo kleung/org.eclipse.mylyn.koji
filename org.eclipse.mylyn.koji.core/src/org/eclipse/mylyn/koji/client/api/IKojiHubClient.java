@@ -258,11 +258,12 @@ public interface IKojiHubClient {
 	/**
 	 * Lists all packages available on the Koji server, does not query
 	 * the packages' recent builds.
+	 * @param Limit the amount of builds returned, -1 for no limit.
 	 * @return	A list of KojiPackage objects representing all the packages
 	 * available on the Koji server.
 	 * @throws KojiClientException
 	 */
-	public List<KojiPackage> listPackagesAsKojiPackageList() throws KojiClientException;
+	public List<KojiPackage> listPackagesAsKojiPackageList(int limit) throws KojiClientException, IllegalArgumentException;
 	
 	/**
 	 * Gets a package as map by a given ID.
@@ -286,7 +287,7 @@ public interface IKojiHubClient {
 	/**
 	 * Lists recent builds of a given package ID, amount can be limited by limit.
 	 * @param packageID The ID of the package to be queried.
-	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
+	 * @param Limit the maximum amount of builds to be queried, -1 for no limit.
 	 * @return A list of KojiBuildInfo objects that belongs to the package.
 	 * @throws KojiClientException
 	 */
@@ -326,11 +327,12 @@ public interface IKojiHubClient {
 	/**
 	 * Lists all packages available, owned by the user, on the Koji server, does not query
 	 * the packages' recent builds.
+	 * @param limit Limit the amount of builds returned, -1 for no limit.
 	 * @return	A list of KojiPackage objects representing all the packages
 	 * available on the Koji server.
 	 * @throws KojiClientException
 	 */
-	public List<KojiPackage> listPackagesOfUserAsKojiPackageList() throws KojiClientException;
+	public List<KojiPackage> listPackagesOfUserAsKojiPackageList(int limit) throws KojiClientException, IllegalArgumentException;
 	
 	/**
 	 * Lists recent builds of a given package ID, owned by the user, amount can be limited by limit.

@@ -613,7 +613,7 @@ public class KojiSSLHubClientTest {
 		// Log in first
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
-		Object packs = kojiClient.listPackagesAsKojiPackageList();
+		Object packs = kojiClient.listPackagesAsKojiPackageList(-1);
 		assertNotNull(packs);
 		assertTrue(packs instanceof List);
 		List<KojiPackage> packages = (List<KojiPackage>)packs;
@@ -848,7 +848,7 @@ public class KojiSSLHubClientTest {
 		// Log in first
 		HashMap<?, ?> sessionData = kojiClient.login();
 		assertNotNull(sessionData);
-		Object result = kojiClient.listPackagesOfUserAsKojiPackageList();
+		Object result = kojiClient.listPackagesOfUserAsKojiPackageList(-1);
 		assertNull(result);
 	}
 	
