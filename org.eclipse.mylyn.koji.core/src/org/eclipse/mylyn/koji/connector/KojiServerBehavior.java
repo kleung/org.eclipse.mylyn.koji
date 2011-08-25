@@ -40,6 +40,8 @@ import org.eclipse.mylyn.koji.messages.KojiText;
 @SuppressWarnings("restriction")
 public class KojiServerBehavior extends BuildServerBehaviour {
 
+	//TODO keep a copy of configuration and cache here.
+	//TODO need a custom way of read cache here...
 	private KojiSSLHubClient client;
 	
 	public KojiServerBehavior(RepositoryLocation location) {
@@ -364,6 +366,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	public BuildServerConfiguration refreshConfiguration(
 			IOperationMonitor monitor) throws CoreException {
 		// TODO Auto-generated method stub
+		// TODO query all tasks of the user from koji, write cache by calling set cache
 		return null;
 	}
 
