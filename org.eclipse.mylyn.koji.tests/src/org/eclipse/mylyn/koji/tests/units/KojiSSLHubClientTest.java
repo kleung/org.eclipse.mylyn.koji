@@ -554,6 +554,9 @@ public class KojiSSLHubClientTest {
 		//query task -1
 		HashMap<String, HashMap<String, Object>> taskOutputs = kojiClient.listTaskOutputAsMap(-1);
 		assertNull(taskOutputs);
+		//query task 4626 (does not have outputs)
+		taskOutputs = kojiClient.listTaskOutputAsMap(4626);
+		assertNull(taskOutputs);
 	}
 	
 	/**
