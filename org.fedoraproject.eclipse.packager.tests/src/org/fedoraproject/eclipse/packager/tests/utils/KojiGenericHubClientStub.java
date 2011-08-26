@@ -322,8 +322,7 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	 */
 	@Override
 	public void resubmitTask(int taskID) throws KojiClientException {
-		// TODO Auto-generated method stub
-		
+
 	}
 	
 }
