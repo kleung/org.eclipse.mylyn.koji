@@ -233,7 +233,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			if(updatedTask != null) {
 				List<KojiTask> descendentList = updatedTask.getDescendents();
 				if((descendentList != null) && (descendentList.size() > 0)) {
-					result += (KojiText.outputHeader + "\n\n");
+					result += (KojiText.OutputHeader + "\n\n");
 					for(int icounter = 0; icounter < descendentList.size(); icounter++) {
 						KojiTask task = descendentList.get(icounter);
 						int taskState = task.getTaskStateCode();
@@ -286,7 +286,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 							}
 						}
 					}
-					result += (KojiText.outputFooter + "\n");
+					result += (KojiText.OutputFooter + "\n");
 				}
 			}
 		}
@@ -404,12 +404,61 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	@Override
 	public void runBuild(RunBuildRequest request, IOperationMonitor monitor)
 			throws CoreException {
-		// TODO Auto-generated method stub
-		//update the task
+		//query the task
 		//resubmit a task if the plan contained by the request has a
 		//most recent build's task and the task was failed or cancelled
 		//throw exception otherwise - scratch/import builds and successful builds cannot be
 		//resubmitted, please push a new build
+		IBuildPlan plan = request.getPlan();
+		int planID = 0;
+		int buildID = 0;
+		KojiPackage kojiPackage = null;
+		try {
+			planID = Integer.parseInt(plan.getId());
+			buildID = Integer.parseInt(plan.getLastBuild().getId());
+		} catch (NumberFormatException nfe) {
+			throw KojiCorePlugin.toCoreException(nfe);
+		}		 
+		try {
+			this.client.login();
+			kojiPackage = this.client.getPackageOfUserByIDAsKojiPackage(planID, -1);
+			this.client.logout();
+		} catch (KojiClientException kce) {
+			throw KojiCorePlugin.toCoreException(kce);
+		} catch (KojiLoginException kle) {
+			throw KojiCorePlugin.toCoreException(kle);
+		}
+		if(kojiPackage != null) {
+			Object target = null;
+			List<KojiBuildInfo> buildList= kojiPackage.getRecentBuilds();
+			for(int icounter = 0; ((icounter < buildList.size()) && (target == null)); icounter++) {
+				KojiBuildInfo info = buildList.get(icounter);
+				if(info.getTaskId() == buildID)
+					target = info.getTask();
+				else if(info.getBuildId() == buildID)
+					target = info;
+				else {}
+			}
+			if(target != null) {
+				if(target instanceof KojiBuildInfo)
+					throw KojiCorePlugin.toCoreException(new Exception(KojiText.BuildImportedBuildsError));
+				else {
+					int taskStateCode = ((KojiTask)target).getTaskStateCode();
+					if((taskStateCode != 3) && (taskStateCode != 5))
+						throw KojiCorePlugin.toCoreException(new Exception(KojiText.TaskNotFailCancelledError));
+					try {
+						this.client.login();
+						this.client.resubmitTask(buildID);
+					} catch (KojiClientException kce) {
+						throw KojiCorePlugin.toCoreException(kce);
+					} catch (KojiLoginException kle) {
+						throw KojiCorePlugin.toCoreException(kle);
+					}
+				}
+			} else {
+				throw KojiCorePlugin.toCoreException(new Exception(KojiText.TaskNotFoundOrOwnedByUserError));
+			}
+		}	
 	}
 
 	@Override

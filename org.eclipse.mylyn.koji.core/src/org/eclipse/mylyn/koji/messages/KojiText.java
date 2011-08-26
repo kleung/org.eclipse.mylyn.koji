@@ -46,9 +46,15 @@ public class KojiText extends NLS {
 	//Cannot show imported task
 	/****/ public static String ImportedTaskConsoleShowingError;
 	//Task output header
-	/****/ public static String outputHeader;
+	/****/ public static String OutputHeader;
 	//Task output footer
-	/****/ public static String outputFooter;
+	/****/ public static String OutputFooter;
+	//Building imported build is impossible
+	/****/ public static String BuildImportedBuildsError;
+	//Building a task not owned by user
+	/****/ public static String TaskNotFoundOrOwnedByUserError;
+	//Building a task that is neither failed nor cancelled.
+	/****/ public static String TaskNotFailCancelledError;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

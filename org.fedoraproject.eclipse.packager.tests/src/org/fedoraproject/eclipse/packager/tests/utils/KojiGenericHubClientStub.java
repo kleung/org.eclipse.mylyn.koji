@@ -324,5 +324,15 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	public void resubmitTask(int taskID) throws KojiClientException {
 
 	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#getPackageOfUserByIDAsKojiPackage(int, int)
+	 */
+	@Override
+	public KojiPackage getPackageOfUserByIDAsKojiPackage(int packageID,
+			int limit) throws KojiClientException, IllegalArgumentException {
+		return null;
+	}
 	
 }

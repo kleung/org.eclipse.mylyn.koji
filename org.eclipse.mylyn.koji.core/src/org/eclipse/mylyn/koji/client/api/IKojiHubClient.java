@@ -357,4 +357,14 @@ public interface IKojiHubClient {
 	 * @throws KojiClientException
 	 */
 	public void resubmitTask(int taskID) throws KojiClientException;
+	
+	/**
+	 * Gets the package by ID as KojiPackage.  It only includes builds that belongs to the user.
+	 * @param packageID The package ID.
+	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
+	 * @return A KojiPackage object with the given ID and all the builds belongs to the user.
+	 * @throws KojiClientException
+	 * @throws IllegalArgumentException
+	 */
+	public KojiPackage getPackageOfUserByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException;
 }

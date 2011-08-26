@@ -972,4 +972,22 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		}
 	}
 	
+	/**
+	 * Gets the package by ID as KojiPackage.  It only includes builds that belongs to the user.
+	 * @param packageID The package ID.
+	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
+	 * @return A KojiPackage object with the given ID and all the builds belongs to the user.
+	 * @throws KojiClientException
+	 * @throws IllegalArgumentException
+	 */
+	public KojiPackage getPackageOfUserByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
+		if((limit < -1) || (limit == 0))
+			throw new IllegalArgumentException();
+		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
+		if(packageMap != null)
+			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit, true);
+		else
+			return null;
+	}
+	
 }
