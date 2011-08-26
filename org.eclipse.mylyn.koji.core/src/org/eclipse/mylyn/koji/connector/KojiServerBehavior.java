@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -156,8 +157,12 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 
 	@Override
 	public BuildServerConfiguration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
+		//convert all entries found in config to list of BuildPlans and return it
+		Map<Integer, KojiPackage> configMap = this.config.getPackageByID();
+		ArrayList<IBuildPlan> planList = new ArrayList<IBuildPlan>();
+		for(Entry<Integer, KojiPackage> entry : configMap.entrySet())
+			planList.add(KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(entry.getValue(), this));
+		return new BuildServerConfiguration(planList);
 	}
 
 	@Override
