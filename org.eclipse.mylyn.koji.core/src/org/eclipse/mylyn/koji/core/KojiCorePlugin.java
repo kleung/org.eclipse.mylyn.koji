@@ -3,6 +3,7 @@ package org.eclipse.mylyn.koji.core;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.koji.connector.KojiConnector;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -19,6 +20,8 @@ public class KojiCorePlugin extends AbstractUIPlugin {
 	
 	// The shared instance
 	private static KojiCorePlugin plugin;
+	
+	private KojiConnector connector;
 	
 	/**
 	 * The constructor
@@ -53,6 +56,17 @@ public class KojiCorePlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public KojiConnector getConnector() {
+		if (connector == null) {
+			connector = new KojiConnector();
+		}
+		return connector;
+	}
+
+	void setConnector(KojiConnector connector) {
+		this.connector = connector;
+	}
+	
 	public static CoreException toCoreException(Exception e) {
 		return new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, "Unexpected error: " + e.getMessage(), e));
 	}
