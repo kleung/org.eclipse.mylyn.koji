@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.builds.core.IBuildPlan;
+import org.eclipse.mylyn.builds.core.spi.AbstractConfigurationCache;
 import org.eclipse.mylyn.builds.core.spi.BuildPlanRequest;
 import org.eclipse.mylyn.builds.core.spi.BuildServerBehaviour;
 import org.eclipse.mylyn.builds.core.spi.BuildServerConfiguration;
@@ -44,13 +45,18 @@ import org.osgi.framework.Bundle;
 @SuppressWarnings("restriction")
 public class KojiServerBehavior extends BuildServerBehaviour {
 
-	//TODO keep a copy of configuration and cache here.
-	//TODO need a custom way of read cache here...
+	private KojiConfiguration config;
+	
+	private AbstractConfigurationCache<KojiConfiguration> cache = new KojiConfigurationCache(getCacheFile());
+	
 	private KojiSSLHubClient client;
+	
+	private String url;
 	
 	public KojiServerBehavior(RepositoryLocation location) {
 		try {
-			this.client = new KojiSSLHubClient(location.getUrl());
+			url = location.getUrl();
+			this.client = new KojiSSLHubClient(this.url);
 		} catch (MalformedURLException e) {
 			//should not happen
 		}
@@ -74,7 +80,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Kind kind = request.getKind();
 		List<IBuild> buildList= new ArrayList<IBuild>();
 		List<KojiBuildInfo> buildInfoList = null;
-		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//TODO this will change after Build class is revised.
+		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//TODO this will change after Build class is revised,MylynKojiBuildPlan is temporary.
 			buildInfoList = ((MylynKojiBuildPlan)plan).getPack().getRecentBuilds();
 		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
 			int packID = 0;
@@ -157,7 +163,6 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	@Override
 	public Reader getConsole(IBuild build, IOperationMonitor monitor)
 			throws CoreException {
-		// TODO Auto-generated method stub
 		//take the plan out of the build, go to the most recent build or task
 		//if the task or most recent build's task exists, query the outputs
 		//otherwise, fail it with exception.
@@ -369,9 +374,26 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 	@Override
 	public BuildServerConfiguration refreshConfiguration(
 			IOperationMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		// TODO query all tasks of the user from koji, write cache by calling set cache
-		return null;
+		// query all packages of the user from koji, write cache by calling set cache
+		List<KojiPackage> packList = null;
+		// TODO need a preference page for limiting builds returned...
+		// TODO int limit = 0;
+		try {
+			this.client.login();
+			packList = this.client.listPackagesOfUserAsKojiPackageList(/*TODO limit*/1);
+			this.client.logout();
+		} catch (KojiClientException kce) {
+			throw KojiCorePlugin.toCoreException(kce);
+		} catch (KojiLoginException kle) {
+			throw KojiCorePlugin.toCoreException(kle);
+		}
+		if(packList != null) {
+			Map<Integer, KojiPackage> configMap = this.config.getPackageByID();
+			for(KojiPackage pack : packList)
+				configMap.put(new Integer(pack.getPackageID()), pack);
+		}
+		this.cache.setConfiguration(this.url, this.config);
+		return this.getConfiguration();
 	}
 
 	@Override

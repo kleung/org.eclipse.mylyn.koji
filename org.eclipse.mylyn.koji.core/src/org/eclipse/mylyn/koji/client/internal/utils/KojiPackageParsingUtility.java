@@ -119,6 +119,7 @@ public final class KojiPackageParsingUtility {
 	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
 		if(pack == null)
 			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan.");
+		//TODO this will have to change when mylyn builds people adds generic data structure storage, MylynKojiBuildPlan is temporary.
 		MylynKojiBuildPlan buildPlan = new MylynKojiBuildPlan();
 		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());
