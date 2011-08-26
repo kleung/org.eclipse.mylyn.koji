@@ -1,5 +1,6 @@
 package org.eclipse.mylyn.koji.connector;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -10,7 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.builds.core.IBuild;
 import org.eclipse.mylyn.builds.core.IBuildPlan;
@@ -36,6 +39,7 @@ import org.eclipse.mylyn.koji.client.internal.utils.KojiPackageParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
 import org.eclipse.mylyn.koji.messages.KojiText;
+import org.osgi.framework.Bundle;
 
 @SuppressWarnings("restriction")
 public class KojiServerBehavior extends BuildServerBehaviour {
@@ -399,4 +403,16 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			throw KojiCorePlugin.toCoreException(new Exception(KojiText.KojiValidationError));
 	}
 
+	protected File getCacheFile() {
+		if (Platform.isRunning()) {
+			Bundle bundle = Platform.getBundle(KojiCorePlugin.PLUGIN_ID);
+			if (bundle != null) {
+				IPath stateLocation = Platform.getStateLocation(bundle);
+				IPath cacheFile = stateLocation.append("configuration.obj"); //$NON-NLS-1$
+				return cacheFile.toFile();
+			}
+		}
+		return null;
+	}
+	
 }
