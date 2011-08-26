@@ -349,4 +349,12 @@ public interface IKojiHubClient {
 	 * @Return A map containing the package ID and name.
 	 */
 	public Map<String, ?> getPackageByNameAsMap(String name) throws KojiClientException;
+	
+	/**
+	 * Resubmits a canceled or failed task to koji with the same parameter as the original task.
+	 * The user must be the owner of the task.
+	 * @param taskID The task ID.
+	 * @throws KojiClientException
+	 */
+	public void resubmitTask(int taskID) throws KojiClientException;
 }

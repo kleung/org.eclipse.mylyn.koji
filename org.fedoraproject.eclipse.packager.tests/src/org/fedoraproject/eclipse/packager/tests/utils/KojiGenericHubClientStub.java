@@ -305,8 +305,6 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 			IllegalArgumentException {
 		return null;
 	}
-
-	
 	
 	/**
 	 * (non-Javadoc)
@@ -316,6 +314,16 @@ public class KojiGenericHubClientStub implements IKojiHubClient {
 	public Map<String, ?> getPackageByNameAsMap(String name)
 			throws KojiClientException {	
 		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see org.eclipse.mylyn.koji.client.api.IKojiHubClient#resubmitTask(int)
+	 */
+	@Override
+	public void resubmitTask(int taskID) throws KojiClientException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

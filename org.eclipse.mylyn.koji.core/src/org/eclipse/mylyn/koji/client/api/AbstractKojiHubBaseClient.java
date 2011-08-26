@@ -954,4 +954,22 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			return null;
 	}
 	
+	/**
+	 * Resubmits a canceled or failed task to koji with the same parameter as the original task.
+	 * The user must be the owner of the task.
+	 * @param taskID The task ID.
+	 * @throws KojiClientException
+	 */
+	public void resubmitTask(int taskID) throws KojiClientException {
+		if(this.userID == null)
+			this.userID = KojiSessionInfoParsingUtility.getUserID(this.getSessionInfoAsMap());
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(new Integer(taskID));
+		try {
+			xmlRpcClient.execute("resumitTask", params);
+		} catch (XmlRpcException e) {
+			throw new KojiClientException(e);
+		}
+	}
+	
 }
