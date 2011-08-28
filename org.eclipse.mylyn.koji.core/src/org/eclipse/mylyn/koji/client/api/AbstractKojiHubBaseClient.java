@@ -22,6 +22,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.mylyn.builds.core.IBuild;
+import org.eclipse.mylyn.builds.core.IBuildPlan;
+import org.eclipse.mylyn.builds.core.IBuildServer;
+import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
+import org.eclipse.mylyn.internal.builds.ui.editor.BuildEditorInput;
 import org.eclipse.mylyn.koji.client.api.errors.KojiBuildExistException;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
@@ -33,12 +39,20 @@ import org.eclipse.mylyn.koji.client.internal.utils.KojiSessionInfoParsingUtilit
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTypeFactory;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiUserParsingUtility;
+import org.eclipse.mylyn.koji.connector.KojiServerBehavior;
+import org.eclipse.mylyn.koji.core.KojiCorePlugin;
 import org.eclipse.mylyn.koji.messages.KojiText;
 import org.apache.commons.codec.binary.Base64;
+import org.eclipse.mylyn.builds.ui.BuildsUi;
+import org.eclipse.mylyn.builds.ui.BuildsUiConstants;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Koji Base client.
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 
 	protected Integer userID = null;
@@ -152,6 +166,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			// no task ID returned, some other error must have happened.
 			throw new KojiClientException(result.toString());
 		}
+		this.openBuildEditorForTaskId(taskId);
 		return taskId;
 	}
 
@@ -970,6 +985,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 		} catch (XmlRpcException e) {
 			throw new KojiClientException(e);
 		}
+		this.openBuildEditorForTaskId(taskID);
 	}
 	
 	/**
@@ -988,6 +1004,50 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit, true);
 		else
 			return null;
+	}
+	
+	private void openBuildEditorForTaskId(int taskID) throws KojiClientException {
+		//given the task ID, query the KojiTask, extract the rpm name
+		//convert to package name, query KojiPackage by name, set connection
+		//between KojiPackage and KojiTask, call editor.
+		KojiTask task = this.getTaskInfoByIDAsKojiTask(taskID);
+		if(task != null) {
+			String packageName = KojiTaskParsingUtility.rpmToPackageName(task.getRpm());
+			Map<String, ?> packMap = this.getPackageByNameAsMap(packageName);
+			if(packMap != null) {
+				KojiPackage pack = null;
+				pack = KojiPackageParsingUtility.parsePackage(packMap, false, this, -1, false);
+				pack.setTask(task);
+				RepositoryLocation location = new RepositoryLocation();
+				location.setProperty("url", this.kojiHubUrl.toString());
+				KojiServerBehavior behavior = null;
+				try {
+					behavior = (KojiServerBehavior) KojiCorePlugin.getDefault().getConnector().getBehaviour(location);
+				} catch(CoreException e) {
+					//should not happen
+				}	
+				//TODO MylynKojiBuildPlan should be removed once Mylyn Builds finishes its modification
+				//to the BuildPlan class.
+				IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, null);
+				IBuild build = behavior.createBuild();
+				KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(task, build);
+				plan.setLastBuild(build);
+				build.setPlan(plan);
+				IBuildServer server = BuildsUi.createServer(KojiCorePlugin.CONNECTOR_KIND);
+				server.setLocation(location);
+				plan.setServer(server);
+				build.setServer(server);
+				if(plan != null) {
+					BuildEditorInput input = new BuildEditorInput(build);
+					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					try {
+						page.openEditor(input, BuildsUiConstants.ID_EDITOR_BUILDS);
+					} catch(PartInitException e) {
+						throw new KojiClientException(e);
+					}
+				}
+			}
+		}
 	}
 	
 }
