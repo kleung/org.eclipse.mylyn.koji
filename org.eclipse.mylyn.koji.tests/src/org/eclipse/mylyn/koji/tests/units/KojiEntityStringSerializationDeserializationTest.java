@@ -39,13 +39,45 @@ public class KojiEntityStringSerializationDeserializationTest {
 		int taskId = task.getId();
 		List<KojiTask> descendentList = task.getDescendents();
 		String serializedString = null;
-		serializedString = KojiEntityStringSerializationDeserializationUtility.serializeKojiEntityToString(task);
+		serializedString = KojiEntityStringSerializationDeserializationUtility.serializeKojiEntityToBase64String(task);
 		assertNotNull(serializedString);
-		KojiTask deserializedTask = KojiEntityStringSerializationDeserializationUtility.deserializeKojiTaskFromString(serializedString);
+		KojiTask deserializedTask = KojiEntityStringSerializationDeserializationUtility.deserializeKojiTaskFromBase64String(serializedString);
 		assertNotNull(deserializedTask);
 		assertEquals(taskId, deserializedTask.getId());
 		List<KojiTask>deserializedTaskDescendentList = deserializedTask.getDescendents();
 		assertNotNull(deserializedTaskDescendentList);
 		assertEquals(descendentList.size(), deserializedTaskDescendentList.size());
+	}
+	
+	@Test
+	public void KojiBuildInfoSerializationDeserializationTest() throws Exception {
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		KojiBuildInfo build = kojiClient.getBuild("ed-1.5-3.fc15");
+		int buildId = build.getBuildId();
+		String nvr = build.getNvr();
+		String serializedString = null;
+		serializedString = KojiEntityStringSerializationDeserializationUtility.serializeKojiEntityToBase64String(build);
+		assertNotNull(serializedString);
+		KojiBuildInfo deserializedBuild = KojiEntityStringSerializationDeserializationUtility.deserializeKojiBuildInfoFromBase64String(serializedString);
+		assertNotNull(deserializedBuild);
+		assertEquals(buildId, deserializedBuild.getBuildId());
+		assertEquals(0, nvr.compareToIgnoreCase(deserializedBuild.getNvr()));
+	}
+	
+	@Test
+	public void KojiPackageSerializationDeserializationTest() throws Exception {
+		HashMap<?, ?> sessionData = kojiClient.login();
+		assertNotNull(sessionData);
+		KojiPackage pack = kojiClient.getPackageByIDAsKojiPackage(430, -1);
+		int packId = pack.getPackageID();
+		String packageName = pack.getPackageName();
+		String serializedString = null;
+		serializedString = KojiEntityStringSerializationDeserializationUtility.serializeKojiEntityToBase64String(pack);
+		assertNotNull(serializedString);
+		KojiPackage deserializedPack = KojiEntityStringSerializationDeserializationUtility.deserializeKojiPackageFromBase64String(serializedString);
+		assertNotNull(deserializedPack);
+		assertEquals(packId, deserializedPack.getPackageID());
+		assertEquals(0, packageName.compareToIgnoreCase(deserializedPack.getPackageName()));
 	}
 }

@@ -55,8 +55,10 @@ public final class KojiPackageParsingUtility {
 			if(buildList.size() > 0) {
 				int mostRecentBuildID = buildList.get(0).getBuildId();
 				Map<String, Object> srcRpmMap = wsClient.getSourceRPMFromBuildIdAsMap(mostRecentBuildID);
-				int packId = ((Integer)srcRpmMap.get("id")).intValue();
-				pack.setDescription(wsClient.getDescriptionFromPackageIdAsString(packId));
+				if(srcRpmMap != null) {
+					int packId = ((Integer)srcRpmMap.get("id")).intValue();
+					pack.setDescription(wsClient.getDescriptionFromPackageIdAsString(packId));
+				}
 			}
 		}
 		return pack;
