@@ -9,21 +9,23 @@ import java.io.ByteArrayInputStream;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
+import org.apache.commons.codec.binary.Base64;
 
 public class KojiEntityStringSerializationDeserializationUtility {
 
-	public static String serializeKojiEntityToString(Serializable in) throws IOException {
+	public static String serializeKojiEntityToBase64String(Serializable in) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
 		oos.writeObject(in);
 		oos.flush();
 		oos.close();
 		bos.close();
-		return bos.toString();
+		return Base64.encodeBase64String(bos.toByteArray());
 	}
 	
-	private static Object deserializeObjectFromString(String in) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream bis = new ByteArrayInputStream(in.getBytes());
+	private static Object deserializeObjectFromBase64String(String in) throws IOException, ClassNotFoundException {
+		byte[] base64Input = Base64.decodeBase64(in);
+		ByteArrayInputStream bis = new ByteArrayInputStream(base64Input);
 		ObjectInputStream ois = new ObjectInputStream(bis);
 		Object output = ois.readObject();
 		ois.close();
@@ -31,10 +33,10 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return output;
 	}
 	
-	public static KojiTask deserializeKojiTaskFromString(String in) throws IOException, ClassCastException {
+	public static KojiTask deserializeKojiTaskFromBase64String(String in) throws IOException, ClassCastException {
 		KojiTask task = null;
 		try {
-			Object result = deserializeObjectFromString(in);
+			Object result = deserializeObjectFromBase64String(in);
 			if(!(result instanceof KojiTask))
 				throw new ClassCastException();
 			task = (KojiTask)result;
@@ -44,10 +46,10 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return task;
 	}
 	
-	public static KojiBuildInfo deserializeKojiBuildInfoFromString(String in) throws IOException, ClassCastException {
+	public static KojiBuildInfo deserializeKojiBuildInfoFromBase64String(String in) throws IOException, ClassCastException {
 		KojiBuildInfo build = null;
 		try {
-			Object result = deserializeObjectFromString(in);
+			Object result = deserializeObjectFromBase64String(in);
 			if(!(result instanceof KojiBuildInfo))
 				throw new ClassCastException();
 			build = (KojiBuildInfo)result;
@@ -57,10 +59,10 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return build;
 	}
 	
-	public static KojiPackage deserializeKojiPackageFromString(String in) throws IOException, ClassCastException {
+	public static KojiPackage deserializeKojiPackageFromBase64String(String in) throws IOException, ClassCastException {
 		KojiPackage pack = null;
 		try {
-			Object result = deserializeObjectFromString(in);
+			Object result = deserializeObjectFromBase64String(in);
 			if(!(result instanceof KojiPackage))
 				throw new ClassCastException();
 			pack = (KojiPackage)result;

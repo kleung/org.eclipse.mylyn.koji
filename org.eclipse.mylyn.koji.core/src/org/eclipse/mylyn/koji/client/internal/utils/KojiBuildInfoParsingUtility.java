@@ -22,7 +22,7 @@ import org.eclipse.mylyn.koji.messages.KojiText;
 public final class KojiBuildInfoParsingUtility {
 	
 	/* relevant keys of the returned map */ 
-	private static final String KEY_ID = "build_id"; //$NON-NLS-1$
+	private static final String KEY_ID = "id"; //$NON-NLS-1$
 	private static final String KEY_PACKAGE_ID = "package_id"; //$NON-NLS-1$
 	private static final String KEY_PACKAGE_NAME = "package_name"; //$NON-NLS-1$
 	private static final String KEY_VERSION = "version"; //$NON-NLS-1$
