@@ -121,7 +121,7 @@ public final class KojiPackageParsingUtility {
 	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
 		if(pack == null)
 			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan.");
-		//TODO This will only work with the newest revised BuildPlan class from org.eclipse.mylyn.builds.core project.
+		//TODO This will only work with the newest revised BuildElement/BuildPlan class from org.eclipse.mylyn.builds.core project.
 		BuildPlan buildPlan = behavior.createBuildPlan();
 		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());

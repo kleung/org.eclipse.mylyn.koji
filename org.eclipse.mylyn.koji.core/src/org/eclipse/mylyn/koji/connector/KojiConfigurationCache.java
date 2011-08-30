@@ -6,6 +6,12 @@ import java.io.ObjectInputStream;
 
 import org.eclipse.mylyn.builds.core.spi.AbstractConfigurationCache;
 
+/**
+ * Koji configuration cache class required by Mylyn Builds.
+ * 
+ * @author Kiu Kwan Leung (Red Hat)
+ *
+ */
 @SuppressWarnings("restriction")
 public class KojiConfigurationCache extends
 		AbstractConfigurationCache<KojiConfiguration> {

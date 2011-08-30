@@ -5,6 +5,12 @@ import org.eclipse.mylyn.builds.core.spi.BuildConnector;
 import org.eclipse.mylyn.builds.core.spi.BuildServerBehaviour;
 import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
 
+/**
+ * Koji Connector
+ * 
+ * @author Kiu Kwan Leung (Red Hat)
+ *
+ */
 @SuppressWarnings("restriction")
 public class KojiConnector extends BuildConnector {
 	

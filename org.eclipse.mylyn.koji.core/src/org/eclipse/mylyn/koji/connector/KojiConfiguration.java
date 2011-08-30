@@ -6,6 +6,12 @@ import java.util.Map;
 
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
 
+/**
+ * Koji Configuration class required by Mylyn Builds.
+ * 
+ * @author Kiu Kwan Leung (Red Hat)
+ *
+ */
 public class KojiConfiguration implements Serializable {
 
 	private static final long serialVersionUID = -5503993513785634562L;

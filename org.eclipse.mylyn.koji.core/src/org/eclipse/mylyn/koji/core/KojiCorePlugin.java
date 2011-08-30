@@ -56,6 +56,10 @@ public class KojiCorePlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	/**
+	 * Gets a KojiConnector instance.
+	 * @return A KojiConnector.
+	 */
 	public KojiConnector getConnector() {
 		if (connector == null) {
 			connector = new KojiConnector();
@@ -63,10 +67,19 @@ public class KojiCorePlugin extends AbstractUIPlugin {
 		return connector;
 	}
 
+	/**
+	 * Sets a Koji Connector.
+	 * @param connector The Koji Connector
+	 */
 	void setConnector(KojiConnector connector) {
 		this.connector = connector;
 	}
 	
+	/**
+	 * Utility method to convert any exception to CoreException.
+	 * @param e The input exception
+	 * @return
+	 */
 	public static CoreException toCoreException(Exception e) {
 		return new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, "Unexpected error: " + e.getMessage(), e));
 	}

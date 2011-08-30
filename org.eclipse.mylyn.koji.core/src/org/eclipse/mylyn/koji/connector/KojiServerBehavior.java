@@ -44,9 +44,18 @@ import org.eclipse.mylyn.koji.core.KojiCorePlugin;
 import org.eclipse.mylyn.koji.messages.KojiText;
 import org.osgi.framework.Bundle;
 
+/**
+ * Koji server behavior required by Mylyn Builds.
+ * 
+ * @author Kiu Kwan Leung (Red Hat)
+ *
+ */
+
 @SuppressWarnings("restriction")
 public class KojiServerBehavior extends BuildServerBehaviour {
 
+	//Because the koji client is a general purpose one, the management of config and config cache are placed
+	//in this class. (see getCacheFile() at the bottom of this class).
 	private KojiConfiguration config;
 	
 	private AbstractConfigurationCache<KojiConfiguration> cache = new KojiConfigurationCache(getCacheFile());
@@ -64,7 +73,10 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		}
 	}
 	
-
+	/**
+	 * Creates a Build object for parsing utilities.
+	 * @return An empty Build object.
+	 */
 	public Build createBuild() {
 		IBuild build = super.createBuild();
 		if(build instanceof Build)
@@ -73,6 +85,10 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			return null;
 	}
 	
+	/**
+	 * Creates a BuildPlan object for parsing utilities.
+	 * @return An empty BuildPlan object.
+	 */
 	public BuildPlan createBuildPlan() {
 		IBuildPlan plan = super.createBuildPlan();
 		if(plan instanceof BuildPlan)
@@ -89,7 +105,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Kind kind = request.getKind();
 		List<IBuild> buildList= new ArrayList<IBuild>();
 		List<KojiBuildInfo> buildInfoList = null;
-		//TODO This will only work with the revised BuildPlan class of org.eclipse.mylyn.builds.core project.
+		//TODO This will only work with the revised BuildElement/BuildPlan class of org.eclipse.mylyn.builds.core project.
 		if((plan != null) && (plan instanceof BuildPlan)) {
 			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
 					.deserializeKojiPackageFromBase64String(((BuildPlan)plan).getAttributes().get("koji"));
@@ -194,7 +210,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		String result = "";
 		KojiTask targetTask = null;
 		//find the build/task
-		//TODO This will only work with the revised version of BuildPlan from org.eclipse.mylyn.builds.core project.
+		//TODO This will only work with the revised version of BuildElement/BuildPlan from org.eclipse.mylyn.builds.core project.
 		if(plan instanceof BuildPlan) {
 			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
 					.deserializeKojiPackageFromBase64String(plan.getAttributes().get("koji")).getPack();
