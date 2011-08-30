@@ -479,6 +479,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 					try {
 						this.client.login();
 						this.client.resubmitTask(buildID);
+						this.client.logout();
 					} catch (KojiClientException kce) {
 						throw KojiCorePlugin.toCoreException(kce);
 					} catch (KojiLoginException kle) {
