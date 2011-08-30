@@ -51,7 +51,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Koji Base client.
- * TODO To test "sami's use case", look at the last method of this class and the caller of that method.
+ * TODO For "sami's use case", look at the last method of this class and the caller of that method.
  *      The build and resubmit task methods.  To test the use case, push a build or resubmit a build.
  *      But because I was unable to run test, it might need some fixing...
  */
