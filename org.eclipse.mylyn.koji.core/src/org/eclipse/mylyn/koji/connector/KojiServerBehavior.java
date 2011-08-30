@@ -213,7 +213,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		//TODO This will only work with the revised version of BuildElement/BuildPlan from org.eclipse.mylyn.builds.core project.
 		if(plan instanceof BuildPlan) {
 			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
-					.deserializeKojiPackageFromBase64String(plan.getAttributes().get("koji")).getPack();
+					.deserializeKojiPackageFromBase64String(plan.getAttributes().get("koji"));
 			if(pack.getTask() != null) {
 				//coming from fedora packager as a build editor viewing of a recently pushed task
 				KojiTask task = pack.getTask();
