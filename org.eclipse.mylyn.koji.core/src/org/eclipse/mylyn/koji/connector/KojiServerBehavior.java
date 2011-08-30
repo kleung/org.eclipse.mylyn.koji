@@ -493,7 +493,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 
 	@Override
 	public IStatus validate(IOperationMonitor monitor) throws CoreException {
-		//log in, try getting session info, logout, anything exception happens, fail it
+		//log in, try getting session info, logout, any exception happens, fail it
 		Map<String, ?> sessionInfo = null;
 		try {
 			this.client.login();
