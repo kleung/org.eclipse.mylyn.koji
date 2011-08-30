@@ -27,16 +27,17 @@ import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest.Scope;
 import org.eclipse.mylyn.builds.core.spi.RunBuildRequest;
 import org.eclipse.mylyn.builds.core.spi.GetBuildsRequest.Kind;
 import org.eclipse.mylyn.builds.internal.core.Build;
+import org.eclipse.mylyn.builds.internal.core.BuildPlan;
 import org.eclipse.mylyn.commons.core.IOperationMonitor;
 import org.eclipse.mylyn.commons.repositories.RepositoryLocation;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiSSLHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
-import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.client.api.errors.KojiLoginException;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiBuildInfoParsingUtility;
+import org.eclipse.mylyn.koji.client.internal.utils.KojiEntityStringSerializationDeserializationUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiPackageParsingUtility;
 import org.eclipse.mylyn.koji.client.internal.utils.KojiTaskParsingUtility;
 import org.eclipse.mylyn.koji.core.KojiCorePlugin;
@@ -72,6 +73,13 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			return null;
 	}
 	
+	public BuildPlan createBuildPlan() {
+		IBuildPlan plan = super.createBuildPlan();
+		if(plan instanceof BuildPlan)
+			return (BuildPlan)plan;
+		else
+			return null;
+	}
 
 	@Override
 	public List<IBuild> getBuilds(GetBuildsRequest request,
@@ -81,8 +89,12 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		Kind kind = request.getKind();
 		List<IBuild> buildList= new ArrayList<IBuild>();
 		List<KojiBuildInfo> buildInfoList = null;
-		if((plan != null) && (plan instanceof MylynKojiBuildPlan))//TODO this will change after Build class is revised,MylynKojiBuildPlan is temporary.
-			buildInfoList = ((MylynKojiBuildPlan)plan).getPack().getRecentBuilds();
+		//TODO This will only work with the revised BuildPlan class of org.eclipse.mylyn.builds.core project.
+		if((plan != null) && (plan instanceof BuildPlan)) {
+			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
+					.deserializeKojiPackageFromBase64String(((BuildPlan)plan).getAttributes().get("koji"));
+			buildInfoList = pack.getRecentBuilds();
+		}
 		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
 			int packID = 0;
 			try {
@@ -182,8 +194,10 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		String result = "";
 		KojiTask targetTask = null;
 		//find the build/task
-		if(plan instanceof MylynKojiBuildPlan) {//TODO MylynKojiBuildPlan should be taken out when Mylyn Builds people finishes revising the BuildPlan class.
-			KojiPackage pack = ((MylynKojiBuildPlan)plan).getPack();
+		//TODO This will only work with the revised version of BuildPlan from org.eclipse.mylyn.builds.core project.
+		if(plan instanceof BuildPlan) {
+			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
+					.deserializeKojiPackageFromBase64String(plan.getAttributes().get("koji")).getPack();
 			if(pack.getTask() != null) {
 				//coming from fedora packager as a build editor viewing of a recently pushed task
 				KojiTask task = pack.getTask();

@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.eclipse.mylyn.builds.core.IBuildPlan;
 import org.eclipse.mylyn.builds.internal.core.Build;
+import org.eclipse.mylyn.builds.internal.core.BuildPlan;
 import org.eclipse.mylyn.koji.client.api.IKojiHubClient;
 import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
-import org.eclipse.mylyn.koji.client.api.MylynKojiBuildPlan;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.connector.KojiServerBehavior;
 
@@ -121,13 +121,14 @@ public final class KojiPackageParsingUtility {
 	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
 		if(pack == null)
 			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan.");
-		//TODO this will have to change when mylyn builds people adds generic data structure storage, MylynKojiBuildPlan is temporary.
-		MylynKojiBuildPlan buildPlan = new MylynKojiBuildPlan();
+		//TODO This will only work with the newest revised BuildPlan class from org.eclipse.mylyn.builds.core project.
+		BuildPlan buildPlan = behavior.createBuildPlan();
 		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());
 		buildPlan.setDescription(pack.getDescription());
 		//The entire koji package is being stored here for use with resubmitting the task (rebuild).
-		buildPlan.setPack(pack);
+		buildPlan.getAttributes().put("koji", KojiEntityStringSerializationDeserializationUtility
+				.serializeKojiEntityToBase64String(pack));
 		//if Mylyn Builds team decides to support sub-builds, modify the rest of the body to include
 		//the entire list of past builds.
 		if (pack.getRecentBuilds() != null) {

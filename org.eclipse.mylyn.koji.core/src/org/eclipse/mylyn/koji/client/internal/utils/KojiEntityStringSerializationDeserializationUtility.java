@@ -11,8 +11,20 @@ import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.KojiTask;
 import org.apache.commons.codec.binary.Base64;
 
+/**
+ * Koji Entity to base 64 string serialization deserialization utility
+ * 
+ * @author Kiu Kwan Leung
+ *
+ */
 public class KojiEntityStringSerializationDeserializationUtility {
 
+	/**
+	 * Method to parse all Koji entities (Serializable) into base 64 strings.
+	 * @param in Serializable Koji entity.
+	 * @return A serialized koji entity encoded as a base 64 string
+	 * @throws IOException
+	 */
 	public static String serializeKojiEntityToBase64String(Serializable in) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -33,6 +45,13 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return output;
 	}
 	
+	/**
+	 * Deserializes a base 64 string storing Koji task information into a KojiTask object.
+	 * @param in A base 64 string storing Koji task information.
+	 * @return A KojiTask object stored by the string.
+	 * @throws IOException
+	 * @throws ClassCastException
+	 */
 	public static KojiTask deserializeKojiTaskFromBase64String(String in) throws IOException, ClassCastException {
 		KojiTask task = null;
 		try {
@@ -46,6 +65,13 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return task;
 	}
 	
+	/**
+	 * Deserializes a base 64 string storing Koji build information into a KojiBuildInfo object.
+	 * @param in A base 64 string storing Koji build information.
+	 * @return A KojiBuildInfo object stored by the string.
+	 * @throws IOException
+	 * @throws ClassCastException
+	 */
 	public static KojiBuildInfo deserializeKojiBuildInfoFromBase64String(String in) throws IOException, ClassCastException {
 		KojiBuildInfo build = null;
 		try {
@@ -59,6 +85,13 @@ public class KojiEntityStringSerializationDeserializationUtility {
 		return build;
 	}
 	
+	/**
+	 * Deserializes a base 64 string storing Koji package information into a KojiPackage object.
+	 * @param in A base 64 string storing Koji package information.
+	 * @return A KojiPackage object stored by the string.
+	 * @throws IOException
+	 * @throws ClassCastException
+	 */
 	public static KojiPackage deserializeKojiPackageFromBase64String(String in) throws IOException, ClassCastException {
 		KojiPackage pack = null;
 		try {
