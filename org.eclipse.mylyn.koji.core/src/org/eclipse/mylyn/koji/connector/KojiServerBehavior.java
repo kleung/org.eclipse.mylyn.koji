@@ -267,6 +267,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 					result += (KojiText.OutputHeader + "\n\n");
 					for(int icounter = 0; icounter < descendentList.size(); icounter++) {
 						KojiTask task = descendentList.get(icounter);
+						result += (task.getRpm() + ":\n\n");
 						int taskState = task.getTaskStateCode();
 						if((taskState == 2) || (taskState == 5)) {//task finished successfully or failed
 							Map<String, HashMap<String, Object>> outputMap = null;
@@ -327,7 +328,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 
 	private String downloadOutputContent(int taskId, String fileName, Map<String, HashMap<String, Object>> data) throws CoreException {
 		int textSize = 0;
-		String content = null;
+		String content = "";
 		try {
 			textSize = Integer.parseInt((String)data.get(fileName).get("st_size"));
 		} catch (NumberFormatException nfe) {
