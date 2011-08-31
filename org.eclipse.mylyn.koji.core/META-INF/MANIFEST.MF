@@ -31,4 +31,6 @@ Export-Package: org.eclipse.mylyn.koji.client.api,
  org.eclipse.mylyn.koji.client.api.errors,
  org.eclipse.mylyn.koji.client.internal.utils; x-friends:="org.eclipse.mylyn.koji.tests, org.fedoraproject.eclipse.packager.tests",
  org.eclipse.mylyn.koji.connector,
- org.eclipse.mylyn.koji.core
+ org.eclipse.mylyn.koji.core,
+ org.eclipse.mylyn.koji.messages,
+ org.eclipse.mylyn.koji.SSL
