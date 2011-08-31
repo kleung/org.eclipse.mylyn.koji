@@ -1,0 +1,96 @@
+Mylyn Builds koji connector
+
+Before we start, please join the Mylyn Builds (mylyn-builds-dev@eclipse.org) and koji buildsys
+(buildsys@lists.fedoraproject.org) mailing list so you can get more support from the upstream people.
+
+1. Design and concerns
+Design:
+This connector makes heavy use of the model/view/control or "separation of concerns" design pattern where
+we try to make a clear cut between each type of object as well as their responsibilities.  This approach 
+generally yeilds more managable, understandable and reusable code.
+
+So, in case of the koji connector:
+
+MODEL will be the koji entities (users, channels, hosts, task, buildinfo and packages) and the koji web service
+client in the org.eclipse.mylyn.koji.client.api package.  Which are the data carriers and the data access 
+object/facade.  Their responsibilities are simple - to carry data and query the data out of the koji server.
+NOTE: users, channels and hosts are commented out for the fact that Mylyn Builds is not capable of presenting them
+to the user.
+
+CONTROLLER will be the entity parsing utilities (yes, for each entity, it has its own parsing utility) and 
+serialization/deserialization utilities in org.eclipse.mylyn.koji.cleint.internal.utils package as well as 
+the KojiServerBehavior class in org.eclipse.mylyn.koji.connector package.  They are responsible to convert
+whatever koji server returns into the entity classes listed above, serialize/deserialize them to/from base64
+strings (reason for base64 instead of normal strings is that Java uses UTF-8 to encode strings, so whatever
+binary character the encoder finds from the serialized byte array that is not in the character set will be
+replaced with some unknown UTF-8 compliant characters and hence causing data corruption) and to implement 
+the business logics required by Mylyn Builds.
+(Sorry for the extremely long class names, I just want to be clear with everything so whoever
+picks up the project knows where to find the required logic)
+
+VIEW is going to be the frontend of the koji connector, which is the yet-to-be-coded org.eclipse.mylyn.koji.ui
+project and the rest of the Mylyn Builds components.
+
+Concern:
+If you compare the HudsonConnector, ResfulHudsonClient, HudsonServerBehavior found in the Hudson connector project
+with the KojiConnector, AbstractKojiHubClient and KojiServerBehavior classes in the koji connector, you will find 
+that there is a major difference between them in terms of configuration and configuration cache handling.  This 
+is because the AbstractKojiHubClient was a component of the fedorapackager.koji project and was moved to the koji.core,
+so it is still a dependency of the fedorapackager.koji and should not be handling Mylyn Builds specific configuration
+and configuration caches, so I decided to move them to KojiServerBehavior, which is the next tier and also let it to
+handle them.
+
+2. Terminology
+There is just one term I created for this project, used it everywhere in my code:
+
+"Sami's use case".
+
+At the beginning of the project, Sami told me that he is interested in a use case - he wants to see a build editor
+opened to show the task information whenever eclipse fedora packager pushes a build.  This is implemented in
+AbstractKojiHubClient's openBuildEditorForTaskId() and its callers, build() and resubmitTask().
+
+The reason why I chose to place them inside the Koji client is that that's the place where a build is triggered and
+its not going to add extra dependency to the fedorapackager.koji project.  However, this is not necessary the best
+solution so whenever you feel the need of moving them around, please do so.
+
+3. Data models and upstream communication
+I have the URL of the 2 bugs which contains the drawing of internal data model of koji connector and the changes
+Mr. Pingel made to IBuildElements/BuildElements.
+
+Internal Data model:
+bugs.eclipse.org/bugs/show_bug.cgi?id=353355
+Comment #13 with owner, channel and host omitted.
+
+Mr. Pingel's change:
+bugs.eclipse.org/bugs/show_bug.cgi?id=355436
+Comment #6 with link to his review board.
+
+
+4. TODOs
+First of all, I just want to point out that, there are a few things to do and for some of them, I left TODO comments
+in the source code so it should not be very difficult to find them.  So here is a list of TODOs.
+
+A. Implement org.eclipse.mylyn.koji.ui and org.eclipse.mylyn.koji.feature project.
+
+B. Add required version of org.eclipse.mylyn.builds.core package to org.eclipse.mylyn.koji.core's manifest.mf
+   (Since the update is not pushed to master of Mylyn Builds yet, please ask Mr. Pingel for the version number).
+
+C. Get an upstream version of eclipse, install newest verison of Mylyn Builds and also eclipse fedora packager.
+
+D. Git clone newest version of org.eclipse.mylyn.builds.core and other dependencies to build 
+   org.eclipse.mylyn.koji.core.
+
+E. Test "Sami's use case" by pushing a build and see if the build editor actual shows up with the matching information.
+
+F. Figure out how to unit test KojiServerBehavior.
+
+G. Create a preference page in either koji.core or koji.ui to let users to limit the amount of builds to be queried in
+   history view (its in the TODO comments of KojiServerBehavior), I generally call that integer limit.  The value of -1
+   means no limit, just query all of the builds, and a value of > 0 is the limit.
+
+H. Figure out a way to query the url and the content of the build artifact and add them into KojiTask and KojiBuildInfo
+ - should be put into parsing utilities if it is to be implemented.
+
+That's about it, thank you very much!
+
+Ken Leung

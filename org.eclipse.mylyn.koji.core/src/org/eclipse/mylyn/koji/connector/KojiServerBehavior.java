@@ -126,6 +126,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				if(request.getScope() == Scope.HISTORY) {
 					//TODO limit should be taken from a configuration page...
 					//TODO limit = SOMETHING;
+					limit = -1;
 				} else
 					limit = -1;
 			}
