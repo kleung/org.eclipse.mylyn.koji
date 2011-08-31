@@ -81,9 +81,9 @@ D. Git clone newest version of org.eclipse.mylyn.builds.core and other dependenc
    org.eclipse.mylyn.koji.core.
 
 E. Test "Sami's use case" by pushing a build and see if the build editor actual shows up with the matching information.
-   (In case its not working, please check the openBuildElements() of org.eclipse.mylyn.internal.builds.ui.commands.OpenHandler
-    from the org.eclipse.mylyn.builds.ui project for clues, a BuildServer and a RepositoryLocation with the right Koji URL is
-    needed).
+   (In case its not working, please check the openBuildElements() of 
+    org.eclipse.mylyn.internal.builds.ui.commands.OpenHandler from the org.eclipse.mylyn.builds.ui project for clues,
+    a BuildServer and a RepositoryLocation with the right Koji URL is needed).
 
 F. Figure out how to unit test KojiServerBehavior.
 
