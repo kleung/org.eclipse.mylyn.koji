@@ -81,6 +81,9 @@ D. Git clone newest version of org.eclipse.mylyn.builds.core and other dependenc
    org.eclipse.mylyn.koji.core.
 
 E. Test "Sami's use case" by pushing a build and see if the build editor actual shows up with the matching information.
+   (In case its not working, please check the openBuildElements() of org.eclipse.mylyn.internal.builds.ui.commands.OpenHandler
+    from the org.eclipse.mylyn.builds.ui project for clues, a BuildServer and a RepositoryLocation with the right Koji URL is
+    needed).
 
 F. Figure out how to unit test KojiServerBehavior.
 
@@ -89,7 +92,7 @@ G. Create a preference page in either koji.core or koji.ui to let users to limit
    means no limit, just query all of the builds, and a value of > 0 is the limit.
 
 H. Figure out a way to query the url and the content of the build artifact and add them into KojiTask and KojiBuildInfo
- - should be put into parsing utilities if it is to be implemented.
+ - should be put into parsing utilities if it is to be implemented. (Optional, but very good to have)
 
 That's about it, thank you very much!
 
