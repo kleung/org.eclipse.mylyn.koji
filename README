@@ -5,7 +5,7 @@ Before we start, please join the Mylyn Builds (mylyn-builds-dev@eclipse.org) and
 
 1. Design and concerns
 Design:
-This connector makes heavy use of the model/view/control or "separation of concerns" design pattern where
+This connector makes heavy use of the model/view/controller or "separation of concerns" design pattern where
 we try to make a clear cut between each type of object as well as their responsibilities.  This approach 
 generally yeilds more managable, understandable and reusable code.
 
