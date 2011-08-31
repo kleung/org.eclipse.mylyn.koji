@@ -165,7 +165,6 @@ public final class KojiBuildInfoParsingUtility {
 					break;
 			}
 		} else {
-			build.setId(Integer.toString(kojiBuildInfo.getBuildId()));
 			KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(kojiBuildInfo.getTask(), build);
 		}
 		return build;
