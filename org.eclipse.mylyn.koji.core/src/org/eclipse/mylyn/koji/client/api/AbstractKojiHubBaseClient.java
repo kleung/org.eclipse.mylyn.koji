@@ -1029,9 +1029,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 				} catch(CoreException e) {
 					//should not happen
 				}	
-				//TODO MylynKojiBuildPlan should be removed once Mylyn Builds finishes its modification
-				//to the BuildPlan class.
-				IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, null);
+				IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, behavior);
 				IBuild build = behavior.createBuild();
 				KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(task, build);
 				plan.setLastBuild(build);
