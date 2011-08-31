@@ -126,7 +126,7 @@ public final class KojiPackageParsingUtility {
 		buildPlan.setName(pack.getPackageName());
 		buildPlan.setDescription(pack.getDescription());
 		//The entire koji package is being stored here for use with resubmitting the task (rebuild).
-		buildPlan.getAttributes().put("koji", KojiEntityStringSerializationDeserializationUtility
+		buildPlan.getAttributes().put("kojiDataModel", KojiEntityStringSerializationDeserializationUtility
 				.serializeKojiEntityToBase64String(pack));
 		//if Mylyn Builds team decides to support sub-builds, modify the rest of the body to include
 		//the entire list of past builds.
