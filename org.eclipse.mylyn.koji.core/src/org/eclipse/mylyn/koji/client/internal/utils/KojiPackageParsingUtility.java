@@ -143,8 +143,7 @@ public final class KojiPackageParsingUtility {
 					build.setPlan(buildPlan);
 					buildPlan.setLastBuild(build);
 				}
-			} else
-				buildPlan = null;
+			}
 		}
 		return buildPlan;
 	}
