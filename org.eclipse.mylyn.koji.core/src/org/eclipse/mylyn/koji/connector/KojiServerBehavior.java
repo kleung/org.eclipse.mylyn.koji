@@ -107,9 +107,14 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		List<KojiBuildInfo> buildInfoList = null;
 		//TODO This will only work with the revised BuildElement/BuildPlan class of org.eclipse.mylyn.builds.core project.
 		if((plan != null) && (plan instanceof BuildPlan)) {
-			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
+			KojiPackage pack = null;
+			try {
+				pack = KojiEntityStringSerializationDeserializationUtility
 					.deserializeKojiPackageFromBase64String(((BuildPlan)plan).getAttributes().get("kojiDataModel"));
-			buildInfoList = pack.getRecentBuilds();
+				buildInfoList = pack.getRecentBuilds();
+			} catch (Exception e) {
+				throw KojiCorePlugin.toCoreException(e);//any failure here should terminate the process.
+			}
 		}
 		if(!((buildInfoList != null) && (buildInfoList.size() > 0))) {//needs to query koji for the list.
 			int packID = 0;
@@ -213,8 +218,13 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		//find the build/task
 		//TODO This will only work with the revised version of BuildElement/BuildPlan from org.eclipse.mylyn.builds.core project.
 		if(plan instanceof BuildPlan) {
-			KojiPackage pack = KojiEntityStringSerializationDeserializationUtility
+			KojiPackage pack = null;
+			try {
+				pack = KojiEntityStringSerializationDeserializationUtility
 					.deserializeKojiPackageFromBase64String(plan.getAttributes().get("kojiDataModel"));
+			} catch (Exception e) {
+				throw KojiCorePlugin.toCoreException(e); //any exception here should terminate the process for failing to get the required data.
+			}
 			if(pack.getTask() != null) {
 				//coming from fedora packager as a build editor viewing of a recently pushed task
 				KojiTask task = pack.getTask();
