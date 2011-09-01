@@ -1009,10 +1009,11 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			return null;
 	}
 	
-	private void openBuildEditorForTaskId(int taskID) throws KojiClientException {
-		//given the task ID, query the KojiTask, extract the rpm name
-		//convert to package name, query KojiPackage by name, set connection
-		//between KojiPackage and KojiTask, call editor.
+	private void openBuildEditorForTaskId(int taskID)
+			throws KojiClientException {
+		// given the task ID, query the KojiTask, extract the rpm name
+		// convert to package name, query KojiPackage by name, set connection
+		// between KojiPackage and KojiTask, call editor.
 		KojiTask task = this.getTaskInfoByIDAsKojiTask(taskID);
 		if (task != null) {
 			String packageName = KojiTaskParsingUtility.rpmToPackageName(task
@@ -1022,39 +1023,48 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 				KojiPackage pack = null;
 				pack = KojiPackageParsingUtility.parsePackage(packMap, false,
 						this, -1, false);
-				pack.setTask(task);
-				RepositoryLocation location = new RepositoryLocation();
-				location.setProperty("url", this.kojiHubUrl.toString());
-				KojiServerBehavior behavior = null;
-				try {
-					behavior = (KojiServerBehavior) KojiCorePlugin.getDefault()
-							.getConnector().getBehaviour(location);
-				} catch (CoreException e) {
-					// should not happen
-				}
-				IBuildPlan plan = KojiPackageParsingUtility
-						.cloneKojiPackageContentToIBuildPlan(pack, behavior);
-				if (plan != null) {
-					IBuild build = behavior.createBuild();
-					if (build != null) {
-						KojiTaskParsingUtility.cloneKojiTaskContentToIBuild(task,
-							build);
-						plan.setLastBuild(build);
-						build.setPlan(plan);
-						IBuildServer server = BuildsUi
-								.createServer(KojiCorePlugin.CONNECTOR_KIND);
-						server.setLocation(location);
-						plan.setServer(server);
-						build.setServer(server);
+				if (pack != null) {
+					pack.setTask(task);
+					RepositoryLocation location = new RepositoryLocation();
+					location.setProperty("url", this.kojiHubUrl.toString());
+					KojiServerBehavior behavior = null;
+					try {
+						behavior = (KojiServerBehavior) KojiCorePlugin
+								.getDefault().getConnector()
+								.getBehaviour(location);
+					} catch (CoreException e) {
+						// should not happen
+					}
+					if (behavior != null) {
+						IBuildPlan plan = KojiPackageParsingUtility
+								.cloneKojiPackageContentToIBuildPlan(pack,
+										behavior);
+						if (plan != null) {
+							IBuild build = behavior.createBuild();
+							if (build != null) {
+								KojiTaskParsingUtility
+										.cloneKojiTaskContentToIBuild(task,
+												build);
+								plan.setLastBuild(build);
+								build.setPlan(plan);
+								IBuildServer server = BuildsUi
+										.createServer(KojiCorePlugin.CONNECTOR_KIND);
+								server.setLocation(location);
+								plan.setServer(server);
+								build.setServer(server);
 
-						BuildEditorInput input = new BuildEditorInput(build);
-						IWorkbenchPage page = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-						try {
-							page.openEditor(input,
-									BuildsUiConstants.ID_EDITOR_BUILDS);
-						} catch (PartInitException e) {
-							throw new KojiClientException(e);
+								BuildEditorInput input = new BuildEditorInput(
+										build);
+								IWorkbenchPage page = PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage();
+								try {
+									page.openEditor(input,
+											BuildsUiConstants.ID_EDITOR_BUILDS);
+								} catch (PartInitException e) {
+									throw new KojiClientException(e);
+								}
+							}
 						}
 					}
 				}
