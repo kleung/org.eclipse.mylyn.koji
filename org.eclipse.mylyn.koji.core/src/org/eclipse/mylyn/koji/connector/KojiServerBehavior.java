@@ -156,7 +156,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 					throw KojiCorePlugin.toCoreException(e);
 				}
 				Object target = null;
-				for(int icounter = 0; ((icounter < buildInfoList.size()) && target == null); icounter++) {
+				for(int icounter = 0; ((icounter < buildInfoList.size()) && (target == null)); icounter++) {
 					KojiBuildInfo build = buildInfoList.get(icounter);
 					KojiTask task = build.getTask();
 					if((task != null) && (task.getId() == buildID))
