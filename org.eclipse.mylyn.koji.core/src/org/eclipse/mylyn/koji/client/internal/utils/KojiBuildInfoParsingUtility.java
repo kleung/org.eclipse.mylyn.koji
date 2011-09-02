@@ -92,7 +92,8 @@ public final class KojiBuildInfoParsingUtility {
 			build.setTaskId(taskId);
 			if(wsClient != null) {
 				Map<String, ?> taskMap = wsClient.getTaskInfoByIDAsMap(taskId);
-				build.setTask(KojiTaskParsingUtility.parseTask(taskMap, wsClient, true));
+				if(taskMap != null)
+					build.setTask(KojiTaskParsingUtility.parseTask(taskMap, wsClient, true));
 			}
 		}
 		return build;

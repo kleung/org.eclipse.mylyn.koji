@@ -52,12 +52,14 @@ public final class KojiPackageParsingUtility {
 			else
 				buildList = wsClient.listBuildByKojiPackageIDAsList(pack.getPackageID(), limit);
 			pack.setRecentBuilds(buildList);
-			if(buildList.size() > 0) {
+			if((buildList != null) && (buildList.size() > 0)) {
 				int mostRecentBuildID = buildList.get(0).getBuildId();
 				Map<String, Object> srcRpmMap = wsClient.getSourceRPMFromBuildIdAsMap(mostRecentBuildID);
 				if(srcRpmMap != null) {
 					int packId = ((Integer)srcRpmMap.get("id")).intValue();
-					pack.setDescription(wsClient.getDescriptionFromPackageIdAsString(packId));
+					String description = wsClient.getDescriptionFromPackageIdAsString(packId);
+					if(description != null)
+						pack.setDescription(description);
 				}
 			}
 		}
