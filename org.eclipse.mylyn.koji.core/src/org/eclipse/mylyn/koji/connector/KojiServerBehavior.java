@@ -194,8 +194,11 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 		//convert all entries found in config to list of BuildPlans and return it
 		Map<Integer, KojiPackage> configMap = this.config.getPackageByID();
 		ArrayList<IBuildPlan> planList = new ArrayList<IBuildPlan>();
-		for(Entry<Integer, KojiPackage> entry : configMap.entrySet())
-			planList.add(KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(entry.getValue(), this));
+		for(Entry<Integer, KojiPackage> entry : configMap.entrySet()) {
+			IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(entry.getValue(), this);
+			if(plan != null)
+				planList.add(plan);
+		}
 		return new BuildServerConfiguration(planList);
 	}
 
@@ -405,7 +408,9 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				this.client.login();
 				for(Map<String, Object> m : packMapList) {
 					KojiPackage pack = KojiPackageParsingUtility.parsePackage(m, true, this.client, /*TODO limit, query most recent one for now*/1, true);
-					planList.add(KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this));
+					IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this);
+					if(plan != null)
+						planList.add(plan);
 				}
 				this.client.logout();
 			} catch (KojiClientException kce) {
