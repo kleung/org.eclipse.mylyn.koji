@@ -55,6 +55,28 @@ public class KojiText extends NLS {
 	/****/ public static String TaskNotFoundOrOwnedByUserError;
 	//Building a task that is neither failed nor cancelled.
 	/****/ public static String TaskNotFailCancelledError;
+	//Converting null to build or build to null.
+	/****/ public static String NullToBuildError;
+	//Converting null to build
+	/****/ public static String NullBuildToMylynBuildError;
+	//Converting Koji Build to null
+	/****/ public static String KojiBuildToNullError;
+	//Converting Null Koji Build list to Mylyn build list or vice versa.
+	/****/ public static String NullBuildListToNullBuildListError;
+	//Koji build list and Mylyn build list size mismatch
+	/****/ public static String BuildListSizeMismatchError;
+	//Converting null to task or task to null.
+	/****/ public static String NullToTaskError;
+	//Converting null to a mylyn build.
+	/****/ public static String NullTaskToMylynBuildError;
+	//Converting Koji Task to null.
+	/****/ public static String KojiTaskToNullError;
+	//Converting Null Koji Task list to Mylyn build list or vice versa
+	/****/ public static String NullTaskListToNullBuildListError;
+	//Koji Task list and Mylyn build list size mismatch
+	/****/ public static String TaskBuildListSizeMismatchError;
+	//Converting Null package to build plan.
+	/****/ public static String NullPackageToBuildPlanError;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

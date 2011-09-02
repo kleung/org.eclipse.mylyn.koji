@@ -408,7 +408,12 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 				this.client.login();
 				for(Map<String, Object> m : packMapList) {
 					KojiPackage pack = KojiPackageParsingUtility.parsePackage(m, true, this.client, /*TODO limit, query most recent one for now*/1, true);
-					IBuildPlan plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this);
+					IBuildPlan plan = null;
+					try {
+						 plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this);
+					} catch (IllegalArgumentException iae) {
+						throw KojiCorePlugin.toCoreException(iae);
+					}
 					if(plan != null)
 						planList.add(plan);
 				}

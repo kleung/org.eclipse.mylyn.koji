@@ -121,8 +121,7 @@ public final class KojiBuildInfoParsingUtility {
 	public static IBuild cloneKojiBuildInfoContentToIBuild(
 			KojiBuildInfo kojiBuildInfo, IBuild build) throws IllegalArgumentException {
 		if((kojiBuildInfo == null) || (build == null))
-			throw new IllegalArgumentException("Cannot convert null Koji build to a Mylyn build" +
-					" or a Koji build into a null Mylyn build.");
+			throw new IllegalArgumentException(KojiText.NullToBuildError);
 		//use NVR regardless availability of task.
 		build.setDisplayName(new String(kojiBuildInfo.getNvr()));
 		build.setName(new String(kojiBuildInfo.getNvr()));
@@ -193,21 +192,16 @@ public final class KojiBuildInfoParsingUtility {
 	public static List<IBuild> cloneKojiBuildInfoListToIBuildList(List<KojiBuildInfo> kojiBuildList, List<IBuild> buildList) 
 	throws IllegalArgumentException {
 		if((kojiBuildList == null) || (buildList == null))
-			throw new IllegalArgumentException(
-					"Cannot convert a null Koji build list to a list of Mylyn builds" +
-					" or a Koji build list to a null Mylyn build list.");
+			throw new IllegalArgumentException(KojiText.NullBuildListToNullBuildListError);
 		if (kojiBuildList.size() != buildList.size())
-			throw new IllegalArgumentException(
-					"List size mismatch, cannot convert Koji build list into Mylyn build list.");
+			throw new IllegalArgumentException(KojiText.BuildListSizeMismatchError);
 		for(int icounter = 0; icounter < kojiBuildList.size(); icounter++) {
 			KojiBuildInfo kojiBuild = kojiBuildList.get(icounter);
 			if(kojiBuild == null)
-				throw new IllegalArgumentException(
-						"Cannot convert null to a Mylyn build.");
+				throw new IllegalArgumentException(KojiText.NullBuildToMylynBuildError);
 			Build build = (Build) buildList.get(icounter);
 			if(build == null)
-				throw new IllegalArgumentException(
-						"Cannot convert a Koji build to null.");
+				throw new IllegalArgumentException(KojiText.KojiBuildToNullError);
 			cloneKojiBuildInfoContentToIBuild(kojiBuild, build);
 		}
 		return buildList;

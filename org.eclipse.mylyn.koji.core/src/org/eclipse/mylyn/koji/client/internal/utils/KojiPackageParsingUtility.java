@@ -13,6 +13,7 @@ import org.eclipse.mylyn.koji.client.api.KojiBuildInfo;
 import org.eclipse.mylyn.koji.client.api.KojiPackage;
 import org.eclipse.mylyn.koji.client.api.errors.KojiClientException;
 import org.eclipse.mylyn.koji.connector.KojiServerBehavior;
+import org.eclipse.mylyn.koji.messages.KojiText;
 
 /**
  * Koji package parsing utility.
@@ -122,7 +123,7 @@ public final class KojiPackageParsingUtility {
 	 */
 	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
 		if(pack == null)
-			throw new IllegalArgumentException("Cannot convert a null Koji package to a Mylyn build plan.");
+			throw new IllegalArgumentException(KojiText.NullPackageToBuildPlanError);
 		BuildPlan buildPlan = behavior.createBuildPlan();
 		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());

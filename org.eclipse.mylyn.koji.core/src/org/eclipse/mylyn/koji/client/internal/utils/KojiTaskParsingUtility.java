@@ -223,8 +223,7 @@ public final class KojiTaskParsingUtility {
 	 */
 	public static IBuild cloneKojiTaskContentToIBuild(KojiTask task, IBuild build) throws IllegalArgumentException {
 		if((task == null) || (build == null))
-			throw new IllegalArgumentException("Cannot convert a null Koji task to a Mylyn build" +
-					" or a Koji task to a null Mylyn build.");
+			throw new IllegalArgumentException(KojiText.NullToTaskError);
 		build.setId(Integer.toString(task.getId()));
 		String displayName = build.getDisplayName();
 		//it wasn't set by KojiBuildInfoParsingUtility
@@ -297,21 +296,16 @@ public final class KojiTaskParsingUtility {
 			List<KojiTask> taskList, List<IBuild> buildList)
 			throws IllegalArgumentException {
 		if((taskList == null) || (buildList == null))
-			throw new IllegalArgumentException(
-					"Cannot convert a null Koji task list to a list of Mylyn builds" +
-					" or a Koji task list to a null Mylyn build list.");
+			throw new IllegalArgumentException(KojiText.NullTaskListToNullBuildListError);
 		if (taskList.size() != buildList.size())
-			throw new IllegalArgumentException(
-					"List size mismatch, cannot convert Koji task list into Mylyn build list.");
+			throw new IllegalArgumentException(KojiText.TaskBuildListSizeMismatchError);
 		for(int icounter = 0; icounter < taskList.size(); icounter ++) {
 			KojiTask task = taskList.get(icounter);
 			if(task == null)
-				throw new IllegalArgumentException(
-						"Cannot convert null to a Mylyn build.");
+				throw new IllegalArgumentException(KojiText.NullTaskToMylynBuildError);
 			IBuild build = buildList.get(icounter);
 			if(build == null)
-				throw new IllegalArgumentException(
-						"Cannot convert a Koji task to null.");
+				throw new IllegalArgumentException(KojiText.KojiTaskToNullError);
 			cloneKojiTaskContentToIBuild(task, build);
 		}
 		return buildList;
