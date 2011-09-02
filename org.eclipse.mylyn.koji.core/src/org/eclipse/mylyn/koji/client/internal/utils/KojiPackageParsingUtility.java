@@ -124,6 +124,8 @@ public final class KojiPackageParsingUtility {
 	public static IBuildPlan cloneKojiPackageContentToIBuildPlan(KojiPackage pack, KojiServerBehavior behavior) throws IllegalArgumentException {
 		if(pack == null)
 			throw new IllegalArgumentException(KojiText.NullPackageToBuildPlanError);
+		if(behavior == null)
+			throw new IllegalArgumentException(KojiText.NullBehaviorError);
 		BuildPlan buildPlan = behavior.createBuildPlan();
 		buildPlan.setId(Integer.toString(pack.getPackageID()));
 		buildPlan.setName(pack.getPackageName());

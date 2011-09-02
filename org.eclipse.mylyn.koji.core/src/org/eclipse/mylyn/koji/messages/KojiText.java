@@ -77,6 +77,8 @@ public class KojiText extends NLS {
 	/****/ public static String TaskBuildListSizeMismatchError;
 	//Converting Null package to build plan.
 	/****/ public static String NullPackageToBuildPlanError;
+	//Passing null as server behavior
+	/****/ public static String NullBehaviorError;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}
