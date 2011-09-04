@@ -731,7 +731,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * @throws KojiClientException
 	 */
 	public KojiPackage getPackageByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
-		if((limit < -1) || (limit == 0))
+		if(limit < -1)
 			throw new IllegalArgumentException();
 		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
 		if(packageMap != null)
@@ -1010,7 +1010,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	 * @throws IllegalArgumentException
 	 */
 	public KojiPackage getPackageOfUserByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
-		if((limit < -1) || (limit == 0))
+		if(limit < -1)
 			throw new IllegalArgumentException();
 		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
 		if(packageMap != null)
