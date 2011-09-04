@@ -718,12 +718,16 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	}
 	
 	/**
-	 * Gets a package as KojiPackage object by a given ID.  Also queries Koji for
-	 * its recent builds.  The amount of recent builds can be limited by limit, -1 for no
-	 * limit.
-	 * @param packageID	The package ID.
-	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
-	 * @return	A KojiPackage object containing information about the package.
+	 * Gets a package as KojiPackage object by a given ID. Also queries Koji for
+	 * its recent builds. The amount of recent builds can be limited by limit,
+	 * -1 for no limit.
+	 * 
+	 * @param packageID
+	 *            The package ID.
+	 * @param limit
+	 *            The maximum amount of builds to be queried, -1 for no limit, 0
+	 *            for not querying any builds.
+	 * @return A KojiPackage object containing information about the package.
 	 * @throws KojiClientException
 	 */
 	public KojiPackage getPackageByIDAsKojiPackage(int packageID, int limit) throws KojiClientException, IllegalArgumentException {
@@ -992,10 +996,16 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 	}
 	
 	/**
-	 * Gets the package by ID as KojiPackage.  It only includes builds that belongs to the user.
-	 * @param packageID The package ID.
-	 * @param limit The maximum amount of builds to be queried, -1 for no limit.
-	 * @return A KojiPackage object with the given ID and all the builds belongs to the user.
+	 * Gets the package by ID as KojiPackage. It only includes builds that
+	 * belongs to the user.
+	 * 
+	 * @param packageID
+	 *            The package ID.
+	 * @param limit
+	 *            The maximum amount of builds to be queried, -1 for no limit, 0
+	 *            for don't query builds.
+	 * @return A KojiPackage object with the given ID and all the builds belongs
+	 *         to the user.
 	 * @throws KojiClientException
 	 * @throws IllegalArgumentException
 	 */

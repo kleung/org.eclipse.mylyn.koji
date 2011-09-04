@@ -1,6 +1,7 @@
 package org.eclipse.mylyn.koji.client.internal.utils;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,17 +36,18 @@ public final class KojiPackageParsingUtility {
 	 * @param wsClient
 	 *            The Koji webservice client.
 	 * @param limit
-	 * 			  The amount of recent builds to parse
+	 * 			  The amount of recent builds to parse, -1 for no limit, 0 for don't query builds.
 	 * @param userSpecific
 	 * 			  Boolean value determining whether the utility should query only builds
 	 *            belong to the user. 
 	 * @return A KojiObject.
-	 * @throws KojiClientException
+	 * @throws KojiClientException When error occurs with any koji web method call.
+	 * @throws IllegalArgumentException When limit < -1.
 	 */
 	public static KojiPackage parsePackage(Map<String, ?> input, IKojiHubClient wsClient, int limit, boolean userSpecific) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
-		if((limit > 0) || (limit == -1)) {
-			List<KojiBuildInfo> buildList = null; 
+		List<KojiBuildInfo> buildList = null; 
+		if((limit > 0) || (limit == -1)) {	
 			if(userSpecific)
 				buildList = wsClient.listBuildOfUserByKojiPackageIDAsList(pack.getPackageID(), limit);
 			else
@@ -63,7 +65,10 @@ public final class KojiPackageParsingUtility {
 			}
 		} else if (limit < -1) {
 			throw new IllegalArgumentException(KojiText.LessThanMinusOneQueryParameterError);
-		} else{}
+		} else {
+			buildList = new ArrayList<KojiBuildInfo>();
+			pack.setRecentBuilds(buildList);
+		}
 		return pack;
 	}
 	
