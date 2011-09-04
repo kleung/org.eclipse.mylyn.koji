@@ -79,6 +79,8 @@ public class KojiText extends NLS {
 	/****/ public static String NullPackageToBuildPlanError;
 	//Passing null as server behavior
 	/****/ public static String NullBehaviorError;
+	//Passing less than -1 to build limit query parameter
+	/****/ public static String LessThanMinusOneQueryParameterError;
 	static {
 		initializeMessages(BUNDLE_NAME, KojiText.class);
 	}

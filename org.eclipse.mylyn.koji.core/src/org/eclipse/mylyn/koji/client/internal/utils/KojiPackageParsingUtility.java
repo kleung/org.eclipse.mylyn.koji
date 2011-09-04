@@ -32,8 +32,6 @@ public final class KojiPackageParsingUtility {
 	 * IMPORTANT: It is the caller's responsibility to make sure that input is not null.
 	 * @param input
 	 *            The map representing a Koji package.
-	 * @param parseBuilds
-	 * 			  Determines whether to parse its recent builds or not.
 	 * @param wsClient
 	 *            The Koji webservice client.
 	 * @param limit
@@ -44,9 +42,9 @@ public final class KojiPackageParsingUtility {
 	 * @return A KojiObject.
 	 * @throws KojiClientException
 	 */
-	public static KojiPackage parsePackage(Map<String, ?> input, boolean parseBuilds, IKojiHubClient wsClient, int limit, boolean userSpecific) throws KojiClientException, IllegalArgumentException {
+	public static KojiPackage parsePackage(Map<String, ?> input, IKojiHubClient wsClient, int limit, boolean userSpecific) throws KojiClientException, IllegalArgumentException {
 		KojiPackage pack = internalParsePackage(input);
-		if(parseBuilds && ((limit > 0) || (limit == -1))) {
+		if((limit > 0) || (limit == -1)) {
 			List<KojiBuildInfo> buildList = null; 
 			if(userSpecific)
 				buildList = wsClient.listBuildOfUserByKojiPackageIDAsList(pack.getPackageID(), limit);
@@ -63,7 +61,9 @@ public final class KojiPackageParsingUtility {
 						pack.setDescription(description);
 				}
 			}
-		}
+		} else if (limit < -1) {
+			throw new IllegalArgumentException(KojiText.LessThanMinusOneQueryParameterError);
+		} else{}
 		return pack;
 	}
 	
@@ -103,7 +103,7 @@ public final class KojiPackageParsingUtility {
 			if((o != null) && (o instanceof Map)) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> packageMap = (Map<String, Object>)o;
-				KojiPackage pack = parsePackage(packageMap, true, wsClient, limit, userSpecific);
+				KojiPackage pack = parsePackage(packageMap, wsClient, limit, userSpecific);
 				packList.add(pack);
 			}
 		}

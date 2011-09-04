@@ -731,7 +731,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			throw new IllegalArgumentException();
 		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
 		if(packageMap != null)
-			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit, false);
+			return KojiPackageParsingUtility.parsePackage(packageMap, this, limit, false);
 		else
 			return null;
 	}
@@ -1004,7 +1004,7 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			throw new IllegalArgumentException();
 		Map<String, ?> packageMap = this.getPackageByIDAsMap(packageID);
 		if(packageMap != null)
-			return KojiPackageParsingUtility.parsePackage(packageMap, true, this, limit, true);
+			return KojiPackageParsingUtility.parsePackage(packageMap, this, limit, true);
 		else
 			return null;
 	}
@@ -1021,8 +1021,8 @@ public abstract class AbstractKojiHubBaseClient implements IKojiHubClient {
 			Map<String, ?> packMap = this.getPackageByNameAsMap(packageName);
 			if (packMap != null) {
 				KojiPackage pack = null;
-				pack = KojiPackageParsingUtility.parsePackage(packMap, false,
-						this, -1, false);
+				pack = KojiPackageParsingUtility.parsePackage(packMap,
+						this, 0, false);
 				if (pack != null) {
 					pack.setTask(task);
 					RepositoryLocation location = new RepositoryLocation();

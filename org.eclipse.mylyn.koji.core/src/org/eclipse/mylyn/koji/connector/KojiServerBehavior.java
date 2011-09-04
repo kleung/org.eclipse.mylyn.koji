@@ -407,7 +407,7 @@ public class KojiServerBehavior extends BuildServerBehaviour {
 			try {
 				this.client.login();
 				for(Map<String, Object> m : packMapList) {
-					KojiPackage pack = KojiPackageParsingUtility.parsePackage(m, true, this.client, /*TODO limit, query most recent one for now*/1, true);
+					KojiPackage pack = KojiPackageParsingUtility.parsePackage(m, this.client, /*TODO limit, query most recent one for now*/1, true);
 					IBuildPlan plan = null;
 					try {
 						 plan = KojiPackageParsingUtility.cloneKojiPackageContentToIBuildPlan(pack, this);
